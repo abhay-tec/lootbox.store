@@ -31,11 +31,11 @@
       <button class="drawer-close" id="drawer-close" type="button" aria-label="Close menu">×</button>
     </div>
     <nav class="drawer-menu" id="drawer-menu" aria-label="Account options">
-      <button type="button" data-view="profile"><span class="drawer-icon">P</span><span><strong>Profile</strong><small>Your name and delivery details</small></span><span class="drawer-chevron">›</span></button>
-      <button type="button" data-view="cart"><span class="drawer-icon">C</span><span><strong>Cart</strong><small>Review products you've added</small></span><span class="drawer-count" id="cart-count">0</span></button>
-      <button type="button" data-view="orders"><span class="drawer-icon">O</span><span><strong>Orders</strong><small>View your order requests</small></span><span class="drawer-chevron">›</span></button>
-      <button type="button" data-view="settings"><span class="drawer-icon">⚙</span><span><strong>Settings</strong><small>Manage your preferences</small></span><span class="drawer-chevron">›</span></button>
-      <button class="drawer-logout" id="logout-button" type="button"><span class="drawer-icon">↪</span><span><strong>Log out</strong><small>Clear your saved profile here</small></span></button>
+      <button type="button" data-view="profile"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.25"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></span><span><strong>Profile</strong><small>Your name and delivery details</small></span><span class="drawer-chevron">›</span></button>
+      <button type="button" data-view="cart"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span><span><strong>Cart</strong><small>Review products you've added</small></span><span class="drawer-count" id="cart-count">0</span></button>
+      <button type="button" data-view="orders"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14.5 3.8V8H19M8.5 12h7M8.5 16h7"/></svg></span><span><strong>Orders</strong><small>View your order requests</small></span><span class="drawer-chevron">›</span></button>
+      <button type="button" data-view="settings"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.3 13.5 1.1.9-1.5 2.6-1.4-.5a7.5 7.5 0 0 1-1.6.9l-.3 1.5h-3l-.3-1.5a7.5 7.5 0 0 1-1.6-.9l-1.4.5-1.5-2.6 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.5-2.6 1.4.5a7.5 7.5 0 0 1 1.6-.9l.3-1.5h3l.3 1.5a7.5 7.5 0 0 1 1.6.9l1.4-.5 1.5 2.6-1.1.9a7 7 0 0 1 0 1.8Z" transform="translate(-1 -1) scale(1.08)"/></svg></span><span><strong>Settings</strong><small>Manage your preferences</small></span><span class="drawer-chevron">›</span></button>
+      <button class="drawer-logout" id="logout-button" type="button"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H9"/></svg></span><span><strong>Log out</strong><small>Clear your saved profile here</small></span></button>
     </nav>
     <p class="drawer-message" id="drawer-message" role="status" aria-live="polite"></p>
     <section class="drawer-view" id="profile-view" hidden>
@@ -77,7 +77,10 @@
     </section>
   </aside>
   <main class="store-page-main">
-    <section class="store-page-hero"><div class="wrap"><div class="image-stage store-page-banner"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div></div></section>
+    <section class="store-page-hero" aria-label="Featured banners"><div class="wrap"><div class="image-stage store-page-banner" id="store-banner-carousel" aria-roledescription="carousel">
+      <div class="banner-slide is-active" aria-hidden="false"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div>
+      <div class="banner-slide" aria-hidden="true"><img src="assets/lootbox-new-products-banner.png" alt="Lootbox new products coming soon on best deals"></div>
+    </div></div></section>
     <section class="store-section" id="collection"><div class="wrap store-shell">
       <div class="store-header"><div><p class="mini-kicker">Current finds</p><h1 class="catalog-title">Shop the drop</h1></div><p class="store-counter">56 products | Prices and availability on request</p></div>
       <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
@@ -396,9 +399,33 @@
       filterProducts();
     });
     const searchSuggestion = document.getElementById("search-suggestion");
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const bannerCarousel = document.getElementById("store-banner-carousel");
+    const bannerSlides = [...bannerCarousel.querySelectorAll(".banner-slide")];
+    if (bannerSlides.length > 1 && !prefersReducedMotion) {
+      let activeBanner = 0;
+      let bannerTimer;
+      const showNextBanner = () => {
+        bannerSlides[activeBanner].classList.remove("is-active");
+        bannerSlides[activeBanner].setAttribute("aria-hidden", "true");
+        activeBanner = (activeBanner + 1) % bannerSlides.length;
+        bannerSlides[activeBanner].classList.add("is-active");
+        bannerSlides[activeBanner].setAttribute("aria-hidden", "false");
+      };
+      const stopBanner = () => window.clearInterval(bannerTimer);
+      const startBanner = () => {
+        stopBanner();
+        if (!document.hidden) bannerTimer = window.setInterval(showNextBanner, 5000);
+      };
+      bannerCarousel.addEventListener("mouseenter", stopBanner);
+      bannerCarousel.addEventListener("mouseleave", startBanner);
+      bannerCarousel.addEventListener("focusin", stopBanner);
+      bannerCarousel.addEventListener("focusout", startBanner);
+      document.addEventListener("visibilitychange", startBanner);
+      startBanner();
+    }
     const searchHints = cards.map(card => card.querySelector("h3").textContent.trim());
     let searchHintIndex = -1;
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (!prefersReducedMotion) {
       window.setInterval(() => {
         if (!suggestionsEnabled || searchInput.value || document.activeElement === searchInput) return;
