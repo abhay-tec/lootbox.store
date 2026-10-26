@@ -35,7 +35,7 @@
     if (session.expires_at && session.expires_at > Date.now() / 1000 + 30) return session;
     try {
       const next = await authRequest("token?grant_type=refresh_token", { refresh_token: session.refresh_token });
-      persist({ ...next, pending_email_otp: Boolean(session.pending_email_otp), email_otp_sent: Boolean(session.email_otp_sent), expires_at: Math.floor(Date.now() / 1000) + Number(next.expires_in || 3600) });
+      persist({ ...next, expires_at: Math.floor(Date.now() / 1000) + Number(next.expires_in || 3600) });
       return session;
     } catch {
       persist(null);
@@ -70,7 +70,7 @@
     }
     const result = await authRequest("token?grant_type=pkce", { auth_code: code, code_verifier: verifier });
     localStorage.removeItem(verifierKey);
-    saveSession({ ...result, pending_email_otp: true, email_otp_sent: false });
+    saveSession(result);
     callbackUrl.searchParams.delete("code");
     window.history.replaceState({}, "", callbackUrl);
     return session;
@@ -96,24 +96,6 @@
         apikey: apiKey
       }).toString();
       window.location.assign(authorizeUrl.toString());
-    },
-    get requiresEmailOtp() { return Boolean(session?.pending_email_otp); },
-    async sendGoogleEmailCode() {
-      if (!session?.pending_email_otp || !session.user?.email) throw new Error("Sign in with Google first.");
-      if (!session.email_otp_sent) {
-        await authRequest("otp", { email: session.user.email, create_user: false });
-        persist({ ...session, email_otp_sent: true });
-      }
-      return session.user.email;
-    },
-    async resendGoogleEmailCode() {
-      if (!session?.pending_email_otp || !session.user?.email) throw new Error("Sign in with Google first.");
-      await authRequest("otp", { email: session.user.email, create_user: false });
-      persist({ ...session, email_otp_sent: true });
-      return session.user.email;
-    },
-    async verifyEmailCode(email, token) {
-      return saveSession(await authRequest("verify", { email: email.trim().toLowerCase(), token: token.trim(), type: "email" }));
     },
     async signInSeller(email, password) {
       return saveSession(await authRequest("token?grant_type=password", { email: email.trim().toLowerCase(), password }));

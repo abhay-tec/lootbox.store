@@ -70,14 +70,14 @@ drop policy if exists "Customers read their own profile" on public.customer_prof
 create policy "Customers read their own profile" on public.customer_profiles
   for select to authenticated using (
     user_id = auth.uid()
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 drop policy if exists "Customers create their own profile" on public.customer_profiles;
 create policy "Customers create their own profile" on public.customer_profiles
   for insert to authenticated with check (
     user_id = auth.uid()
     and lower(email) = lower(auth.jwt() ->> 'email')
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 drop policy if exists "Customers update their own profile" on public.customer_profiles;
 create policy "Customers update their own profile" on public.customer_profiles
@@ -85,7 +85,7 @@ create policy "Customers update their own profile" on public.customer_profiles
   with check (
     user_id = auth.uid()
     and lower(email) = lower(auth.jwt() ->> 'email')
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 grant select, insert, update on public.customer_profiles to authenticated;
 
@@ -93,25 +93,25 @@ drop policy if exists "Customers read their own cart" on public.customer_carts;
 create policy "Customers read their own cart" on public.customer_carts
   for select to authenticated using (
     user_id = auth.uid()
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 drop policy if exists "Customers create their own cart" on public.customer_carts;
 create policy "Customers create their own cart" on public.customer_carts
   for insert to authenticated with check (
     user_id = auth.uid()
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 drop policy if exists "Customers update their own cart" on public.customer_carts;
 create policy "Customers update their own cart" on public.customer_carts
   for update to authenticated
-  using (user_id = auth.uid() and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb)
-  with check (user_id = auth.uid() and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb);
+  using (user_id = auth.uid() and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb)
+  with check (user_id = auth.uid() and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb);
 grant select, insert, update on public.customer_carts to authenticated;
 
 drop policy if exists "Customers and sellers read permitted orders" on public.store_orders;
 create policy "Customers and sellers read permitted orders" on public.store_orders
   for select to authenticated using (
-    (user_id = auth.uid() and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb)
+    (user_id = auth.uid() and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb)
     or public.is_seller()
   );
 drop policy if exists "Customers place their own orders" on public.store_orders;
@@ -119,7 +119,7 @@ create policy "Customers place their own orders" on public.store_orders
   for insert to authenticated with check (
     user_id = auth.uid()
     and lower(customer_email) = lower(auth.jwt() ->> 'email')
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
     and status = 'pending'
     and cancelled_by is null
   );
@@ -131,12 +131,12 @@ create policy "Customers cancel their own pending orders" on public.store_orders
   for update to authenticated using (
     user_id = auth.uid()
     and status = 'pending'
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   ) with check (
     user_id = auth.uid()
     and status = 'cancelled'
     and cancelled_by = 'customer'
-    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google", "email"]'::jsonb
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 grant select, insert on public.store_orders to authenticated;
 grant update (status, cancelled_by) on public.store_orders to authenticated;

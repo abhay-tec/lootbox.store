@@ -41,14 +41,9 @@
     <section class="drawer-view" id="profile-view" hidden>
       <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
       <h3>Profile & delivery</h3>
-      <p class="drawer-help">Continue with Google, verify the code sent to that Gmail, then save your delivery details.</p>
+      <p class="drawer-help">Sign in securely with Google, then save your delivery details.</p>
       <form class="seller-auth-form customer-auth-form" id="customer-email-form">
         <button class="google-sign-in" id="google-sign-in" type="button"><span class="google-mark" aria-hidden="true">G</span>Continue with Google</button>
-      </form>
-      <form class="seller-auth-form customer-auth-form" id="customer-otp-form" hidden>
-        <label>One-time code<input name="token" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" autocomplete="one-time-code" required></label>
-        <button class="profile-save" type="submit">Verify code</button>
-        <button class="settings-save" id="customer-resend-code" type="button">Send a new code</button>
       </form>
       <p class="auth-status" id="customer-auth-status" role="status" aria-live="polite"></p>
       <form class="profile-form" id="profile-form" hidden>
@@ -183,7 +178,6 @@
     let profile = null;
     let orders = [];
     let customer = null;
-    let loginEmail = "";
     let cartSaveTimer = 0;
     let pendingOrderItems = null;
     let suggestionsEnabled = true;
@@ -246,8 +240,6 @@
     };
     const profileForm = document.getElementById("profile-form");
     const customerEmailForm = document.getElementById("customer-email-form");
-    const customerOtpForm = document.getElementById("customer-otp-form");
-    const resendCodeButton = document.getElementById("customer-resend-code");
     const googleSignInButton = document.getElementById("google-sign-in");
     const customerAuthStatus = document.getElementById("customer-auth-status");
     const ordersList = document.getElementById("order-list");
@@ -352,42 +344,24 @@
     };
     const loadCustomerProfile = async () => {
       const authSession = await window.LootboxBackend.ready();
-      if (window.LootboxBackend.requiresEmailOtp) {
-        customer = null;
-        profile = null;
-        loginEmail = authSession?.user?.email || "";
-        customerEmailForm.hidden = true;
-        customerOtpForm.hidden = false;
-        profileForm.hidden = true;
-        openDrawer("profile");
-        customerAuthStatus.textContent = `Sending a numeric sign-in code to ${loginEmail}…`;
-        try {
-          await window.LootboxBackend.sendGoogleEmailCode();
-          customerAuthStatus.textContent = `Enter the code sent to ${loginEmail}.`;
-        } catch (error) { customerAuthStatus.textContent = error.message || "Could not send the verification code."; }
-        return;
-      }
       customer = authSession?.user || null;
       if (!customer) {
         profile = null;
         customerEmailForm.hidden = false;
-        customerOtpForm.hidden = true;
         profileForm.hidden = true;
         return;
       }
       const providers = customer.app_metadata?.providers || [];
-      if (!providers.includes("google") || !providers.includes("email")) {
+      if (!providers.includes("google")) {
         await window.LootboxBackend.signOut();
         customer = null;
         profile = null;
         customerEmailForm.hidden = false;
-        customerOtpForm.hidden = true;
         profileForm.hidden = true;
-        customerAuthStatus.textContent = "Continue with Google and verify the code sent to Gmail to access your account.";
+        customerAuthStatus.textContent = "Continue with Google to access your account.";
         return;
       }
       customerEmailForm.hidden = true;
-      customerOtpForm.hidden = true;
       const rows = await window.LootboxBackend.request(`customer_profiles?select=name,phone,address,city,postal&user_id=eq.${encodeURIComponent(customer.id)}&limit=1`);
       profile = rows[0] || null;
       profileForm.hidden = false;
@@ -473,31 +447,6 @@
         customerAuthStatus.textContent = error.message || "Could not start Google sign-in.";
       }
     });
-    customerOtpForm.addEventListener("submit", async event => {
-      event.preventDefault();
-      customerAuthStatus.textContent = "Verifying code…";
-      try {
-        await window.LootboxBackend.verifyEmailCode(loginEmail, new FormData(customerOtpForm).get("token"));
-        await loadCustomerProfile();
-        if (!customer) return;
-        customerAuthStatus.textContent = customer.email ? `Signed in as ${customer.email}.` : "Signed in.";
-        if (!profile) drawerMessage.textContent = "Add your name, phone and delivery address to continue.";
-        if (pendingOrderItems && profile) {
-          const { items: orderItems, clearCartAfterOrder } = pendingOrderItems;
-          savePendingOrder(null);
-          await beginOrderRequest(orderItems, clearCartAfterOrder);
-        }
-      } catch (error) { customerAuthStatus.textContent = error.message; }
-    });
-    resendCodeButton.addEventListener("click", async () => {
-      resendCodeButton.disabled = true;
-      customerAuthStatus.textContent = "Sending a new code…";
-      try {
-        await window.LootboxBackend.resendGoogleEmailCode();
-        customerAuthStatus.textContent = `A new code was sent to ${loginEmail}.`;
-      } catch (error) { customerAuthStatus.textContent = error.message; }
-      finally { resendCodeButton.disabled = false; }
-    });
     profileForm.addEventListener("submit", event => {
       event.preventDefault();
       if (!customer) { drawerMessage.textContent = "Sign in with your Gmail first."; return; }
@@ -530,7 +479,6 @@
       profileForm.reset();
       profileForm.hidden = true;
       customerEmailForm.hidden = false;
-      customerOtpForm.hidden = true;
       showDrawerView("menu");
       drawerMessage.textContent = "You are signed out.";
     });
