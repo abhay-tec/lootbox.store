@@ -80,6 +80,31 @@
       <a class="seller-access-link" href="seller.html">Seller account <span aria-hidden="true">→</span></a>
     </section>
   </aside>
+  <dialog class="order-cancel-dialog" id="order-cancel-dialog" aria-labelledby="cancel-dialog-title">
+    <form id="order-cancel-form">
+      <p class="mini-kicker">ORDER CANCELLATION</p>
+      <h2 id="cancel-dialog-title">Do you really want to cancel this order?</h2>
+      <p class="cancel-dialog-product" id="cancel-dialog-product"></p>
+      <label for="cancel-reason">Why are you cancelling?</label>
+      <select id="cancel-reason" name="reason" required>
+        <option value="" disabled selected>Select a reason</option>
+        <option value="ordered_by_mistake">I ordered by mistake</option>
+        <option value="wrong_product">I chose the wrong product</option>
+        <option value="delivery_address_incorrect">My delivery address is incorrect</option>
+        <option value="no_longer_needed">I no longer need this product</option>
+        <option value="other">Other reason</option>
+      </select>
+      <p class="cancel-dialog-status" id="cancel-dialog-status" role="status" aria-live="polite"></p>
+      <div class="cancel-dialog-actions">
+        <button class="cancel-keep-button" id="keep-order-button" type="button">Keep order</button>
+        <button class="cancel-confirm-button" id="confirm-cancel-button" type="submit">Confirm cancellation</button>
+      </div>
+    </form>
+  </dialog>
+  <div class="order-toast" id="order-toast" role="status" aria-live="polite" hidden>
+    <span id="order-toast-message"></span>
+    <button id="order-toast-close" type="button" aria-label="Dismiss notification">×</button>
+  </div>
   <main class="store-page-main">
     <section class="store-page-hero"><div class="wrap"><div class="image-stage store-page-banner" id="store-banner-carousel" role="region" aria-label="Featured product banners" aria-roledescription="carousel">
       <div class="banner-track">
@@ -213,6 +238,22 @@
     const drawerMessage = document.getElementById("drawer-message");
     const menuToggle = document.getElementById("menu-toggle");
     const menuScrim = document.getElementById("menu-scrim");
+    const cancelDialog = document.getElementById("order-cancel-dialog");
+    const cancelForm = document.getElementById("order-cancel-form");
+    const cancelProduct = document.getElementById("cancel-dialog-product");
+    const cancelReason = document.getElementById("cancel-reason");
+    const cancelStatus = document.getElementById("cancel-dialog-status");
+    const confirmCancelButton = document.getElementById("confirm-cancel-button");
+    const toast = document.getElementById("order-toast");
+    const toastMessage = document.getElementById("order-toast-message");
+    let orderPendingCancellation = null;
+    let toastTimer = 0;
+    const showOrderToast = message => {
+      toastMessage.textContent = message;
+      toast.hidden = false;
+      window.clearTimeout(toastTimer);
+      toastTimer = window.setTimeout(() => { toast.hidden = true; }, 6000);
+    };
     const render = () => {
       const total = count();
       document.getElementById("cart-count").textContent = total;
@@ -272,8 +313,9 @@
     };
     const renderOrders = () => {
       ordersList.replaceChildren();
-      ordersEmpty.hidden = orders.length > 0;
-      orders.forEach(order => {
+      const visibleOrders = orders.filter(order => !(order.status === "cancelled" && order.cancelled_by === "customer"));
+      ordersEmpty.hidden = visibleOrders.length > 0;
+      visibleOrders.forEach(order => {
         const row = document.createElement("li");
         row.className = "customer-order-card";
         const firstProduct = order.items?.[0];
@@ -309,30 +351,49 @@
           cancel.className = "order-cancel-button";
           cancel.type = "button";
           cancel.textContent = "Cancel order";
-          cancel.addEventListener("click", async () => {
-            cancel.disabled = true;
-            cancel.textContent = "Cancelling…";
-            try {
-              const changed = await window.LootboxBackend.request(`store_orders?id=eq.${encodeURIComponent(order.id)}&user_id=eq.${encodeURIComponent(customer.id)}`, {
-                method: "PATCH",
-                headers: { "Content-Type": "application/json", Prefer: "return=representation" },
-                body: JSON.stringify({ status: "cancelled", cancelled_by: "customer" })
-              });
-              if (!changed?.length) throw new Error("This order can no longer be cancelled.");
-              order.status = "cancelled";
-              order.cancelled_by = "customer";
-              renderOrders();
-            } catch (error) {
-              cancel.disabled = false;
-              cancel.textContent = "Cancel order";
-              drawerMessage.textContent = error.message || "Could not cancel this order.";
-            }
+          cancel.addEventListener("click", () => {
+            orderPendingCancellation = order;
+            const products = (order.items || []).map(item => `${item.name} × ${item.quantity}`).join(", ");
+            cancelProduct.textContent = products || `Order ${String(order.id).slice(0, 8).toUpperCase()}`;
+            cancelReason.value = "";
+            cancelStatus.textContent = "";
+            cancelDialog.showModal();
           });
           row.append(cancel);
         }
         ordersList.append(row);
       });
     };
+    cancelForm.addEventListener("submit", async event => {
+      event.preventDefault();
+      if (!orderPendingCancellation || !cancelReason.value) return;
+      confirmCancelButton.disabled = true;
+      confirmCancelButton.textContent = "Cancelling…";
+      cancelStatus.textContent = "";
+      try {
+        const changed = await window.LootboxBackend.request(`store_orders?id=eq.${encodeURIComponent(orderPendingCancellation.id)}&user_id=eq.${encodeURIComponent(customer.id)}&status=eq.pending`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json", Prefer: "return=representation" },
+          body: JSON.stringify({ status: "cancelled", cancelled_by: "customer", cancellation_reason: cancelReason.value })
+        });
+        if (!changed?.length) throw new Error("This order can no longer be cancelled.");
+        orders = orders.filter(order => order.id !== orderPendingCancellation.id);
+        renderOrders();
+        cancelDialog.close();
+        drawerMessage.textContent = "Order cancelled and removed from your order list.";
+      } catch (error) {
+        cancelStatus.textContent = error.message || "Could not cancel this order.";
+      } finally {
+        confirmCancelButton.disabled = false;
+        confirmCancelButton.textContent = "Confirm cancellation";
+      }
+    });
+    document.getElementById("keep-order-button").addEventListener("click", () => cancelDialog.close());
+    cancelDialog.addEventListener("close", () => { orderPendingCancellation = null; });
+    document.getElementById("order-toast-close").addEventListener("click", () => {
+      window.clearTimeout(toastTimer);
+      toast.hidden = true;
+    });
     const productImageFor = name => {
       const card = [...document.querySelectorAll(".store-card")].find(item => item.querySelector("h3")?.textContent.trim() === name);
       return card?.querySelector(".store-image-wrap img")?.getAttribute("src") || "";
@@ -427,6 +488,7 @@
       }
       openDrawer("orders");
       drawerMessage.textContent = "Your order has been placed! Check its details in the Orders panel. The seller has received your order request.";
+      showOrderToast("Your order has been placed! Check the Orders panel for details.");
     }
     async function beginOrderRequest(orderItems, clearCartAfterOrder = false) {
       if (!orderItems.length) {

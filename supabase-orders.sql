@@ -33,13 +33,18 @@ create table if not exists public.store_orders (
   items jsonb not null check (jsonb_typeof(items) = 'array' and jsonb_array_length(items) > 0),
   status text not null default 'pending' check (status in ('pending', 'contacted', 'confirmed', 'fulfilled', 'cancelled')),
   cancelled_by text check (cancelled_by in ('seller', 'customer')),
+  cancellation_reason text,
   created_at timestamptz not null default now()
 );
 
 alter table public.store_orders add column if not exists cancelled_by text;
+alter table public.store_orders add column if not exists cancellation_reason text;
 alter table public.store_orders drop constraint if exists store_orders_cancelled_by_check;
 alter table public.store_orders add constraint store_orders_cancelled_by_check
   check (cancelled_by in ('seller', 'customer') or cancelled_by is null);
+alter table public.store_orders drop constraint if exists store_orders_cancellation_reason_check;
+alter table public.store_orders add constraint store_orders_cancellation_reason_check
+  check (cancellation_reason in ('ordered_by_mistake', 'wrong_product', 'delivery_address_incorrect', 'no_longer_needed', 'other') or cancellation_reason is null);
 
 create index if not exists store_orders_created_at_idx on public.store_orders (created_at desc);
 create index if not exists store_orders_user_id_idx on public.store_orders (user_id, created_at desc);
@@ -139,7 +144,7 @@ create policy "Customers cancel their own pending orders" on public.store_orders
     and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
   );
 grant select, insert on public.store_orders to authenticated;
-grant update (status, cancelled_by) on public.store_orders to authenticated;
+grant update (status, cancelled_by, cancellation_reason) on public.store_orders to authenticated;
 
 revoke all on public.seller_allowlist from anon, authenticated;
 grant usage on schema public to anon, authenticated;
