@@ -77,9 +77,12 @@
     </section>
   </aside>
   <main class="store-page-main">
-    <section class="store-page-hero" aria-label="Featured banners"><div class="wrap"><div class="image-stage store-page-banner" id="store-banner-carousel" aria-roledescription="carousel">
-      <div class="banner-slide is-active" aria-hidden="false"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div>
-      <div class="banner-slide" aria-hidden="true"><img src="assets/lootbox-new-products-banner.png" alt="Lootbox new products coming soon on best deals"></div>
+    <section class="store-page-hero"><div class="wrap"><div class="image-stage store-page-banner" id="store-banner-carousel" role="region" aria-label="Featured product banners" aria-roledescription="carousel">
+      <div class="banner-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2" aria-hidden="false"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div>
+      <div class="banner-slide" role="group" aria-roledescription="slide" aria-label="2 of 2" aria-hidden="true"><img src="assets/lootbox-new-products-banner.png" alt="Lootbox new products coming soon on best deals"></div>
+      <button class="banner-arrow banner-arrow-prev" type="button" aria-label="Previous banner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg></button>
+      <button class="banner-arrow banner-arrow-next" type="button" aria-label="Next banner"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 18 6-6-6-6"/></svg></button>
+      <div class="banner-dots" role="group" aria-label="Choose a banner"></div>
     </div></div></section>
     <section class="store-section" id="collection"><div class="wrap store-shell">
       <div class="store-header"><div><p class="mini-kicker">Current finds</p><h1 class="catalog-title">Shop the drop</h1></div><p class="store-counter">56 products | Prices and availability on request</p></div>
@@ -405,13 +408,41 @@
     if (bannerSlides.length > 1) {
       let activeBanner = 0;
       let bannerTimer;
-      const showNextBanner = () => {
+      const bannerDots = bannerSlides.map((slide, index) => {
+        const dot = document.createElement("button");
+        dot.type = "button";
+        dot.className = "banner-dot";
+        dot.setAttribute("aria-label", `Show banner ${index + 1} of ${bannerSlides.length}`);
+        dot.addEventListener("click", () => {
+          showBanner(index);
+          startBanner();
+        });
+        bannerCarousel.querySelector(".banner-dots").append(dot);
+        return dot;
+      });
+      const showBanner = index => {
         bannerSlides[activeBanner].classList.remove("is-active");
         bannerSlides[activeBanner].setAttribute("aria-hidden", "true");
-        activeBanner = (activeBanner + 1) % bannerSlides.length;
+        activeBanner = (index + bannerSlides.length) % bannerSlides.length;
         bannerSlides[activeBanner].classList.add("is-active");
         bannerSlides[activeBanner].setAttribute("aria-hidden", "false");
+        bannerDots.forEach((dot, dotIndex) => {
+          const isActive = dotIndex === activeBanner;
+          dot.classList.toggle("is-active", isActive);
+          if (isActive) dot.setAttribute("aria-current", "true");
+          else dot.removeAttribute("aria-current");
+        });
       };
+      const showNextBanner = () => showBanner(activeBanner + 1);
+      bannerCarousel.querySelector(".banner-arrow-prev").addEventListener("click", () => {
+        showBanner(activeBanner - 1);
+        startBanner();
+      });
+      bannerCarousel.querySelector(".banner-arrow-next").addEventListener("click", () => {
+        showNextBanner();
+        startBanner();
+      });
+      showBanner(activeBanner);
       const startBanner = () => {
         window.clearInterval(bannerTimer);
         if (!document.hidden) bannerTimer = window.setInterval(showNextBanner, 3500);

@@ -670,6 +670,102 @@ h1 span {
   background: #090707;
 }
 
+.banner-arrow {
+  position: absolute;
+  z-index: 3;
+  top: 50%;
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.32);
+  border-radius: 50%;
+  background: rgba(14, 12, 12, 0.58);
+  color: #fff;
+  cursor: pointer;
+  transform: translateY(-50%);
+  transition: background 160ms ease, border-color 160ms ease, scale 160ms ease;
+}
+
+.banner-arrow:hover,
+.banner-arrow:focus-visible {
+  border-color: rgba(255, 255, 255, 0.75);
+  background: rgba(237, 27, 46, 0.9);
+  scale: 1.06;
+}
+
+.banner-arrow:focus-visible,
+.banner-dot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+
+.banner-arrow svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.banner-arrow-prev {
+  left: 16px;
+}
+
+.banner-arrow-next {
+  right: 16px;
+}
+
+.banner-dots {
+  position: absolute;
+  z-index: 3;
+  right: 0;
+  bottom: 14px;
+  left: 0;
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+}
+
+.banner-dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, 0.85);
+  border-radius: 999px;
+  background: rgba(15, 13, 13, 0.5);
+  cursor: pointer;
+  transition: width 180ms ease, background 180ms ease;
+}
+
+.banner-dot.is-active {
+  width: 22px;
+  background: #ed1b2e;
+  border-color: #ed1b2e;
+}
+
+@media (max-width: 620px) {
+  .banner-arrow {
+    width: 34px;
+    height: 34px;
+  }
+
+  .banner-arrow-prev {
+    left: 9px;
+  }
+
+  .banner-arrow-next {
+    right: 9px;
+  }
+
+  .banner-dots {
+    bottom: 9px;
+  }
+}
+
 /* Keep the original hero image treatment inside each carousel slide. */
 .store-page-banner img {
   object-fit: contain;
