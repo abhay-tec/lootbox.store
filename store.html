@@ -412,15 +412,10 @@
         bannerSlides[activeBanner].classList.add("is-active");
         bannerSlides[activeBanner].setAttribute("aria-hidden", "false");
       };
-      const stopBanner = () => window.clearInterval(bannerTimer);
       const startBanner = () => {
-        stopBanner();
+        window.clearInterval(bannerTimer);
         if (!document.hidden) bannerTimer = window.setInterval(showNextBanner, 3500);
       };
-      bannerCarousel.addEventListener("mouseenter", stopBanner);
-      bannerCarousel.addEventListener("mouseleave", startBanner);
-      bannerCarousel.addEventListener("focusin", stopBanner);
-      bannerCarousel.addEventListener("focusout", startBanner);
       document.addEventListener("visibilitychange", startBanner);
       startBanner();
     }
