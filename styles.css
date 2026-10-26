@@ -1183,6 +1183,49 @@ h1 span {
   line-height: 1.7;
 }
 
+.product-specs {
+  width: 100%;
+  margin: 0 0 24px;
+  padding: 20px;
+  border: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.product-specs h2 {
+  margin: 0 0 12px;
+  color: var(--dark);
+  font: 800 1.45rem/1.1 "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+}
+
+.product-specs ul {
+  margin: 0 0 14px;
+  padding-left: 20px;
+  color: var(--dark);
+  line-height: 1.65;
+}
+
+.product-specs li + li {
+  margin-top: 6px;
+}
+
+.product-specs a {
+  color: var(--accent-deep);
+  font-weight: 800;
+}
+
+.product-specs-unverified,
+.product-specs-note {
+  margin: 0 0 12px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.55;
+}
+
+.product-specs-note {
+  margin: 12px 0 0;
+}
+
 .product-detail-actions {
   display: flex;
   flex-wrap: wrap;

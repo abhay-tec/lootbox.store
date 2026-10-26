@@ -20,6 +20,13 @@
         <h1 id="detail-name"></h1>
         <p class="product-detail-price">Ask for price</p>
         <p class="product-detail-note">Check current stock and price with our team before ordering.</p>
+        <section class="product-specs" aria-labelledby="product-specs-heading">
+          <h2 id="product-specs-heading">Product details</h2>
+          <ul id="detail-facts"></ul>
+          <p class="product-specs-unverified" id="detail-unverified" hidden>We couldn’t verify details for this exact product variant online. Please confirm the size and label information on the item before ordering.</p>
+          <a id="detail-source" href="#" target="_blank" rel="noopener noreferrer">View product information source</a>
+          <p class="product-specs-note">Price, stock, delivery and return terms depend on this store’s listing and are confirmed before purchase.</p>
+        </section>
         <div class="product-detail-actions">
           <button class="detail-cart" id="detail-add-cart" type="button">Add to Cart</button>
           <a id="detail-buy-now" href="#" target="_blank" rel="noreferrer">Buy Now</a>
@@ -51,6 +58,59 @@
         "face-care": "Face care"
       };
 
+      const productDetails = {
+        "l'oréal paris total repair 5 repairing serum": { facts: ["Hair serum for five visible signs of damaged hair.", "Apply a small amount through lengths and ends on damp or dry hair; do not rinse."], source: "https://www.lorealparis.co.in/total-repair-5/serum-40-ml" },
+        "johnson's baby shampoo": { facts: ["500 mL bottle, as shown on this product listing.", "The exact formula and ingredient list can vary by market; check the bottle label."], source: "https://blinkit.com/prn/johnsons-baby-shampoo/prid/4752" },
+        "clinic plus strong & long shampoo": { facts: ["Shampoo formulated with milk protein and multivitamins.", "The cited listing describes it for all hair types."], source: "https://www.1mg.com/otc/clinic-plus-strong-long-shampoo-otc986371" },
+        "tütots bliss+ baby body lotion": { facts: ["200 mL baby body lotion.", "Enriched with shea butter, aloe vera, coconut oil and jojoba oil.", "The brand advises a patch test and avoiding contact with eyes."], source: "https://tutots.com/products/tutots-baby-body-lotion-enriched-with-shea-butter-aloe-vera-coconut-oil-infused-with-jojoba-oil-baby-moisturizer-for-face-body-ideal-for-0-5-year-olds-gentle-skincare-for-kids" },
+        "l'oréal paris dream lengths restoring shampoo": { facts: ["Official listing shows sizes including 192.5 mL, 396 mL, 704 mL and 1 L; confirm the size on this item.", "Contains vegetal keratin and castor oil; designed to restructure lengths and help seal split ends."], source: "https://www.lorealparis.co.in/dream-lengths/restoring-shampoo-396-ml" },
+        "park avenue beer shampoo": { facts: ["Shiny & Bouncy shampoo for dull and lifeless hair.", "A 180 mL version is listed by retailers; verify the size on the item."], source: "https://www.pharmeasy.in/health-care/products/park-avenue-beer-shampoo-shiny-and-bouncy-180-ml-3057901" },
+        "bajaj almond drops anti-hairfall shampoo": { facts: ["Anti-hairfall shampoo from Bajaj Almond Drops.", "Refer to the package for this item’s size, ingredient list and directions."], source: "https://bajajconsumercare.com/bajaj-almond-drops-anti-hairfall-shampoo" },
+        "johnson's baby cream": { facts: ["Baby cream intended to help protect baby skin from dryness.", "Exact pack size and ingredient list should be checked on the product label."], source: "https://www.johnsonsbaby.in/baby-products/johnsons-baby-cream" },
+        "l'oréal paris hyaluron moisture shampoo": { facts: ["The Hyaluron Moisture range uses hyaluronic acid and is marketed for hydration.", "Exact variant and bottle size should be confirmed from the package."], source: "https://www.lorealparis.co.in/beauty-magazine/hair-care-blogs/effective-volumizing-shampoo-for-bouncy-hair" },
+        "sunsilk flowy silk & smooth shampoo": { facts: ["Sunsilk Flowy Silk & Smooth shampoo; available sizes and formula depend on the market variant.", "Check the product label for its exact ingredients and volume."], source: "https://www.sunsilkin.com/" },
+        "himalaya baby lotion": { facts: ["The brand’s baby lotion listing shows a 200 mL size.", "Key ingredients listed include almond oil, licorice and olive oil."], source: "https://himalayawellness.in/collections/winter-essentials/products/baby-lotion" },
+        "tresemmé keratin smooth shampoo": { facts: ["A 580 mL variant is listed by the brand.", "Formulated with keratin and argan oil for smooth, manageable hair."], source: "https://www.tresemme.in/products/tresemme-keratin-smooth-shampoo-580ml-1" },
+        "aqualogica sunscreen by the sea": { facts: ["The brand’s Glow+ Dewy sunscreen listing states SPF 50+ PA++++ and papaya with vitamin C.", "Confirm this exact product variant and pack size from the tube before use."], source: "https://aqualogica.in/products/glow-dewy-sunscreen-with-spf-50-pa-for-uvab-and-blue-light-protection-for-glowing-and-well-protected-skin-50-gm-3" },
+        "biotique fruit brightening face wash": { facts: ["100 mL face wash; brand listing says it is suitable for all skin types."], source: "https://www.biotique.com/products/fruit-brightening-face-wash-100ml" },
+        "biotique morning nectar moisturizer": { facts: ["190 mL moisturizer described by the brand as nourishing and hydrating."], source: "https://www.biotique.com/products/morning-nectar-nourish-hydrate-moisturizer-190ml" },
+        "biotique ocean kelp anti-dandruff shampoo": { facts: ["The current Biotique Ocean Kelp listing we found is an Anti Hair Fall Shampoo, 190 mL—not an anti-dandruff variant.", "Please confirm the bottle label; the listing title on this page may not match the exact variant."], source: "https://www.biotique.com/products/ocean-kelp-anti-hair-fall-shampoo-190ml-1" },
+        "biotique papaya face wash": { facts: ["150 mL deep cleanse face wash.", "Brand directions: apply to wet face and neck, then rinse; use morning and evening."], source: "https://www.biotique.com/products/papaya-deep-cleanse-face-wash?view=new-pdp" },
+        "biotique sandalwood sunscreen": { facts: ["Biotique Sun Shield Sandalwood listing states SPF 50.", "Confirm the exact pack size and variant on the product label."], source: "https://www.biotique.com/products/sun-shield-sandalwood-50-spf-suncreen-lotion" },
+        "caffeine coffee face scrub": { facts: ["The matching mCaffeine coffee face scrub listing is 100 g.", "The brand lists coffee, walnut, vitamin E and argan oil in the formula."], source: "https://www.mcaffeine.com/products/naked-raw-coffee-face-scrub-with-vitamin-e" },
+        "cerave hydrating cream": { facts: ["CeraVe Moisturising Cream uses three essential ceramides and hyaluronic acid.", "The brand describes it for dry skin; exact size depends on the pack."], source: "https://www.ceraveindia.com/ceramides-skin-care/moisturisers/moisturising-cream" },
+        "wishful honey balm": { facts: ["The cited Honey Balm Jelly Moisturizer listing is 55 g.", "Listed ingredients include honey and niacinamide."], source: "https://sephora.in/product/wishful-honey-balm-jelly-moisturizer-v-55g" },
+        "pond's hyaluronic moisturizer": { facts: ["The matching Pond’s Super Light Gel listing contains hyaluronic acid and vitamin E.", "The brand lists 50 g, 100 g and 200 g options; confirm this unit’s size."], source: "https://ponds.in/products/ponds-super-light-gel-oil-free-moisturiser-hyaluronic-acid-vitamin-e" },
+        "cetaphil moisturizing cream": { facts: ["The cited Cetaphil Moisturising Cream pack is 250 g.", "Brand listing says it is for dry to very dry skin and suitable for face and body."], source: "https://www.cetaphil.in/moisturizers/moisturising-cream/8906005273437-250.html" },
+        "jovees herbal sunscreen": { facts: ["A Jovees Sun Derma Care SPF 50 lotion is listed in a 100 g pack.", "Confirm the exact Jovees sunscreen variant and SPF rating from this item’s label."], source: "https://www.truemeds.in/otc/jovees-sun-derma-care-spf-50-lotion-100-gm-tm-loes1-001883" },
+        "neutrogena ultra sheer sunscreen": { facts: ["The Ultra Sheer range listing states SPF 50+ PA++++.", "Pack sizes and formula differ by variant; check the label for the exact item."], source: "https://www.neutrogena.in/sun/ultra-sheer-sunscreen" },
+        "nivea soft moisturizer": { facts: ["NIVEA Soft is a light, fast-absorbing moisturizer.", "The brand lists vitamin E and jojoba oil in the formula."], source: "https://www.nivea.in/products/c/2/89050-nivea-soft" },
+        "himalaya purifying neem face wash": { facts: ["Himalaya Purifying Neem is a neem-based face wash.", "Check the package for exact size and directions for this variant."], source: "https://himalayawellness.in/collections/face-care/products/purifying-neem-face-wash" },
+        "denver vogue eau de parfum": { facts: ["The exact DENVER Vogue product variant and bottle size could not be confirmed from a matching official listing."], source: "", unverified: true },
+        "beardo godfather eau de parfum": { facts: ["Beardo lists Godfather as an Eau de Parfum for men.", "Bottle sizes and notes should be confirmed against the exact package."], source: "https://beardo.in/products/beardo-godfather-perfume-edp" },
+        "the man company joy eau de parfum": { facts: ["The Man Company Joy is listed as a 100 mL Eau de Parfum.", "Fragrance descriptions vary by retailer; check the packaging for the exact notes."], source: "https://www.themancompany.com/collections/fragrance-products" },
+        "ciccio for women luxe eau de parfum": { facts: ["Retail listing identifies this as a 100 mL women’s Eau de Parfum."], source: "https://www.myntra.com/perfume/ciccio/-ciccio--luxe-women-eau-de-parfum--100-ml/30253457/buy" },
+        "skinn body mist apple jasmine": { facts: ["The exact Apple Jasmine variant could not be matched to a current official SKINN listing; do not assume the similar Apple Allure mist is the same product."], source: "", unverified: true },
+        "wild stone code terra edp": { facts: ["Wild Stone lists Code Terra as a men’s Eau de Parfum.", "The brand listing is for a 100 mL bottle; confirm this item’s pack size."], source: "https://www.wildstone.in/products/code-premium-terra-perfume-for-men-100-ml" },
+        "bella vita white oud eau de parfum": { facts: ["The White Oud listing is a 100 mL unisex perfume.", "Brand-listed fragrance notes include citrus, spicy and woody notes."], source: "https://bellavitaorganic.com/products/white-oud-unisex-perfume-100ml-virtual-combo" },
+        "sonata black dial analog watch with yellow accents": { facts: ["The exact Sonata model number could not be matched from the supplied image and title, so movement, case size, strap material and water resistance are not stated."], source: "", unverified: true },
+        "sonata black dial analog watch with red accents": { facts: ["The exact Sonata model number could not be matched from the supplied image and title, so movement, case size, strap material and water resistance are not stated."], source: "", unverified: true },
+        "fastrack sona black chronograph analog watch": { facts: ["The supplied product name/image does not identify a matching Fastrack model number; chronograph functions and watch specifications are therefore not assumed."], source: "", unverified: true },
+        "sonata black dial analog watch with blue accents": { facts: ["The exact Sonata model number could not be matched from the supplied image and title, so movement, case size, strap material and water resistance are not stated."], source: "", unverified: true },
+        "oxyglow herbals papaya anti pollution face wash": { facts: ["Oxyglow’s matching papaya anti-pollution face wash listing is 100 mL."], source: "https://oxyglowcosmetics.com/products/oxyglow-herbals-papaya-anti-pollution-face-wash" },
+        "bombay shaving company shaving cream": { facts: ["The cited Tea Tree Oil & Aloe Vera shaving cream is listed in a 100 g pack.", "This may be a different variant; confirm the tube label before relying on ingredients."], source: "https://www.bombayshavingcompany.com/products/shaving-cream-tea-tree-oil-aloe-vera-100g/storeFrontNavigation" },
+        "veet pure hair removal cream": { facts: ["The cited Pure cream is for normal skin and includes aloe vera and rose extracts.", "Retailer listing shows 100 g; confirm the pack size and skin variant on the tube."], source: "https://www.1mg.com/otc/veet-pure-hair-removal-cream-for-normal-skin-aloe-rose-otc1157691" },
+        "globus naturals aloe vera neem tulsi face wash": { facts: ["Matching Aloe Vera, Neem & Tulsi acne-control face wash listing is 100 mL."], source: "https://globusnaturals.com/products/globus-aloe-vera-neem-tulsi-acne-control-face-wash-100-ml" },
+        "park avenue good morning lather shaving cream": { facts: ["The cited Good Morning Lather Shaving Cream pack is 84 g.", "Listing mentions aloe vera, jojoba oil and olive oil."], source: "https://www.1mg.com/otc/park-avenue-good-morning-lather-shaving-cream-otc1005845" },
+        "muuchstac ocean face wash, 100 ml": { facts: ["Retail listings identify this as a 100 mL Ocean Face Wash."], source: "https://www.1mg.com/otc/muuchstac-ocean-face-wash-100ml-each-otc810223" },
+        "neutrogena deep clean brightening foaming cleanser": { facts: ["Neutrogena’s Deep Clean Foaming Cleanser listing describes amino micellar technology and an 8% amino acid complex.", "The range is listed in different sizes; verify this pack’s size and exact variant."], source: "https://www.neutrogena.in/face/facial-cleansers-and-scrubs/deep-clean-foaming-cleanser" },
+        "woodoo hello, clear skin face wash": { facts: ["The matching Hello Clear Skin face wash lists niacinamide, kojic acid and glycolic acid."], source: "https://www.woodooskin.com/products/woodoo-hello-clear-skin-facewash" },
+        "lakmé blush & glow strawberry face wash": { facts: ["Lakmé lists the Strawberry Blush & Glow face wash in a 100 g pack.", "The product listing mentions strawberry extracts and vitamin C serum."], source: "https://www.lakmeindia.com/products/lakme-blush-glow-strawberry-freshness-gel-face-wash-with-strawberry-extracts-100-g-2" },
+        "neud skin brightening turmeric face wash": { facts: ["The cited NEUD turmeric brightening face wash listing is 70 mL."], source: "https://neud.co.in/products/neud-skin-brightening-tan-removal-face-wash-for-men-and-women-70ml" }
+      };
+
+      const normalize = value => value.toLocaleLowerCase().replace(/\s+/g, " ").trim();
+
       if (!name || !image.startsWith("assets/store/")) {
         document.getElementById("product-missing").hidden = false;
         return;
@@ -59,6 +119,24 @@
       document.title = `${name} | The Reclaim Edit`;
       document.getElementById("detail-name").textContent = name;
       document.getElementById("detail-category").textContent = categoryNames[category] || "Current find";
+      const details = productDetails[normalize(name)];
+      const facts = details?.facts || [];
+      const factList = document.getElementById("detail-facts");
+      facts.forEach(fact => {
+        const item = document.createElement("li");
+        item.textContent = fact;
+        factList.append(item);
+      });
+      if (details?.source) document.getElementById("detail-source").href = details.source;
+      else document.getElementById("detail-source").hidden = true;
+      document.getElementById("detail-unverified").hidden = !details?.unverified && Boolean(details);
+      if (!details) {
+        const item = document.createElement("li");
+        item.textContent = "No matching reliable online listing was found for this exact name or variant. Check the item’s label/model number for specifications before ordering.";
+        factList.append(item);
+        document.getElementById("detail-unverified").hidden = false;
+        document.getElementById("detail-source").hidden = true;
+      }
       const productImage = document.getElementById("detail-image");
       productImage.src = image;
       productImage.alt = name;
