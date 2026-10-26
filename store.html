@@ -415,7 +415,7 @@
       const stopBanner = () => window.clearInterval(bannerTimer);
       const startBanner = () => {
         stopBanner();
-        if (!document.hidden) bannerTimer = window.setInterval(showNextBanner, 5000);
+        if (!document.hidden) bannerTimer = window.setInterval(showNextBanner, 3500);
       };
       bannerCarousel.addEventListener("mouseenter", stopBanner);
       bannerCarousel.addEventListener("mouseleave", startBanner);
