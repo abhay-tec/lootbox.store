@@ -36,10 +36,42 @@
     </article>
     <p id="product-missing" hidden>Product not found. <a href="store.html">Return to the shop</a>.</p>
     <div class="product-feedback" id="product-feedback" hidden>
-      <section aria-labelledby="reviews-heading"><h2 id="reviews-heading">Reviews</h2></section>
-      <section aria-labelledby="comments-heading"><h2 id="comments-heading">Comments</h2></section>
+      <div class="review-score-grid">
+        <section class="review-score-card" aria-labelledby="market-reviews-heading">
+          <p class="review-eyebrow">Across the market</p>
+          <h2 id="market-reviews-heading">Market reviews</h2>
+          <p class="review-score" id="market-rating">Not verified</p>
+          <p class="review-count" id="market-rating-count">No matching rating found yet.</p>
+          <a class="market-review-link" id="market-review-link" href="#" target="_blank" rel="noopener noreferrer">Search market reviews</a>
+        </section>
+        <section class="review-score-card" aria-labelledby="lootbox-reviews-heading">
+          <p class="review-eyebrow">Rated by our shoppers</p>
+          <h2 id="lootbox-reviews-heading">Lootbox rating</h2>
+          <p class="review-score" id="lootbox-rating">0.0 <span>/ 5</span></p>
+          <p class="review-count" id="lootbox-rating-count">No ratings yet</p>
+        </section>
+      </div>
+      <section class="product-comments" aria-labelledby="comments-heading">
+        <div class="comments-heading-row"><div><p class="review-eyebrow">From the community</p><h2 id="comments-heading">Comments</h2></div><span class="comment-count" id="comment-count">0 comments</span></div>
+        <p class="comments-empty" id="comments-empty">No comments yet. Be the first to share your thoughts.</p>
+        <ul class="product-comment-list" id="product-comment-list"></ul>
+        <form class="review-form" id="review-form">
+          <fieldset class="rating-fieldset"><legend>Your rating</legend><div class="rating-picker" role="radiogroup" aria-label="Choose a rating from one to five stars">
+            <input id="rating-1" name="rating" type="radio" value="1"><label for="rating-1" aria-label="1 star">★</label>
+            <input id="rating-2" name="rating" type="radio" value="2"><label for="rating-2" aria-label="2 stars">★</label>
+            <input id="rating-3" name="rating" type="radio" value="3"><label for="rating-3" aria-label="3 stars">★</label>
+            <input id="rating-4" name="rating" type="radio" value="4"><label for="rating-4" aria-label="4 stars">★</label>
+            <input id="rating-5" name="rating" type="radio" value="5"><label for="rating-5" aria-label="5 stars">★</label>
+          </div></fieldset>
+          <label class="comment-label" for="review-comment">Add your comment</label>
+          <textarea id="review-comment" name="comment" rows="4" maxlength="500" placeholder="Share what you think about this product" required></textarea>
+          <div class="review-submit-row"><p class="review-form-status" id="review-form-status" role="status" aria-live="polite"></p><button type="submit" id="review-submit">Post review</button></div>
+        </form>
+      </section>
     </div>
   </main>
+  <script src="reviews-config.js"></script>
+  <script src="reviews.js"></script>
   <script>
     (() => {
       const params = new URLSearchParams(window.location.search);

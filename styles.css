@@ -1422,13 +1422,18 @@ h1 span {
 
 .product-feedback {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 16px;
   margin-top: 20px;
 }
 
-.product-feedback section {
-  min-height: 120px;
+.review-score-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.review-score-card,
+.product-comments {
   padding: 20px;
   border: 1px solid rgba(255, 255, 255, 0.1);
   background: linear-gradient(145deg, #302d2c, #211f1f);
@@ -1441,7 +1446,215 @@ h1 span {
   text-transform: uppercase;
 }
 
+.review-eyebrow {
+  margin: 0 0 5px;
+  color: #ff6975;
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.review-score {
+  margin: 14px 0 2px;
+  color: #fff;
+  font-size: 1.8rem;
+  font-weight: 800;
+}
+
+.review-score span {
+  color: rgba(255, 255, 255, 0.56);
+  font-size: 0.95rem;
+  font-weight: 500;
+}
+
+.review-count,
+.review-form-status,
+.comments-empty {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.82rem;
+}
+
+.market-review-link {
+  display: inline-flex;
+  margin-top: 8px;
+  color: #ff858e;
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.comments-heading-row,
+.review-submit-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.comment-count {
+  color: rgba(255, 255, 255, 0.62);
+  font-size: 0.82rem;
+}
+
+.comments-empty {
+  margin: 18px 0;
+}
+
+.product-comment-list {
+  display: grid;
+  gap: 12px;
+  margin: 18px 0;
+  padding: 0;
+  list-style: none;
+}
+
+.product-comment {
+  padding: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.16);
+}
+
+.product-comment-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.product-comment-heading strong {
+  color: #fff;
+  font-size: 0.88rem;
+}
+
+.product-comment-stars {
+  color: #ffc15a;
+  letter-spacing: 0.08em;
+}
+
+.product-comment p {
+  margin: 8px 0 0;
+  color: rgba(255, 255, 255, 0.78);
+  font-size: 0.88rem;
+  line-height: 1.6;
+  overflow-wrap: anywhere;
+}
+
+.product-comment time {
+  display: block;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.48);
+  font-size: 0.72rem;
+}
+
+.review-form {
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.rating-fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.rating-fieldset legend,
+.comment-label {
+  margin-bottom: 8px;
+  color: #fff;
+  font-size: 0.86rem;
+  font-weight: 800;
+}
+
+.rating-picker {
+  display: inline-flex;
+  flex-direction: row-reverse;
+  justify-content: flex-end;
+  gap: 3px;
+}
+
+.rating-picker input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+
+.rating-picker label {
+  color: rgba(255, 255, 255, 0.28);
+  font-size: 2rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: color 140ms ease, transform 140ms ease;
+}
+
+.rating-picker label:hover,
+.rating-picker label:hover ~ label,
+.rating-picker input:checked ~ label {
+  color: #ffc15a;
+}
+
+.rating-picker label:hover {
+  transform: scale(1.12);
+}
+
+.rating-picker input:focus-visible + label {
+  outline: 2px solid #fff;
+  outline-offset: 2px;
+}
+
+.review-form textarea {
+  width: 100%;
+  min-height: 96px;
+  padding: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.22);
+  color: #fff;
+  font: inherit;
+  resize: vertical;
+}
+
+.review-form textarea:focus-visible {
+  outline: 2px solid #ff6975;
+  outline-offset: 2px;
+}
+
+.review-submit-row button {
+  min-height: 42px;
+  padding: 0 18px;
+  border: 0;
+  border-radius: 7px;
+  background: var(--accent);
+  color: #fff;
+  font: inherit;
+  font-weight: 800;
+  cursor: pointer;
+}
+
+.review-submit-row button:disabled {
+  opacity: 0.58;
+  cursor: wait;
+}
+
+.review-form-status {
+  margin: 0;
+}
+
+.product-feedback [hidden] {
+  display: none !important;
+}
+
 @media (max-width: 760px) {
+  .review-score-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
   .product-detail-wrap {
     width: min(100% - 24px, 560px);
     padding-top: 14px;
@@ -1629,6 +1842,31 @@ h1 span {
   padding-top: 14px;
   font-size: 1.08rem;
   color: #fff;
+}
+
+.store-review-summary {
+  display: grid;
+  gap: 3px;
+  margin-top: 8px;
+  color: rgba(255, 255, 255, 0.68);
+  font-size: 0.68rem;
+  line-height: 1.35;
+}
+
+.store-review-summary a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.store-review-summary a:hover,
+.store-review-summary a:focus-visible {
+  color: #ff858e;
+  text-decoration: underline;
+}
+
+.store-review-summary strong {
+  color: #ffc15a;
+  font-size: 0.74rem;
 }
 
 .store-sizes {
