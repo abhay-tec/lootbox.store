@@ -90,7 +90,8 @@
           order.cancelled_by = select.value === "cancelled" ? "seller" : null;
           state.className = `seller-order-status status-${order.status}`;
           state.textContent = order.status;
-          status.textContent = "Order status updated.";
+          if (order.status === "cancelled") await loadOrders();
+          else status.textContent = "Order status updated.";
         } catch (error) {
           select.value = order.status;
           status.textContent = error.message;
@@ -107,7 +108,7 @@
     status.textContent = "Loading order requests…";
     try {
       await loadProductImages();
-      const rows = await backend.request("store_orders?select=*&order=created_at.desc");
+      const rows = await backend.request("store_orders?select=*&status=neq.cancelled&order=created_at.desc");
       renderOrders(rows);
       status.textContent = `${rows.length} order ${rows.length === 1 ? "request" : "requests"} loaded.`;
       dashboard.hidden = false;

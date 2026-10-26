@@ -41,13 +41,12 @@
     <section class="drawer-view" id="profile-view" hidden>
       <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
       <h3>Profile & delivery</h3>
-      <p class="drawer-help">Sign in with a one-time code sent to your Gmail, then save your delivery details.</p>
+      <p class="drawer-help">Continue with Google, verify the code sent to that Gmail, then save your delivery details.</p>
       <form class="seller-auth-form customer-auth-form" id="customer-email-form">
-        <label>Gmail address<input name="email" type="email" autocomplete="email" required></label>
-        <button class="profile-save" type="submit">Send sign-in code</button>
+        <button class="google-sign-in" id="google-sign-in" type="button"><span class="google-mark" aria-hidden="true">G</span>Continue with Google</button>
       </form>
       <form class="seller-auth-form customer-auth-form" id="customer-otp-form" hidden>
-        <label>One-time code<input name="token" inputmode="numeric" autocomplete="one-time-code" required></label>
+        <label>One-time code<input name="token" inputmode="numeric" pattern="[0-9]{6,8}" maxlength="8" autocomplete="one-time-code" required></label>
         <button class="profile-save" type="submit">Verify code</button>
         <button class="settings-save" id="customer-resend-code" type="button">Send a new code</button>
       </form>
@@ -185,11 +184,32 @@
     let orders = [];
     let customer = null;
     let loginEmail = "";
+    let cartSaveTimer = 0;
+    let pendingOrderItems = null;
     let suggestionsEnabled = true;
     try { cart = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch { cart = {}; }
+    try { pendingOrderItems = JSON.parse(localStorage.getItem("reclaim-edit-pending-order") || "null"); } catch { pendingOrderItems = null; }
     try { suggestionsEnabled = JSON.parse(localStorage.getItem(settingsStorageKey) || "true"); } catch { suggestionsEnabled = true; }
     const count = () => Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
-    const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {} };
+    const save = () => {
+      try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
+      if (!customer) return;
+      window.clearTimeout(cartSaveTimer);
+      cartSaveTimer = window.setTimeout(() => {
+        window.LootboxBackend.request("customer_carts?on_conflict=user_id", {
+          method: "POST",
+          headers: { "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=minimal" },
+          body: JSON.stringify({ user_id: customer.id, items: cart })
+        }).catch(() => {});
+      }, 350);
+    };
+    const savePendingOrder = value => {
+      pendingOrderItems = value;
+      try {
+        if (value) localStorage.setItem("reclaim-edit-pending-order", JSON.stringify(value));
+        else localStorage.removeItem("reclaim-edit-pending-order");
+      } catch {}
+    };
     const panel = document.getElementById("cart-panel");
     const items = document.getElementById("cart-items");
     const status = document.getElementById("cart-status");
@@ -199,7 +219,6 @@
     const drawerMessage = document.getElementById("drawer-message");
     const menuToggle = document.getElementById("menu-toggle");
     const menuScrim = document.getElementById("menu-scrim");
-    let pendingOrderItems = null;
     const render = () => {
       const total = count();
       document.getElementById("cart-count").textContent = total;
@@ -229,6 +248,7 @@
     const customerEmailForm = document.getElementById("customer-email-form");
     const customerOtpForm = document.getElementById("customer-otp-form");
     const resendCodeButton = document.getElementById("customer-resend-code");
+    const googleSignInButton = document.getElementById("google-sign-in");
     const customerAuthStatus = document.getElementById("customer-auth-status");
     const ordersList = document.getElementById("order-list");
     const ordersEmpty = document.getElementById("orders-empty");
@@ -301,11 +321,12 @@
             cancel.disabled = true;
             cancel.textContent = "Cancelling…";
             try {
-              await window.LootboxBackend.request(`store_orders?id=eq.${encodeURIComponent(order.id)}&user_id=eq.${encodeURIComponent(customer.id)}`, {
+              const changed = await window.LootboxBackend.request(`store_orders?id=eq.${encodeURIComponent(order.id)}&user_id=eq.${encodeURIComponent(customer.id)}`, {
                 method: "PATCH",
-                headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+                headers: { "Content-Type": "application/json", Prefer: "return=representation" },
                 body: JSON.stringify({ status: "cancelled", cancelled_by: "customer" })
               });
+              if (!changed?.length) throw new Error("This order can no longer be cancelled.");
               order.status = "cancelled";
               order.cancelled_by = "customer";
               renderOrders();
@@ -330,12 +351,39 @@
       renderOrders();
     };
     const loadCustomerProfile = async () => {
-      customer = (await window.LootboxBackend.ready())?.user || null;
+      const authSession = await window.LootboxBackend.ready();
+      if (window.LootboxBackend.requiresEmailOtp) {
+        customer = null;
+        profile = null;
+        loginEmail = authSession?.user?.email || "";
+        customerEmailForm.hidden = true;
+        customerOtpForm.hidden = false;
+        profileForm.hidden = true;
+        openDrawer("profile");
+        customerAuthStatus.textContent = `Sending a numeric sign-in code to ${loginEmail}…`;
+        try {
+          await window.LootboxBackend.sendGoogleEmailCode();
+          customerAuthStatus.textContent = `Enter the code sent to ${loginEmail}.`;
+        } catch (error) { customerAuthStatus.textContent = error.message || "Could not send the verification code."; }
+        return;
+      }
+      customer = authSession?.user || null;
       if (!customer) {
         profile = null;
         customerEmailForm.hidden = false;
         customerOtpForm.hidden = true;
         profileForm.hidden = true;
+        return;
+      }
+      const providers = customer.app_metadata?.providers || [];
+      if (!providers.includes("google") || !providers.includes("email")) {
+        await window.LootboxBackend.signOut();
+        customer = null;
+        profile = null;
+        customerEmailForm.hidden = false;
+        customerOtpForm.hidden = true;
+        profileForm.hidden = true;
+        customerAuthStatus.textContent = "Continue with Google and verify the code sent to Gmail to access your account.";
         return;
       }
       customerEmailForm.hidden = true;
@@ -349,6 +397,18 @@
           if (field) field.value = value;
         });
       }
+      const remoteCarts = await window.LootboxBackend.request(`customer_carts?select=items&user_id=eq.${encodeURIComponent(customer.id)}&limit=1`);
+      const remoteCart = remoteCarts[0]?.items || {};
+      const mergedCart = { ...cart };
+      Object.entries(remoteCart).forEach(([name, item]) => {
+        const local = mergedCart[name];
+        mergedCart[name] = local
+          ? { ...item, ...local, quantity: Math.max(Number(local.quantity) || 0, Number(item.quantity) || 0), image: local.image || item.image }
+          : item;
+      });
+      cart = mergedCart;
+      save();
+      render();
       await refreshCustomerOrders();
     };
     async function createOrderRequest(orderItems, clearCartAfterOrder = false) {
@@ -371,6 +431,7 @@
         body: JSON.stringify(order)
       });
       orders.unshift(created[0]);
+      savePendingOrder(null);
       renderOrders();
       if (clearCartAfterOrder) {
         cart = {};
@@ -387,13 +448,13 @@
         return;
       }
       if (!customer) {
-        pendingOrderItems = { items: orderItems, clearCartAfterOrder };
+        savePendingOrder({ items: orderItems, clearCartAfterOrder });
         openDrawer("profile");
         customerAuthStatus.textContent = "Sign in with your Gmail to continue placing this order.";
         return;
       }
       if (!profile) {
-        pendingOrderItems = { items: orderItems, clearCartAfterOrder };
+        savePendingOrder({ items: orderItems, clearCartAfterOrder });
         openDrawer("profile");
         drawerMessage.textContent = "Save your delivery details to continue with your order.";
         return;
@@ -402,28 +463,28 @@
       catch (error) { openDrawer("cart"); drawerMessage.textContent = error.message || "Could not save your order. Please try again."; }
     }
     settingSuggestions.checked = suggestionsEnabled;
-    customerEmailForm.addEventListener("submit", async event => {
-      event.preventDefault();
-      loginEmail = new FormData(customerEmailForm).get("email").trim().toLowerCase();
-      customerAuthStatus.textContent = "Sending your one-time code…";
+    googleSignInButton.addEventListener("click", async () => {
+      googleSignInButton.disabled = true;
+      customerAuthStatus.textContent = "Opening Google sign-in…";
       try {
-        await window.LootboxBackend.sendEmailCode(loginEmail);
-        customerEmailForm.hidden = true;
-        customerOtpForm.hidden = false;
-        customerAuthStatus.textContent = `We sent a sign-in code to ${loginEmail}.`;
-      } catch (error) { customerAuthStatus.textContent = error.message; }
+        await window.LootboxBackend.signInWithGoogle();
+      } catch (error) {
+        googleSignInButton.disabled = false;
+        customerAuthStatus.textContent = error.message || "Could not start Google sign-in.";
+      }
     });
     customerOtpForm.addEventListener("submit", async event => {
       event.preventDefault();
       customerAuthStatus.textContent = "Verifying code…";
       try {
-        await window.LootboxBackend.verifyEmailCode(loginEmail || customerEmailForm.elements.email.value, new FormData(customerOtpForm).get("token"));
+        await window.LootboxBackend.verifyEmailCode(loginEmail, new FormData(customerOtpForm).get("token"));
         await loadCustomerProfile();
+        if (!customer) return;
         customerAuthStatus.textContent = customer.email ? `Signed in as ${customer.email}.` : "Signed in.";
         if (!profile) drawerMessage.textContent = "Add your name, phone and delivery address to continue.";
         if (pendingOrderItems && profile) {
           const { items: orderItems, clearCartAfterOrder } = pendingOrderItems;
-          pendingOrderItems = null;
+          savePendingOrder(null);
           await beginOrderRequest(orderItems, clearCartAfterOrder);
         }
       } catch (error) { customerAuthStatus.textContent = error.message; }
@@ -432,7 +493,7 @@
       resendCodeButton.disabled = true;
       customerAuthStatus.textContent = "Sending a new code…";
       try {
-        await window.LootboxBackend.sendEmailCode(loginEmail);
+        await window.LootboxBackend.resendGoogleEmailCode();
         customerAuthStatus.textContent = `A new code was sent to ${loginEmail}.`;
       } catch (error) { customerAuthStatus.textContent = error.message; }
       finally { resendCodeButton.disabled = false; }
@@ -451,7 +512,7 @@
         drawerMessage.textContent = "Delivery details saved securely to your account.";
         if (pendingOrderItems) {
           const { items: orderItems, clearCartAfterOrder } = pendingOrderItems;
-          pendingOrderItems = null;
+          savePendingOrder(null);
           return beginOrderRequest(orderItems, clearCartAfterOrder);
         }
       }).catch(error => { drawerMessage.textContent = error.message || "Could not save your details."; });
@@ -465,7 +526,7 @@
       await window.LootboxBackend.signOut();
       customer = null;
       profile = null;
-      pendingOrderItems = null;
+      savePendingOrder(null);
       profileForm.reset();
       profileForm.hidden = true;
       customerEmailForm.hidden = false;
@@ -501,7 +562,13 @@
       : null;
     loadCustomerProfile().then(() => {
       if (checkoutProduct) beginOrderRequest(checkoutProduct);
-    }).catch(error => { customerAuthStatus.textContent = error.message || "Could not load your account."; });
+      else if (pendingOrderItems && customer && profile) {
+        beginOrderRequest(pendingOrderItems.items, pendingOrderItems.clearCartAfterOrder);
+      }
+    }).catch(error => {
+      openDrawer("profile");
+      customerAuthStatus.textContent = error.message || "Could not load your account.";
+    });
     window.setInterval(() => {
       if (customer && !document.getElementById("orders-view").hidden) {
         refreshCustomerOrders().catch(() => {});
