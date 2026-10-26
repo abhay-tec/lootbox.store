@@ -1854,7 +1854,7 @@ h1 span {
 }
 
 .store-review-summary a {
-  color: inherit;
+  color: #ffc15a;
   text-decoration: none;
 }
 
@@ -1867,6 +1867,11 @@ h1 span {
 .store-review-summary strong {
   color: #ffc15a;
   font-size: 0.74rem;
+}
+
+.store-review-summary > span,
+.store-review-summary > span strong {
+  color: #fff;
 }
 
 .store-sizes {
