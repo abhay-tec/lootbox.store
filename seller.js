@@ -7,6 +7,21 @@
   const logoutButton = document.getElementById("seller-logout");
   const refreshButton = document.getElementById("seller-refresh");
   const backend = window.LootboxBackend;
+  let productImages = new Map();
+  let productImagesLoaded = false;
+
+  const loadProductImages = async () => {
+    if (productImagesLoaded) return;
+    const response = await fetch("store.html", { cache: "force-cache" });
+    if (!response.ok) return;
+    const catalog = new DOMParser().parseFromString(await response.text(), "text/html");
+    catalog.querySelectorAll(".store-card").forEach(card => {
+      const name = card.querySelector("h3")?.textContent.trim();
+      const image = card.querySelector(".store-image-wrap img")?.getAttribute("src");
+      if (name && image?.startsWith("assets/")) productImages.set(name, image);
+    });
+    productImagesLoaded = true;
+  };
 
   const renderOrders = rows => {
     list.replaceChildren();
@@ -32,7 +47,18 @@
       products.className = "seller-product-list";
       (order.items || []).forEach(product => {
         const productRow = document.createElement("li");
-        productRow.textContent = `${product.name} × ${product.quantity}`;
+        const productImage = product.image?.startsWith("assets/") ? product.image : productImages.get(product.name);
+        if (productImage) {
+          const image = document.createElement("img");
+          image.className = "seller-product-image";
+          image.src = productImage;
+          image.alt = product.name;
+          image.loading = "lazy";
+          productRow.append(image);
+        }
+        const label = document.createElement("span");
+        label.textContent = `${product.name} × ${product.quantity}`;
+        productRow.append(label);
         products.append(productRow);
       });
 
@@ -45,7 +71,7 @@
       actions.className = "seller-order-actions";
       const select = document.createElement("select");
       select.setAttribute("aria-label", `Update status for order ${String(order.id).slice(0, 8)}`);
-      [["pending", "Pending"], ["contacted", "Contacted"], ["confirmed", "Confirmed"], ["fulfilled", "Fulfilled"], ["cancelled", "Cancelled"]].forEach(([value, label]) => {
+      [["pending", "Pending"], ["contacted", "Contacted"], ["confirmed", "Confirmed"], ["fulfilled", "Fulfilled"], ["cancelled", "Cancel · Out of stock"]].forEach(([value, label]) => {
         const option = document.createElement("option");
         option.value = value;
         option.textContent = label;
@@ -58,9 +84,10 @@
           await backend.request(`store_orders?id=eq.${encodeURIComponent(order.id)}`, {
             method: "PATCH",
             headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
-            body: JSON.stringify({ status: select.value })
+            body: JSON.stringify({ status: select.value, cancelled_by: select.value === "cancelled" ? "seller" : null })
           });
           order.status = select.value;
+          order.cancelled_by = select.value === "cancelled" ? "seller" : null;
           state.className = `seller-order-status status-${order.status}`;
           state.textContent = order.status;
           status.textContent = "Order status updated.";
@@ -79,6 +106,7 @@
   const loadOrders = async () => {
     status.textContent = "Loading order requests…";
     try {
+      await loadProductImages();
       const rows = await backend.request("store_orders?select=*&order=created_at.desc");
       renderOrders(rows);
       status.textContent = `${rows.length} order ${rows.length === 1 ? "request" : "requests"} loaded.`;

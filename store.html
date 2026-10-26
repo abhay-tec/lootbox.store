@@ -263,14 +263,71 @@
       ordersEmpty.hidden = orders.length > 0;
       orders.forEach(order => {
         const row = document.createElement("li");
+        row.className = "customer-order-card";
+        const firstProduct = order.items?.[0];
+        const firstProductImage = firstProduct?.image?.startsWith("assets/") ? firstProduct.image : (firstProduct?.name ? productImageFor(firstProduct.name) : "");
+        if (firstProductImage) {
+          const image = document.createElement("img");
+          image.className = "order-product-thumb";
+          image.src = firstProductImage;
+          image.alt = firstProduct.name;
+          image.loading = "lazy";
+          row.append(image);
+        }
+        const copy = document.createElement("div");
+        copy.className = "customer-order-copy";
         const heading = document.createElement("strong");
         const detail = document.createElement("span");
-        heading.textContent = `Order ${String(order.id).slice(0, 8).toUpperCase()} · ${order.status || "pending"}`;
+        const status = order.status || "pending";
+        heading.textContent = `Order ${String(order.id).slice(0, 8).toUpperCase()} · ${status}`;
         const placed = order.created_at ? new Date(order.created_at) : new Date();
         detail.textContent = `${placed.toLocaleString()} · ${(order.items || []).map(item => `${item.name} × ${item.quantity}`).join(", ")}`;
-        row.append(heading, detail);
+        const message = document.createElement("span");
+        message.className = "customer-order-message";
+        if (status === "cancelled" && order.cancelled_by === "seller") message.textContent = "Out of stock — the seller cancelled this order.";
+        else if (status === "cancelled") message.textContent = "You cancelled this order.";
+        else if (status === "confirmed") message.textContent = "Your order is confirmed.";
+        else if (status === "fulfilled") message.textContent = "Your order is complete.";
+        else if (status === "contacted") message.textContent = "The seller is contacting you about this order.";
+        else message.textContent = "Waiting for the store to confirm availability and price.";
+        copy.append(heading, detail, message);
+        row.append(copy);
+        if (status === "pending") {
+          const cancel = document.createElement("button");
+          cancel.className = "order-cancel-button";
+          cancel.type = "button";
+          cancel.textContent = "Cancel order";
+          cancel.addEventListener("click", async () => {
+            cancel.disabled = true;
+            cancel.textContent = "Cancelling…";
+            try {
+              await window.LootboxBackend.request(`store_orders?id=eq.${encodeURIComponent(order.id)}&user_id=eq.${encodeURIComponent(customer.id)}`, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+                body: JSON.stringify({ status: "cancelled", cancelled_by: "customer" })
+              });
+              order.status = "cancelled";
+              order.cancelled_by = "customer";
+              renderOrders();
+            } catch (error) {
+              cancel.disabled = false;
+              cancel.textContent = "Cancel order";
+              drawerMessage.textContent = error.message || "Could not cancel this order.";
+            }
+          });
+          row.append(cancel);
+        }
         ordersList.append(row);
       });
+    };
+    const productImageFor = name => {
+      const card = [...document.querySelectorAll(".store-card")].find(item => item.querySelector("h3")?.textContent.trim() === name);
+      return card?.querySelector(".store-image-wrap img")?.getAttribute("src") || "";
+    };
+    const refreshCustomerOrders = async () => {
+      if (!customer) return;
+      orders = await window.LootboxBackend.request("store_orders?select=id,items,status,cancelled_by,created_at&order=created_at.desc");
+      renderOrders();
     };
     const loadCustomerProfile = async () => {
       customer = (await window.LootboxBackend.ready())?.user || null;
@@ -292,8 +349,7 @@
           if (field) field.value = value;
         });
       }
-      orders = await window.LootboxBackend.request("store_orders?select=id,items,status,created_at&order=created_at.desc");
-      renderOrders();
+      await refreshCustomerOrders();
     };
     async function createOrderRequest(orderItems, clearCartAfterOrder = false) {
       const order = {
@@ -304,7 +360,10 @@
         delivery_address: profile.address,
         delivery_city: profile.city,
         delivery_postal: profile.postal,
-        items: orderItems.map(item => ({ name: item.name, quantity: Number(item.quantity) }))
+        items: orderItems.map(item => {
+          const image = item.image || productImageFor(item.name);
+          return { name: item.name, quantity: Number(item.quantity), image: image.startsWith("assets/") ? image : "" };
+        })
       };
       const created = await window.LootboxBackend.request("store_orders", {
         method: "POST",
@@ -425,7 +484,7 @@
           customerAuthStatus.textContent = "Sign in with your Gmail to view your orders.";
           return;
         }
-        if (button.dataset.view === "orders") renderOrders();
+        if (button.dataset.view === "orders") refreshCustomerOrders().catch(error => { drawerMessage.textContent = error.message; });
         showDrawerView(button.dataset.view);
       });
     });
@@ -436,7 +495,18 @@
     });
     renderOrders();
     document.getElementById("cart-clear").addEventListener("click", () => { cart = {}; save(); render(); status.textContent = "Cart cleared."; });
-    loadCustomerProfile().catch(error => { customerAuthStatus.textContent = error.message || "Could not load your account."; });
+    const checkoutParams = new URLSearchParams(window.location.search);
+    const checkoutProduct = checkoutParams.get("checkout") === "1" && checkoutParams.get("name")
+      ? [{ name: checkoutParams.get("name"), quantity: 1, image: checkoutParams.get("image") || "" }]
+      : null;
+    loadCustomerProfile().then(() => {
+      if (checkoutProduct) beginOrderRequest(checkoutProduct);
+    }).catch(error => { customerAuthStatus.textContent = error.message || "Could not load your account."; });
+    window.setInterval(() => {
+      if (customer && !document.getElementById("orders-view").hidden) {
+        refreshCustomerOrders().catch(() => {});
+      }
+    }, 15000);
     document.querySelectorAll(".store-card").forEach(card => {
       const name = card.querySelector("h3").textContent.trim();
       const productImage = card.querySelector(".store-image-wrap img").getAttribute("src");
@@ -464,11 +534,11 @@
       buy.href = "#";
       buy.addEventListener("click", event => {
         event.preventDefault();
-        beginOrderRequest([{ name, quantity: 1 }]);
+        beginOrderRequest([{ name, quantity: 1, image: productImage }]);
       });
       card.querySelector(".add-to-cart").addEventListener("click", event => {
         const button = event.currentTarget;
-        cart[name] = cart[name] || { quantity: 0 };
+        cart[name] = cart[name] || { quantity: 0, image: productImage };
         cart[name].quantity += 1;
         save(); render();
         status.textContent = `${name} added to cart.`;

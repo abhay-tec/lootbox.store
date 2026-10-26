@@ -27,8 +27,14 @@ create table if not exists public.store_orders (
   delivery_postal text not null check (char_length(delivery_postal) between 3 and 16),
   items jsonb not null check (jsonb_typeof(items) = 'array' and jsonb_array_length(items) > 0),
   status text not null default 'pending' check (status in ('pending', 'contacted', 'confirmed', 'fulfilled', 'cancelled')),
+  cancelled_by text check (cancelled_by in ('seller', 'customer')),
   created_at timestamptz not null default now()
 );
+
+alter table public.store_orders add column if not exists cancelled_by text;
+alter table public.store_orders drop constraint if exists store_orders_cancelled_by_check;
+alter table public.store_orders add constraint store_orders_cancelled_by_check
+  check (cancelled_by in ('seller', 'customer') or cancelled_by is null);
 
 create index if not exists store_orders_created_at_idx on public.store_orders (created_at desc);
 create index if not exists store_orders_user_id_idx on public.store_orders (user_id, created_at desc);
@@ -75,12 +81,17 @@ create policy "Customers place their own orders" on public.store_orders
     user_id = auth.uid()
     and lower(customer_email) = lower(auth.jwt() ->> 'email')
     and status = 'pending'
+    and cancelled_by is null
   );
 drop policy if exists "Sellers update order status" on public.store_orders;
 create policy "Sellers update order status" on public.store_orders
   for update to authenticated using (public.is_seller()) with check (public.is_seller());
+drop policy if exists "Customers cancel their own pending orders" on public.store_orders;
+create policy "Customers cancel their own pending orders" on public.store_orders
+  for update to authenticated using (user_id = auth.uid() and status = 'pending')
+  with check (user_id = auth.uid() and status = 'cancelled' and cancelled_by = 'customer');
 grant select, insert on public.store_orders to authenticated;
-grant update (status) on public.store_orders to authenticated;
+grant update (status, cancelled_by) on public.store_orders to authenticated;
 
 revoke all on public.seller_allowlist from anon, authenticated;
 grant usage on schema public to anon, authenticated;
@@ -93,3 +104,6 @@ on conflict (email) do nothing;
 
 -- Create matching password logins manually in Supabase Authentication > Users;
 -- the website intentionally has no seller signup.
+
+-- Make new/updated RPC functions visible to the Supabase Data API immediately.
+notify pgrst, 'reload schema';

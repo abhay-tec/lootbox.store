@@ -175,12 +175,13 @@
       detail.hidden = false;
       feedback.hidden = false;
 
-      document.getElementById("detail-buy-now").href = `https://wa.me/?text=${encodeURIComponent(`Hi The Reclaim Edit, please confirm availability and price for ${name}.`)}`;
+      const buyNow = document.getElementById("detail-buy-now");
+      buyNow.href = `store.html?checkout=1&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}`;
       document.getElementById("detail-add-cart").addEventListener("click", () => {
         const storageKey = "reclaim-edit-cart";
         let cart = {};
         try { cart = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch {}
-        cart[name] = cart[name] || { quantity: 0 };
+        cart[name] = cart[name] || { quantity: 0, image };
         cart[name].quantity += 1;
         try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
         document.getElementById("detail-status").textContent = `${name} added to your cart.`;

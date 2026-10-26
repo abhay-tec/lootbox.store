@@ -2010,6 +2010,24 @@ h1 span {
   padding-left: 20px;
 }
 
+.seller-product-list li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 10px 0;
+}
+
+.seller-product-image,
+.order-product-thumb {
+  width: 62px;
+  height: 62px;
+  flex: 0 0 62px;
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 7px;
+  background: #282424;
+  object-fit: cover;
+}
+
 .seller-order-actions {
   justify-content: flex-start;
 }
@@ -2744,6 +2762,48 @@ body.drawer-open {
   background: rgba(255, 255, 255, 0.05);
 }
 
+.order-list .customer-order-card {
+  display: grid;
+  grid-template-columns: 56px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 10px;
+}
+
+.customer-order-copy {
+  min-width: 0;
+}
+
+.customer-order-copy strong,
+.customer-order-copy span {
+  display: block;
+}
+
+.customer-order-copy .customer-order-message {
+  color: #ffd16e;
+}
+
+.order-cancel-button {
+  padding: 8px 10px;
+  border: 1px solid rgba(255, 255, 255, 0.24);
+  border-radius: 7px;
+  background: transparent;
+  color: #fff;
+  font: inherit;
+  font-size: 0.76rem;
+  cursor: pointer;
+}
+
+.order-cancel-button:hover,
+.order-cancel-button:focus-visible {
+  border-color: #e71b2c;
+  color: #ff7580;
+}
+
+.order-cancel-button:disabled {
+  opacity: 0.6;
+  cursor: wait;
+}
+
 .order-list strong,
 .order-list span {
   display: block;
@@ -2759,6 +2819,23 @@ body.drawer-open {
 .orders-empty {
   color: rgba(255, 255, 255, 0.6);
   font-size: 0.85rem;
+}
+
+@media (max-width: 430px) {
+  .order-list .customer-order-card {
+    grid-template-columns: 48px minmax(0, 1fr);
+  }
+
+  .customer-order-card .order-product-thumb {
+    width: 48px;
+    height: 48px;
+    flex-basis: 48px;
+  }
+
+  .customer-order-card .order-cancel-button {
+    grid-column: 2;
+    justify-self: start;
+  }
 }
 
 .setting-option {
