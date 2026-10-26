@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Seller sign in | The Reclaim Edit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="seller-page">
+  <main class="seller-shell">
+    <a class="product-detail-back" href="store.html">← Back to shop</a>
+    <section class="seller-card" aria-labelledby="seller-title">
+      <p class="mini-kicker">THE RECLAIM EDIT</p>
+      <h1 id="seller-title">Seller sign in</h1>
+      <p class="drawer-help">Private order dashboard. Seller accounts are issued by the store owner.</p>
+      <form class="seller-auth-form" id="seller-login-form">
+        <label>Email<input name="email" type="email" autocomplete="username" required></label>
+        <label>Password<input name="password" type="password" autocomplete="current-password" required></label>
+        <button class="profile-save" type="submit">Sign in</button>
+      </form>
+      <p class="auth-status" id="seller-auth-status" role="status" aria-live="polite"></p>
+      <button class="settings-save" id="seller-logout" type="button" hidden>Sign out</button>
+    </section>
+    <section class="seller-orders" id="seller-orders" hidden>
+      <div class="seller-orders-heading"><div><p class="mini-kicker">PRIVATE SELLER AREA</p><h2>Order requests</h2></div><button class="settings-save" id="seller-refresh" type="button">Refresh</button></div>
+      <p class="seller-orders-empty" id="seller-orders-empty">No order requests yet.</p>
+      <ul class="seller-order-list" id="seller-order-list"></ul>
+    </section>
+  </main>
+  <script src="reviews-config.js"></script>
+  <script src="auth-client.js"></script>
+  <script src="seller.js"></script>
+</body>
+</html>
