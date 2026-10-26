@@ -371,8 +371,14 @@
           if (field) field.value = value;
         });
       }
-      const remoteCarts = await window.LootboxBackend.request(`customer_carts?select=items&user_id=eq.${encodeURIComponent(customer.id)}&limit=1`);
-      const remoteCart = remoteCarts[0]?.items || {};
+      let remoteCart = {};
+      try {
+        const remoteCarts = await window.LootboxBackend.request(`customer_carts?select=items&user_id=eq.${encodeURIComponent(customer.id)}&limit=1`);
+        remoteCart = remoteCarts[0]?.items || {};
+      } catch (error) {
+        if (!error.message?.includes("customer_carts")) throw error;
+        customerAuthStatus.textContent = "Your profile is available. Run the latest supabase-orders.sql to enable saved carts.";
+      }
       const mergedCart = { ...cart };
       Object.entries(remoteCart).forEach(([name, item]) => {
         const local = mergedCart[name];
@@ -458,7 +464,7 @@
         body: JSON.stringify(nextProfile)
       }).then(rows => {
         profile = rows[0];
-        drawerMessage.textContent = "Delivery details saved securely to your account.";
+        drawerMessage.textContent = "Your details are saved to your account.";
         if (pendingOrderItems) {
           const { items: orderItems, clearCartAfterOrder } = pendingOrderItems;
           savePendingOrder(null);
@@ -508,6 +514,13 @@
     const checkoutProduct = checkoutParams.get("checkout") === "1" && checkoutParams.get("name")
       ? [{ name: checkoutParams.get("name"), quantity: 1, image: checkoutParams.get("image") || "" }]
       : null;
+    if (checkoutProduct) {
+      const cleanUrl = new URL(window.location.href);
+      cleanUrl.searchParams.delete("checkout");
+      cleanUrl.searchParams.delete("name");
+      cleanUrl.searchParams.delete("image");
+      window.history.replaceState({}, "", cleanUrl);
+    }
     loadCustomerProfile().then(() => {
       if (checkoutProduct) beginOrderRequest(checkoutProduct);
       else if (pendingOrderItems && customer && profile) {
