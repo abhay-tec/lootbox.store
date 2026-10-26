@@ -339,7 +339,13 @@
     };
     const refreshCustomerOrders = async () => {
       if (!customer) return;
-      orders = await window.LootboxBackend.request("store_orders?select=id,items,status,cancelled_by,created_at&order=created_at.desc");
+      try {
+        orders = await window.LootboxBackend.request("store_orders?select=id,items,status,cancelled_by,created_at&order=created_at.desc");
+      } catch (error) {
+        if (!error.message?.includes("cancelled_by")) throw error;
+        const legacyOrders = await window.LootboxBackend.request("store_orders?select=id,items,status,created_at&order=created_at.desc");
+        orders = legacyOrders.map(order => ({ ...order, cancelled_by: null }));
+      }
       renderOrders();
     };
     const loadCustomerProfile = async () => {
@@ -389,7 +395,8 @@
       cart = mergedCart;
       save();
       render();
-      await refreshCustomerOrders();
+      try { await refreshCustomerOrders(); }
+      catch (error) { customerAuthStatus.textContent = error.message || "Could not load your order history."; }
     };
     async function createOrderRequest(orderItems, clearCartAfterOrder = false) {
       const order = {
@@ -463,7 +470,7 @@
         headers: { "Content-Type": "application/json", Prefer: "resolution=merge-duplicates,return=representation" },
         body: JSON.stringify(nextProfile)
       }).then(rows => {
-        profile = rows[0];
+        profile = rows[0] || { name: values.name, phone: values.phone, address: values.address, city: values.city, postal: values.postal };
         drawerMessage.textContent = "Your details are saved to your account.";
         if (pendingOrderItems) {
           const { items: orderItems, clearCartAfterOrder } = pendingOrderItems;
