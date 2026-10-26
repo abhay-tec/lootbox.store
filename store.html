@@ -1,0 +1,408 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Shop branded personal care, hair care and baby care finds at The Reclaim Edit. Check current stock and prices for each product.">
+  <title>Shop Finds | The Reclaim Edit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="store-page">
+  <header class="topbar"><div class="wrap topbar-inner">
+    <button class="menu-toggle" id="menu-toggle" type="button" aria-label="Open account menu" aria-expanded="false" aria-controls="account-drawer">
+      <span></span><span></span><span></span>
+    </button>
+    <form class="product-search header-search" id="product-search" role="search">
+      <label class="visually-hidden" for="product-query">Search products or brands</label>
+      <div class="search-field">
+        <input id="product-query" type="search" autocomplete="off" aria-label="Search products or brands">
+        <span class="search-suggestion" id="search-suggestion" aria-hidden="true">Search products or brands</span>
+      </div>
+      <button class="search-button" type="submit">Search</button>
+    </form>
+  </div></header>
+  <div class="menu-scrim" id="menu-scrim" hidden></div>
+  <aside class="account-drawer" id="account-drawer" aria-label="Account menu" aria-hidden="true" inert>
+    <div class="drawer-heading">
+      <div><p class="mini-kicker">THE RECLAIM EDIT</p><h2>My account</h2></div>
+      <button class="drawer-close" id="drawer-close" type="button" aria-label="Close menu">×</button>
+    </div>
+    <nav class="drawer-menu" id="drawer-menu" aria-label="Account options">
+      <button type="button" data-view="profile"><span class="drawer-icon">P</span><span><strong>Profile</strong><small>Your name and delivery details</small></span><span class="drawer-chevron">›</span></button>
+      <button type="button" data-view="cart"><span class="drawer-icon">C</span><span><strong>Cart</strong><small>Review products you've added</small></span><span class="drawer-count" id="cart-count">0</span></button>
+      <button type="button" data-view="orders"><span class="drawer-icon">O</span><span><strong>Orders</strong><small>View your order requests</small></span><span class="drawer-chevron">›</span></button>
+      <button type="button" data-view="settings"><span class="drawer-icon">⚙</span><span><strong>Settings</strong><small>Manage your preferences</small></span><span class="drawer-chevron">›</span></button>
+      <button class="drawer-logout" id="logout-button" type="button"><span class="drawer-icon">↪</span><span><strong>Log out</strong><small>Clear your saved profile here</small></span></button>
+    </nav>
+    <p class="drawer-message" id="drawer-message" role="status" aria-live="polite"></p>
+    <section class="drawer-view" id="profile-view" hidden>
+      <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
+      <h3>Profile & delivery</h3>
+      <p class="drawer-help">Save your details so they can be added to your WhatsApp order request.</p>
+      <form class="profile-form" id="profile-form">
+        <label>Full name<input name="name" autocomplete="name" required></label>
+        <label>Mobile number<input name="phone" type="tel" autocomplete="tel" required></label>
+        <label>Email address <span>(optional)</span><input name="email" type="email" autocomplete="email"></label>
+        <label>Delivery address<textarea name="address" autocomplete="street-address" rows="3" required></textarea></label>
+        <div class="profile-form-row">
+          <label>City<input name="city" autocomplete="address-level2" required></label>
+          <label>PIN code<input name="postal" inputmode="numeric" autocomplete="postal-code" required></label>
+        </div>
+        <button class="profile-save" type="submit">Save profile</button>
+      </form>
+    </section>
+    <section class="drawer-view cart-panel" id="cart-panel" aria-labelledby="cart-heading" hidden>
+      <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
+      <div class="cart-panel-heading"><h3 id="cart-heading">Your cart <span id="cart-total">(0)</span></h3><button class="cart-clear" id="cart-clear" type="button">Clear cart</button></div>
+      <ul class="cart-items" id="cart-items"></ul>
+      <p class="cart-note">Check availability and price with us before your order is confirmed.</p>
+      <a class="cart-checkout" id="cart-checkout" href="#">Continue order on WhatsApp</a>
+    </section>
+    <section class="drawer-view" id="orders-view" hidden>
+      <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
+      <h3>Your orders</h3>
+      <p class="drawer-help">WhatsApp order requests started from this browser appear here. Orders are confirmed by the store.</p>
+      <ul class="order-list" id="order-list"></ul>
+      <p class="orders-empty" id="orders-empty">You haven't started an order yet.</p>
+    </section>
+    <section class="drawer-view" id="settings-view" hidden>
+      <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
+      <h3>Settings</h3>
+      <label class="setting-option"><span><strong>Animated search suggestions</strong><small>Cycle through product names in the search bar.</small></span><input id="setting-suggestions" type="checkbox" checked></label>
+      <button class="settings-save" id="settings-save" type="button">Save settings</button>
+      <p class="settings-status" id="settings-status" role="status" aria-live="polite"></p>
+    </section>
+  </aside>
+  <main class="store-page-main">
+    <section class="store-page-hero"><div class="wrap"><div class="image-stage store-page-banner"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div></div></section>
+    <section class="store-section" id="collection"><div class="wrap store-shell">
+      <div class="store-header"><div><p class="mini-kicker">Current finds</p><h1 class="catalog-title">Shop the drop</h1></div><p class="store-counter">56 products | Prices and availability on request</p></div>
+      <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
+      <div class="catalog-tools">
+        <div class="category-heading-row"><h2 class="category-heading">Shop by Category</h2></div>
+        <div class="category-filters" role="group" aria-label="Filter products by category">
+          <button class="category-button is-active" type="button" data-filter="all" aria-pressed="true"><span class="category-image"><img src="assets/store/products/loreal-total-repair-5-serum-2k.jpg" alt="" aria-hidden="true"></span><span>All finds</span></button>
+          <button class="category-button" type="button" data-filter="hair-care" aria-pressed="false"><span class="category-image"><img src="assets/store/products/loreal-dream-lengths-restoring-shampoo-2k.jpg" alt="" aria-hidden="true"></span><span>Hair care</span></button>
+          <button class="category-button" type="button" data-filter="skin-care" aria-pressed="false"><span class="category-image"><img src="assets/store/cosmetics/cerave-hydrating-cream.jpg" alt="" aria-hidden="true"></span><span>Skin care</span></button>
+          <button class="category-button" type="button" data-filter="baby-care" aria-pressed="false"><span class="category-image"><img src="assets/store/products/himalaya-baby-lotion-2k.jpg" alt="" aria-hidden="true"></span><span>Baby care</span></button>
+            <button class="category-button" type="button" data-filter="sun-care" aria-pressed="false"><span class="category-image"><img src="assets/store/cosmetics/neutrogena-ultra-sheer-sunscreen.jpg" alt="" aria-hidden="true"></span><span>Sun care</span></button>
+          <button class="category-button" type="button" data-filter="perfume" aria-pressed="false"><span class="category-image"><img src="assets/store/perfumes/gemini-generated-image-26tdgj26tdgj26td.png" alt="" aria-hidden="true"></span><span>Fragrance</span></button>
+          <button class="category-button" type="button" data-filter="watches" aria-pressed="false"><span class="category-image"><img src="assets/store/watches/sonata-black-dial-red-accents.jpg" alt="" aria-hidden="true"></span><span>Watches</span></button>
+          <button class="category-button" type="button" data-filter="face-care" aria-pressed="false"><span class="category-image"><img src="assets/store/face-care/neutrogena-deep-clean-brightening-face-wash.jpg" alt="" aria-hidden="true"></span><span>Face care</span></button>
+        </div>
+        <p class="results-count" id="results-count" aria-live="polite">Showing all products</p>
+      </div>
+      <div class="store-grid">
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/loreal-total-repair-5-serum-2k.jpg" alt="L&#39;Or&eacute;al Paris Total Repair 5 Repairing Serum" loading="lazy"></div><div class="store-card-body"><h3>L&#39;Or&eacute;al Paris Total Repair 5 Repairing Serum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/johnsons-baby-shampoo-500ml-2k.jpg" alt="Johnson&#39;s Baby Shampoo, 500 mL" loading="lazy"></div><div class="store-card-body"><h3>Johnson&#39;s Baby Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/clinic-plus-strong-long-shampoo-2k.jpg" alt="Clinic Plus Strong and Long Shampoo" loading="lazy"></div><div class="store-card-body"><h3>Clinic Plus Strong &amp; Long Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/tutots-bliss-plus-baby-body-lotion-2k.jpg" alt="T&uuml;tots Bliss Plus Baby Body Lotion" loading="lazy"></div><div class="store-card-body"><h3>T&uuml;tots Bliss+ Baby Body Lotion</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/loreal-dream-lengths-restoring-shampoo-2k.jpg" alt="L&#39;Or&eacute;al Paris Dream Lengths Restoring Shampoo" loading="lazy"></div><div class="store-card-body"><h3>L&#39;Or&eacute;al Paris Dream Lengths Restoring Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/park-avenue-beer-shampoo-2k.jpg" alt="Park Avenue Beer Shampoo, Shiny and Bouncy" loading="lazy"></div><div class="store-card-body"><h3>Park Avenue Beer Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/products/vitamin-c-face-serum-2k.jpg" alt="Vitamin C Face Serum" loading="lazy"></div><div class="store-card-body"><h3>Vitamin C Face Serum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/mylo-baby-lotion-2k.jpg" alt="Mylo Baby Lotion" loading="lazy"></div><div class="store-card-body"><h3>Mylo Baby Lotion</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/bajaj-almond-drops-shampoo-2k.jpg" alt="Bajaj Almond Drops Anti-Hairfall Shampoo" loading="lazy"></div><div class="store-card-body"><h3>Bajaj Almond Drops Anti-Hairfall Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/johnsons-baby-cream-2k.jpg" alt="Johnson&#39;s Baby Cream" loading="lazy"></div><div class="store-card-body"><h3>Johnson&#39;s Baby Cream</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/loreal-hyaluron-moisture-shampoo-2k.jpg" alt="L&#39;Or&eacute;al Paris Hyaluron Moisture Shampoo" loading="lazy"></div><div class="store-card-body"><h3>L&#39;Or&eacute;al Paris Hyaluron Moisture Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/sunsilk-flowy-silk-smooth-shampoo-2k.jpg" alt="Sunsilk Flowy Silk and Smooth Shampoo" loading="lazy"></div><div class="store-card-body"><h3>Sunsilk Flowy Silk &amp; Smooth Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/himalaya-baby-lotion-2k.jpg" alt="Himalaya Baby Lotion" loading="lazy"></div><div class="store-card-body"><h3>Himalaya Baby Lotion</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/tresemme-keratin-smooth-shampoo-2k.jpg" alt="TRESemm&eacute; Keratin Smooth Shampoo" loading="lazy"></div><div class="store-card-body"><h3>TRESemm&eacute; Keratin Smooth Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="sun-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/aqualogica-sunscreen-by-the-sea.jpg" alt="AquaLogica Sunscreen by the Sea" loading="lazy"></div><div class="store-card-body"><h3>AquaLogica Sunscreen by the Sea</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/biotique-fruit-brightening-face-wash.jpg" alt="Biotique Fruit Brightening Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Biotique Fruit Brightening Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/biotique-morning-nectar-moisturizer.jpg" alt="Biotique Morning Nectar Moisturizer" loading="lazy"></div><div class="store-card-body"><h3>Biotique Morning Nectar Moisturizer</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/biotique-ocean-kelp-shampoo.jpg" alt="Biotique Ocean Kelp Anti-Dandruff Shampoo" loading="lazy"></div><div class="store-card-body"><h3>Biotique Ocean Kelp Anti-Dandruff Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/biotique-papaya-face-wash.jpg" alt="Biotique Papaya Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Biotique Papaya Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="sun-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/biotique-sandalwood-sunscreen.jpg" alt="Biotique Sandalwood Sunscreen" loading="lazy"></div><div class="store-card-body"><h3>Biotique Sandalwood Sunscreen</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/caffeine-coffee-face-scrub.jpg" alt="Caffeine Coffee Face Scrub" loading="lazy"></div><div class="store-card-body"><h3>Caffeine Coffee Face Scrub</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/cerave-hydrating-cream.jpg" alt="CeraVe Hydrating Cream" loading="lazy"></div><div class="store-card-body"><h3>CeraVe Hydrating Cream</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/dewy-cucumber-toner.jpg" alt="Dewy Cucumber Pore Tightening Toner" loading="lazy"></div><div class="store-card-body"><h3>Dewy Cucumber Pore Tightening Toner</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/wishful-honey-balm.jpg" alt="Wishful Honey Balm" loading="lazy"></div><div class="store-card-body"><h3>Wishful Honey Balm</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/ponds-hyaluronic-moisturizer.jpg" alt="Pond&#39;s Hyaluronic Moisturizer" loading="lazy"></div><div class="store-card-body"><h3>Pond&#39;s Hyaluronic Moisturizer</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/cetaphil-moisturizing-cream.jpg" alt="Cetaphil Moisturizing Cream" loading="lazy"></div><div class="store-card-body"><h3>Cetaphil Moisturizing Cream</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="sun-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/jovees-herbal-sunscreen.jpg" alt="Jovees Herbal Sunscreen" loading="lazy"></div><div class="store-card-body"><h3>Jovees Herbal Sunscreen</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="sun-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/neutrogena-ultra-sheer-sunscreen.jpg" alt="Neutrogena Ultra Sheer Sunscreen" loading="lazy"></div><div class="store-card-body"><h3>Neutrogena Ultra Sheer Sunscreen</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/nivea-soft-moisturizer.jpg" alt="NIVEA Soft Moisturizer" loading="lazy"></div><div class="store-card-body"><h3>NIVEA Soft Moisturizer</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="sun-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/sunlit-glow-sunscreen.jpg" alt="Sunlit Glow Sunscreen" loading="lazy"></div><div class="store-card-body"><h3>Sunlit Glow Sunscreen</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-26tdgj26tdgj26td.png" alt="DENVER Vogue Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>DENVER Vogue Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-ifq1wvifq1wvifq1.png" alt="Beardo Godfather Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>Beardo Godfather Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-obrqs8obrqs8obrq.png" alt="The Man Company Joy Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>The Man Company Joy Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-pv5dq4pv5dq4pv5d.png" alt="Ciccio for Women Luxe Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>Ciccio for Women Luxe Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-vooejrvooejrvooe.png" alt="SKINN Body Mist Apple Jasmine" loading="lazy"></div><div class="store-card-body"><h3>SKINN Body Mist Apple Jasmine</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-xhgyomxhgyomxhgy.png" alt="Wild Stone Code Terra EDP" loading="lazy"></div><div class="store-card-body"><h3>Wild Stone Code Terra EDP</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-y83cn6y83cn6y83c.png" alt="Bella Vita White Oud Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>Bella Vita White Oud Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/nivea-soft-spa-glow.jpg" alt="NIVEA Soft Spa Glow Moisturizer" loading="lazy"></div><div class="store-card-body"><h3>NIVEA Soft Spa Glow Moisturizer</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="watches"><div class="store-image-wrap"><img src="assets/store/watches/sonata-black-dial-yellow-accents.jpg" alt="Sonata Black Dial Analog Watch with Yellow Accents" loading="lazy"></div><div class="store-card-body"><h3>Sonata Black Dial Analog Watch with Yellow Accents</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="watches"><div class="store-image-wrap"><img src="assets/store/watches/sonata-black-dial-red-accents.jpg" alt="Sonata Black Dial Analog Watch with Red Accents" loading="lazy"></div><div class="store-card-body"><h3>Sonata Black Dial Analog Watch with Red Accents</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="watches"><div class="store-image-wrap"><img src="assets/store/watches/fastrack-sona-black-chronograph.jpg" alt="Fastrack Sona Black Chronograph Analog Watch" loading="lazy"></div><div class="store-card-body"><h3>Fastrack Sona Black Chronograph Analog Watch</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="watches"><div class="store-image-wrap"><img src="assets/store/watches/sonata-black-dial-blue-accents.jpg" alt="Sonata Black Dial Analog Watch with Blue Accents" loading="lazy"></div><div class="store-card-body"><h3>Sonata Black Dial Analog Watch with Blue Accents</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/vlcc-oil-free-moisturising-gel.jpg" alt="VLCC Oil Free Moisturising Gel Diamond Facial" loading="lazy"></div><div class="store-card-body"><h3>VLCC Oil Free Moisturising Gel Diamond Facial</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/oxyglow-papaya-face-wash.jpg" alt="Oxyglow Herbals Papaya Anti Pollution Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Oxyglow Herbals Papaya Anti Pollution Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/bombay-shaving-company-shaving-cream.jpg" alt="Bombay Shaving Company Shaving Cream" loading="lazy"></div><div class="store-card-body"><h3>Bombay Shaving Company Shaving Cream</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/veet-pure-hair-removal-cream.jpg" alt="Veet Pure Hair Removal Cream with Aloe Vera and Rose Extracts" loading="lazy"></div><div class="store-card-body"><h3>Veet Pure Hair Removal Cream</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/globus-aloe-vera-neem-tulsi-face-wash.jpg" alt="Globus Naturals Aloe Vera Neem Tulsi Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Globus Naturals Aloe Vera Neem Tulsi Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/park-avenue-good-morning-shaving-cream.jpg" alt="Park Avenue Good Morning Lather Shaving Cream" loading="lazy"></div><div class="store-card-body"><h3>Park Avenue Good Morning Lather Shaving Cream</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/muuchstac-ocean-face-wash.jpg" alt="Muuchstac Ocean Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Muuchstac Ocean Face Wash, 100 mL</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/neutrogena-deep-clean-brightening-face-wash.jpg" alt="Neutrogena Deep Clean Brightening Foaming Cleanser" loading="lazy"></div><div class="store-card-body"><h3>Neutrogena Deep Clean Brightening Foaming Cleanser</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/joy-skin-fruits-brightening-face-wash.jpg" alt="Joy Skin Fruits Brightening Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Joy Skin Fruits Brightening Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/himalaya-purifying-neem-face-wash.jpg" alt="Himalaya Purifying Neem Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Himalaya Purifying Neem Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/woodoo-hello-clear-skin-face-wash.jpg" alt="Woodoo Hello Clear Skin Face Wash with Niacinamide, Kojic Acid and Glycolic Acid" loading="lazy"></div><div class="store-card-body"><h3>Woodoo Hello, Clear Skin Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/glow-clean-white-bright-charcoal-face-wash.jpg" alt="Glow and Clean White and Bright Activated Charcoal Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Glow &amp; Clean White &amp; Bright Charcoal Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/lakme-blush-glow-strawberry-face-wash.jpg" alt="Lakme Blush and Glow Strawberry Face Wash" loading="lazy"></div><div class="store-card-body"><h3>Lakm&eacute; Blush &amp; Glow Strawberry Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="face-care"><div class="store-image-wrap"><img src="assets/store/face-care/neud-skin-brightening-turmeric-face-wash.jpg" alt="NEUD Skin Brightening Turmeric Face Wash" loading="lazy"></div><div class="store-card-body"><h3>NEUD Skin Brightening Turmeric Face Wash</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>      </div>
+      <p class="no-results" id="no-results" hidden>No products match your search.</p>
+    </div></section>
+  </main>
+<script>
+  (() => {
+    const storageKey = "reclaim-edit-cart";
+    const profileStorageKey = "reclaim-edit-profile";
+    const ordersStorageKey = "reclaim-edit-orders";
+    const settingsStorageKey = "reclaim-edit-settings";
+    let cart = {};
+    let profile = null;
+    let orders = [];
+    let suggestionsEnabled = true;
+    try { cart = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch { cart = {}; }
+    try { profile = JSON.parse(localStorage.getItem(profileStorageKey) || "null"); } catch { profile = null; }
+    try { orders = JSON.parse(localStorage.getItem(ordersStorageKey) || "[]"); } catch { orders = []; }
+    try { suggestionsEnabled = JSON.parse(localStorage.getItem(settingsStorageKey) || "true"); } catch { suggestionsEnabled = true; }
+    const count = () => Object.values(cart).reduce((sum, item) => sum + item.quantity, 0);
+    const save = () => { try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {} };
+    const panel = document.getElementById("cart-panel");
+    const items = document.getElementById("cart-items");
+    const status = document.getElementById("cart-status");
+    const checkout = document.getElementById("cart-checkout");
+    const drawer = document.getElementById("account-drawer");
+    const drawerMenu = document.getElementById("drawer-menu");
+    const drawerMessage = document.getElementById("drawer-message");
+    const menuToggle = document.getElementById("menu-toggle");
+    const menuScrim = document.getElementById("menu-scrim");
+    let pendingOrderItems = null;
+    const render = () => {
+      const total = count();
+      document.getElementById("cart-count").textContent = total;
+      document.getElementById("cart-total").textContent = `(${total})`;
+      items.replaceChildren();
+      Object.entries(cart).forEach(([name, item]) => {
+        const row = document.createElement("li");
+        const label = document.createElement("span");
+        label.textContent = `${name} x ${item.quantity}`;
+        const remove = document.createElement("button");
+        remove.type = "button";
+        remove.className = "cart-remove";
+        remove.textContent = "Remove";
+        remove.setAttribute("aria-label", `Remove ${name} from cart`);
+        remove.addEventListener("click", () => { delete cart[name]; save(); render(); });
+        row.append(label, remove);
+        items.append(row);
+      });
+      if (!total) {
+        const empty = document.createElement("li");
+        empty.textContent = "Your cart is empty.";
+        items.append(empty);
+      }
+      checkout.href = "#";
+    };
+    const profileForm = document.getElementById("profile-form");
+    const ordersList = document.getElementById("order-list");
+    const ordersEmpty = document.getElementById("orders-empty");
+    const settingSuggestions = document.getElementById("setting-suggestions");
+    const drawerViews = [panel, document.getElementById("profile-view"), document.getElementById("orders-view"), document.getElementById("settings-view")];
+    const showDrawerView = view => {
+      drawerMenu.hidden = view !== "menu";
+      drawerViews.forEach(section => { section.hidden = section.id !== (view === "cart" ? "cart-panel" : `${view}-view`); });
+      drawerMessage.textContent = "";
+    };
+    const openDrawer = view => {
+      drawer.classList.add("is-open");
+      drawer.setAttribute("aria-hidden", "false");
+      drawer.inert = false;
+      menuToggle.setAttribute("aria-expanded", "true");
+      menuToggle.setAttribute("aria-label", "Close account menu");
+      menuScrim.hidden = false;
+      document.body.classList.add("drawer-open");
+      showDrawerView(view || "menu");
+    };
+    const closeDrawer = () => {
+      drawer.classList.remove("is-open");
+      drawer.setAttribute("aria-hidden", "true");
+      drawer.inert = true;
+      menuToggle.setAttribute("aria-expanded", "false");
+      menuToggle.setAttribute("aria-label", "Open account menu");
+      menuScrim.hidden = true;
+      document.body.classList.remove("drawer-open");
+    };
+    const renderOrders = () => {
+      ordersList.replaceChildren();
+      ordersEmpty.hidden = orders.length > 0;
+      orders.forEach(order => {
+        const row = document.createElement("li");
+        const heading = document.createElement("strong");
+        const detail = document.createElement("span");
+        heading.textContent = `Order request ${order.id}`;
+        detail.textContent = `${new Date(order.createdAt).toLocaleString()} · ${order.items.map(item => `${item.name} × ${item.quantity}`).join(", ")} · Awaiting store confirmation`;
+        row.append(heading, detail);
+        ordersList.append(row);
+      });
+    };
+    const profileDetails = () => [
+      `Name: ${profile.name}`,
+      `Phone: ${profile.phone}`,
+      profile.email ? `Email: ${profile.email}` : "",
+      `Address: ${profile.address}, ${profile.city} ${profile.postal}`
+    ].filter(Boolean).join("\n");
+    function beginOrderRequest(orderItems) {
+      if (!orderItems.length) {
+        openDrawer("cart");
+        drawerMessage.textContent = "Add a product to your cart first.";
+        return;
+      }
+      if (!profile) {
+        pendingOrderItems = orderItems;
+        openDrawer("profile");
+        drawerMessage.textContent = "Save your delivery details to continue with your order.";
+        return;
+      }
+      const order = {
+        id: `LE-${Date.now().toString().slice(-7)}`,
+        createdAt: new Date().toISOString(),
+        items: orderItems.map(item => ({ name: item.name, quantity: item.quantity }))
+      };
+      orders.unshift(order);
+      try { localStorage.setItem(ordersStorageKey, JSON.stringify(orders)); } catch {}
+      renderOrders();
+      const productList = order.items.map(item => `${item.name} x ${item.quantity}`).join(", ");
+      const message = `Hi The Reclaim Edit, please confirm availability and price for: ${productList}.\n\n${profileDetails()}`;
+      window.open(`https://wa.me/?text=${encodeURIComponent(message)}`, "_blank", "noopener");
+      drawerMessage.textContent = "Order request saved. Confirm it with the store in WhatsApp.";
+      closeDrawer();
+    }
+    const savedProfile = profile || {};
+    Object.entries(savedProfile).forEach(([key, value]) => {
+      const field = profileForm.elements.namedItem(key);
+      if (field) field.value = value;
+    });
+    settingSuggestions.checked = suggestionsEnabled;
+    profileForm.addEventListener("submit", event => {
+      event.preventDefault();
+      profile = Object.fromEntries(new FormData(profileForm).entries());
+      try { localStorage.setItem(profileStorageKey, JSON.stringify(profile)); } catch {}
+      drawerMessage.textContent = "Profile saved.";
+      if (pendingOrderItems) {
+        const orderItems = pendingOrderItems;
+        pendingOrderItems = null;
+        beginOrderRequest(orderItems);
+      }
+    });
+    document.getElementById("settings-save").addEventListener("click", () => {
+      suggestionsEnabled = settingSuggestions.checked;
+      try { localStorage.setItem(settingsStorageKey, JSON.stringify(suggestionsEnabled)); } catch {}
+      document.getElementById("settings-status").textContent = "Settings saved.";
+    });
+    document.getElementById("logout-button").addEventListener("click", () => {
+      profile = null;
+      pendingOrderItems = null;
+      profileForm.reset();
+      try { localStorage.removeItem(profileStorageKey); } catch {}
+      showDrawerView("menu");
+      drawerMessage.textContent = "Saved profile cleared. Your cart and order requests are still here.";
+    });
+    menuToggle.addEventListener("click", () => drawer.classList.contains("is-open") ? closeDrawer() : openDrawer("menu"));
+    document.getElementById("drawer-close").addEventListener("click", closeDrawer);
+    menuScrim.addEventListener("click", closeDrawer);
+    document.addEventListener("keydown", event => { if (event.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer(); });
+    drawerMenu.querySelectorAll("[data-view]").forEach(button => {
+      button.addEventListener("click", () => {
+        if (button.dataset.view === "orders") renderOrders();
+        showDrawerView(button.dataset.view);
+      });
+    });
+    drawer.querySelectorAll("[data-back-menu]").forEach(button => button.addEventListener("click", () => showDrawerView("menu")));
+    checkout.addEventListener("click", event => {
+      event.preventDefault();
+      beginOrderRequest(Object.entries(cart).map(([name, item]) => ({ name, quantity: item.quantity })));
+    });
+    renderOrders();
+    document.getElementById("cart-clear").addEventListener("click", () => { cart = {}; save(); render(); status.textContent = "Cart cleared."; });
+    document.querySelectorAll(".store-card").forEach(card => {
+      const name = card.querySelector("h3").textContent.trim();
+      const buy = card.querySelector(".buy-now");
+      buy.href = "#";
+      buy.addEventListener("click", event => {
+        event.preventDefault();
+        beginOrderRequest([{ name, quantity: 1 }]);
+      });
+      card.querySelector(".add-to-cart").addEventListener("click", event => {
+        const button = event.currentTarget;
+        cart[name] = cart[name] || { quantity: 0 };
+        cart[name].quantity += 1;
+        save(); render();
+        status.textContent = `${name} added to cart.`;
+        button.textContent = "Added!";
+        window.setTimeout(() => { if (button.isConnected) button.textContent = "Add to Cart"; }, 1200);
+      });
+    });
+    const cards = [...document.querySelectorAll(".store-card")];
+    const searchForm = document.getElementById("product-search");
+    const searchInput = document.getElementById("product-query");
+    const resultsCount = document.getElementById("results-count");
+    const noResults = document.getElementById("no-results");
+    let activeCategory = "all";
+    let searchTerm = "";
+    const filterProducts = () => {
+      let visible = 0;
+      cards.forEach(card => {
+        const categoryMatches = activeCategory === "all" || card.dataset.category === activeCategory;
+        const textMatches = card.textContent.toLowerCase().includes(searchTerm);
+        const show = categoryMatches && textMatches;
+        card.hidden = !show;
+        if (show) visible += 1;
+      });
+      resultsCount.textContent = `Showing ${visible} of ${cards.length} products`;
+      noResults.hidden = visible !== 0;
+    };
+    searchForm.addEventListener("submit", event => {
+      event.preventDefault();
+      searchTerm = searchInput.value.trim().toLowerCase();
+      filterProducts();
+    });
+    searchInput.addEventListener("input", () => {
+      searchTerm = searchInput.value.trim().toLowerCase();
+      searchForm.classList.toggle("has-query", Boolean(searchInput.value.trim()));
+      filterProducts();
+    });
+    const searchSuggestion = document.getElementById("search-suggestion");
+    const searchHints = cards.map(card => card.querySelector("h3").textContent.trim());
+    let searchHintIndex = -1;
+    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (!prefersReducedMotion) {
+      window.setInterval(() => {
+        if (!suggestionsEnabled || searchInput.value || document.activeElement === searchInput) return;
+        searchForm.classList.add("is-fading");
+        window.setTimeout(() => {
+          searchHintIndex = (searchHintIndex + 1) % searchHints.length;
+          searchSuggestion.textContent = `Try ${searchHints[searchHintIndex]}`;
+          searchForm.classList.remove("is-fading");
+        }, 380);
+      }, 2800);
+    }
+    document.querySelectorAll(".category-button").forEach(button => {
+      button.addEventListener("click", () => {
+        activeCategory = button.dataset.filter;
+        document.querySelectorAll(".category-button").forEach(option => {
+          const active = option === button;
+          option.classList.toggle("is-active", active);
+          option.setAttribute("aria-pressed", String(active));
+        });
+        filterProducts();
+      });
+    });
+    filterProducts();
+    render();
+  })();
+</script>
+</body>
+</html>
