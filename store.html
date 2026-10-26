@@ -329,6 +329,27 @@
     document.getElementById("cart-clear").addEventListener("click", () => { cart = {}; save(); render(); status.textContent = "Cart cleared."; });
     document.querySelectorAll(".store-card").forEach(card => {
       const name = card.querySelector("h3").textContent.trim();
+      const productImage = card.querySelector(".store-image-wrap img").getAttribute("src");
+      const openProduct = () => {
+        const params = new URLSearchParams({
+          name,
+          image: productImage,
+          category: card.dataset.category
+        });
+        window.location.href = `product.html?${params.toString()}`;
+      };
+      card.tabIndex = 0;
+      card.setAttribute("role", "link");
+      card.setAttribute("aria-label", `View details for ${name}`);
+      card.addEventListener("click", event => {
+        if (event.target.closest("button, a")) return;
+        openProduct();
+      });
+      card.addEventListener("keydown", event => {
+        if (event.target !== card || (event.key !== "Enter" && event.key !== " ")) return;
+        event.preventDefault();
+        openProduct();
+      });
       const buy = card.querySelector(".buy-now");
       buy.href = "#";
       buy.addEventListener("click", event => {

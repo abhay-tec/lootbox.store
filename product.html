@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Product details, reviews and comments for The Reclaim Edit finds.">
+  <title>Product details | The Reclaim Edit</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="product-detail-page">
+  <main class="product-detail-wrap">
+    <a class="product-detail-back" href="store.html">← Back to shop</a>
+    <article class="product-detail-card" id="product-detail" hidden>
+      <div class="product-detail-image"><img id="detail-image" alt=""></div>
+      <div class="product-detail-copy">
+        <p class="product-detail-category" id="detail-category"></p>
+        <h1 id="detail-name"></h1>
+        <p class="product-detail-price">Ask for price</p>
+        <p class="product-detail-note">Check current stock and price with our team before ordering.</p>
+        <div class="product-detail-actions">
+          <button class="detail-cart" id="detail-add-cart" type="button">Add to Cart</button>
+          <a id="detail-buy-now" href="#" target="_blank" rel="noreferrer">Buy Now</a>
+        </div>
+        <p class="product-detail-status" id="detail-status" role="status" aria-live="polite"></p>
+      </div>
+    </article>
+    <p id="product-missing" hidden>Product not found. <a href="store.html">Return to the shop</a>.</p>
+    <div class="product-feedback" id="product-feedback" hidden>
+      <section aria-labelledby="reviews-heading"><h2 id="reviews-heading">Reviews</h2></section>
+      <section aria-labelledby="comments-heading"><h2 id="comments-heading">Comments</h2></section>
+    </div>
+  </main>
+  <script>
+    (() => {
+      const params = new URLSearchParams(window.location.search);
+      const name = params.get("name") || "";
+      const image = params.get("image") || "";
+      const category = params.get("category") || "";
+      const detail = document.getElementById("product-detail");
+      const feedback = document.getElementById("product-feedback");
+      const categoryNames = {
+        "hair-care": "Hair care",
+        "skin-care": "Skin care",
+        "baby-care": "Baby care",
+        "sun-care": "Sun care",
+        perfume: "Fragrance",
+        watches: "Watches",
+        "face-care": "Face care"
+      };
+
+      if (!name || !image.startsWith("assets/store/")) {
+        document.getElementById("product-missing").hidden = false;
+        return;
+      }
+
+      document.title = `${name} | The Reclaim Edit`;
+      document.getElementById("detail-name").textContent = name;
+      document.getElementById("detail-category").textContent = categoryNames[category] || "Current find";
+      const productImage = document.getElementById("detail-image");
+      productImage.src = image;
+      productImage.alt = name;
+      detail.hidden = false;
+      feedback.hidden = false;
+
+      document.getElementById("detail-buy-now").href = `https://wa.me/?text=${encodeURIComponent(`Hi The Reclaim Edit, please confirm availability and price for ${name}.`)}`;
+      document.getElementById("detail-add-cart").addEventListener("click", () => {
+        const storageKey = "reclaim-edit-cart";
+        let cart = {};
+        try { cart = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch {}
+        cart[name] = cart[name] || { quantity: 0 };
+        cart[name].quantity += 1;
+        try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
+        document.getElementById("detail-status").textContent = `${name} added to your cart.`;
+      });
+    })();
+  </script>
+</body>
+</html>
