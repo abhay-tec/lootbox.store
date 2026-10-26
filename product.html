@@ -19,19 +19,19 @@
         <p class="product-detail-category" id="detail-category"></p>
         <h1 id="detail-name"></h1>
         <p class="product-detail-price">Ask for price</p>
-        <p class="product-detail-note">Check current stock and price with our team before ordering.</p>
-        <section class="product-specs" aria-labelledby="product-specs-heading">
-          <h2 id="product-specs-heading">Product details</h2>
-          <ul id="detail-facts"></ul>
-          <p class="product-specs-unverified" id="detail-unverified" hidden>We couldn’t verify details for this exact product variant online. Please confirm the size and label information on the item before ordering.</p>
-          <a id="detail-source" href="#" target="_blank" rel="noopener noreferrer">View product information source</a>
-          <p class="product-specs-note">Price, stock, delivery and return terms depend on this store’s listing and are confirmed before purchase.</p>
-        </section>
+        <p class="product-detail-note">Ask us to confirm stock and price before ordering.</p>
         <div class="product-detail-actions">
           <button class="detail-cart" id="detail-add-cart" type="button">Add to Cart</button>
           <a id="detail-buy-now" href="#" target="_blank" rel="noreferrer">Buy Now</a>
         </div>
         <p class="product-detail-status" id="detail-status" role="status" aria-live="polite"></p>
+        <details class="product-specs">
+          <summary id="product-specs-heading">Product details <span>View specs, ingredients &amp; source</span></summary>
+          <ul id="detail-facts"></ul>
+          <p class="product-specs-unverified" id="detail-unverified" hidden>We couldn’t verify details for this exact product variant online. Please confirm the size and label information on the item before ordering.</p>
+          <a id="detail-source" href="#" target="_blank" rel="noopener noreferrer">View product information source</a>
+          <p class="product-specs-note">Price, stock, delivery and return terms depend on this store’s listing and are confirmed before purchase.</p>
+        </details>
       </div>
     </article>
     <p id="product-missing" hidden>Product not found. <a href="store.html">Return to the shop</a>.</p>
