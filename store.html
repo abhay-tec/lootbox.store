@@ -402,7 +402,7 @@
     const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const bannerCarousel = document.getElementById("store-banner-carousel");
     const bannerSlides = [...bannerCarousel.querySelectorAll(".banner-slide")];
-    if (bannerSlides.length > 1 && !prefersReducedMotion) {
+    if (bannerSlides.length > 1) {
       let activeBanner = 0;
       let bannerTimer;
       const showNextBanner = () => {

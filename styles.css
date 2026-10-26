@@ -670,13 +670,6 @@ h1 span {
   background: #090707;
 }
 
-@media (prefers-reduced-motion: reduce) {
-  .store-page-banner .banner-slide {
-    transition: none;
-    transform: none;
-  }
-}
-
 /* Keep the original hero image treatment inside each carousel slide. */
 .store-page-banner img {
   object-fit: contain;
