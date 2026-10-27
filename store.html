@@ -195,7 +195,6 @@
 <script src="reviews-config.js"></script>
 <script src="reviews.js"></script>
 <script src="auth-client.js"></script>
-<script src="product-prices.js"></script>
 <script>
   (() => {
     const storageKey = "reclaim-edit-cart";
@@ -623,13 +622,6 @@
     document.querySelectorAll(".store-card").forEach(card => {
       const name = card.querySelector("h3").textContent.trim();
       const productImage = card.querySelector(".store-image-wrap img").getAttribute("src");
-      const verifiedPrice = window.ReclaimProductPrices?.get(name);
-      if (verifiedPrice) {
-        const priceElement = card.querySelector(".store-price");
-        priceElement.innerHTML = window.ReclaimProductPrices.markup(verifiedPrice);
-        priceElement.setAttribute("aria-label", `Original online price ${window.ReclaimProductPrices.money(verifiedPrice.mrp)}, now ${window.ReclaimProductPrices.money(verifiedPrice.sale)}, 40 percent off, ${verifiedPrice.size}`);
-        priceElement.title = `Reference listing: ${verifiedPrice.source}`;
-      }
       const openProduct = () => {
         const params = new URLSearchParams({
           name,

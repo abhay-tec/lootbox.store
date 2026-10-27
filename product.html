@@ -72,7 +72,6 @@
   </main>
   <script src="reviews-config.js"></script>
   <script src="reviews.js"></script>
-  <script src="product-prices.js"></script>
   <script>
     (() => {
       const params = new URLSearchParams(window.location.search);
@@ -152,14 +151,6 @@
       document.title = `${name} | The Reclaim Edit`;
       document.getElementById("detail-name").textContent = name;
       document.getElementById("detail-category").textContent = categoryNames[category] || "Current find";
-      const verifiedPrice = window.ReclaimProductPrices?.get(name);
-      const priceElement = document.querySelector(".product-detail-price");
-      const priceNote = document.querySelector(".product-detail-note");
-      if (verifiedPrice) {
-        priceElement.innerHTML = window.ReclaimProductPrices.markup(verifiedPrice);
-        priceElement.setAttribute("aria-label", `Original online price ${window.ReclaimProductPrices.money(verifiedPrice.mrp)}, now ${window.ReclaimProductPrices.money(verifiedPrice.sale)}, 40 percent off, ${verifiedPrice.size}`);
-        priceNote.textContent = `40% off the verified ${verifiedPrice.size} reference price. Final availability and delivery are confirmed before purchase.`;
-      }
       const details = productDetails[normalize(name)];
       const facts = details?.facts || [];
       const factList = document.getElementById("detail-facts");
@@ -170,12 +161,6 @@
       });
       if (details?.source) document.getElementById("detail-source").href = details.source;
       else document.getElementById("detail-source").hidden = true;
-      if (verifiedPrice?.source) {
-        const sourceLink = document.getElementById("detail-source");
-        sourceLink.href = verifiedPrice.source;
-        sourceLink.hidden = false;
-        sourceLink.textContent = "View verified product and price listing";
-      }
       document.getElementById("detail-unverified").hidden = !details?.unverified && Boolean(details);
       if (!details) {
         const item = document.createElement("li");
