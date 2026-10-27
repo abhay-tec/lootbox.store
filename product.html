@@ -98,7 +98,9 @@
         "sun-care": "Sun care",
         perfume: "Fragrance",
         watches: "Watches",
-        "face-care": "Face care"
+        "face-care": "Face care",
+        apparel: "Apparel",
+        footwear: "Footwear"
       };
 
       const productDetails = {
@@ -151,6 +153,48 @@
         "lakmé blush & glow strawberry face wash": { facts: ["Lakmé lists the Strawberry Blush & Glow face wash in a 100 g pack.", "The product listing mentions strawberry extracts and vitamin C serum."], source: "https://www.lakmeindia.com/products/lakme-blush-glow-strawberry-freshness-gel-face-wash-with-strawberry-extracts-100-g-2" },
         "neud skin brightening turmeric face wash": { facts: ["The cited NEUD turmeric brightening face wash listing is 70 mL."], source: "https://neud.co.in/products/neud-skin-brightening-tan-removal-face-wash-for-men-and-women-70ml" }
       };
+      Object.assign(productDetails, {
+        "yellow embroidered v-neck t-shirt": { facts: ["The supplied product photo shows a yellow V-neck T-shirt with a small embroidered chest emblem.", "Brand, fabric composition and garment size are not confirmed; check the sewn-in label."], source: "", unverified: true },
+        "black crew-neck t-shirt": { facts: ["The supplied product photo shows a plain black crew-neck T-shirt.", "Brand, fabric composition and garment size are not confirmed; check the sewn-in label."], source: "", unverified: true },
+        "red graphic sweatshirt": { facts: ["The supplied product photo shows a red sweatshirt with a front graphic.", "Brand, fabric composition and garment size are not confirmed; check the sewn-in label."], source: "", unverified: true },
+        "blue plaid short-sleeve shirt": { facts: ["The supplied product photo shows a blue plaid, short-sleeve button-front shirt.", "Brand, fabric composition and garment size are not confirmed; check the sewn-in label."], source: "", unverified: true },
+        "dusty pink crew-neck t-shirt": { facts: ["The supplied product photo shows a dusty-pink crew-neck T-shirt.", "Brand, fabric composition and garment size are not confirmed; check the sewn-in label."], source: "", unverified: true },
+        "navy graphic t-shirt": { facts: ["The supplied product photo shows a navy T-shirt with a small yellow chest emblem.", "Brand, fabric composition and garment size are not confirmed; check the sewn-in label."], source: "", unverified: true },
+        "navy slide sandals": { facts: ["The supplied product photo shows navy slide sandals with a contrasting striped sole.", "Brand, material and available sizes are not confirmed; check the item label."], source: "", unverified: true },
+        "navy & green running shoes": { facts: ["The supplied product photo shows navy and green running-style shoes.", "Exact model, size and upper/sole materials are not confirmed; check the shoe label."], source: "", unverified: true },
+        "adidas black sneakers": { facts: ["The supplied product photo shows black adidas-branded sneakers.", "Exact model, size and materials are not confirmed; check the shoe label."], source: "", unverified: true },
+        "white logo-detail sneakers": { facts: ["The supplied product photo shows white sneakers with red logo details.", "Brand, exact model, size and materials are not confirmed; check the shoe label."], source: "", unverified: true },
+        "axe dark temptation body spray": { facts: ["The can label identifies AXE Dark Temptation body spray.", "The photo also shows 72H on the packaging; confirm the exact pack size and label before ordering."], source: "", unverified: true },
+        "jean paul gaultier le male eau de toilette": { facts: ["The supplied photo shows the signature striped torso bottle labelled Le Male.", "Confirm the concentration and bottle size against the product box before ordering."], source: "https://www.jeanpaulgaultier.com/us/en_US/p/range-le-male/le-male-eau-de-toilette-000000000065112316", unverified: true },
+        "jean paul gaultier le male elixir": { facts: ["The supplied photo shows the gold Le Male Elixir torso bottle.", "Confirm the concentration and bottle size against the product box before ordering."], source: "https://www.jeanpaulgaultier.com/us/en_US/p/range-le-male/le-male-elixir-parfum-000000000065199796", unverified: true },
+        "jean paul gaultier le male le parfum": { facts: ["The supplied photo shows the black Le Male torso bottle.", "Confirm the exact Le Male variant and bottle size against the box before ordering."], source: "https://www.jeanpaulgaultier.com/us/en_US/p/range-le-male/le-male-le-parfum-000000000065199795", unverified: true },
+        "jean paul gaultier le beau paradise garden": { facts: ["The supplied photo shows a blue-green floral torso bottle matching Le Beau Paradise Garden.", "The official product is Eau de Parfum; confirm this item's size and packaging before ordering."], source: "https://www.jeanpaulgaultier.com/us/en_US/p/range-le-beau/le-beau-paradise-garden-eau-de-parfum-000000000065199798", unverified: true },
+        "jaguar era reloaded eau de toilette": { facts: ["The supplied bottle label reads Jaguar Era Reloaded.", "Confirm the bottle size and packaging before ordering."], source: "", unverified: true },
+        "jaguar classic green eau de toilette": { facts: ["The supplied photo shows a green Jaguar Classic fragrance bottle.", "Confirm the exact variant, concentration and bottle size against the box before ordering."], source: "", unverified: true },
+        "viktor&rolf spicebomb eau de toilette": { facts: ["The supplied bottle is labelled Spicebomb by Viktor&Rolf.", "Confirm the exact Spicebomb edition and bottle size against the box before ordering."], source: "https://www.viktor-rolf.com/fragrance/spicebomb", unverified: true },
+        "davidoff cool water eau de toilette": { facts: ["The supplied bottle is labelled Davidoff Cool Water Eau de Toilette.", "Confirm the bottle size and packaging before ordering."], source: "https://www.zinodavidoff.com/fragrances/cool-water-man", unverified: true },
+        "u.s. polo assn. polo sport eau de toilette": { facts: ["The supplied product is labelled U.S. Polo Assn. Polo Sport.", "Confirm the exact variant, concentration and bottle size against the box before ordering."], source: "", unverified: true },
+        "john varvatos xx anniversary eau de toilette": { facts: ["The supplied packaging identifies John Varvatos XX Anniversary.", "Confirm concentration and bottle size against the box before ordering."], source: "", unverified: true },
+        "armaf signature night eau de parfum": { facts: ["The supplied bottle is labelled Armaf Signature Night Eau de Parfum.", "Confirm the bottle size and packaging before ordering."], source: "", unverified: true },
+        "tommy girl eau de toilette": { facts: ["The supplied bottle is labelled Tommy Girl.", "Confirm the concentration and bottle size against the box before ordering."], source: "https://www.tommy.com/en_us/tommy-girl-eau-de-toilette-100ml/", unverified: true },
+        "armaf club de nuit intense man eau de toilette": { facts: ["The supplied bottle is labelled Armaf Club de Nuit Intense Man Eau de Toilette.", "Confirm the bottle size and packaging before ordering."], source: "", unverified: true },
+        "tommy vibrant summer eau de toilette": { facts: ["The supplied bottle label reads Tommy Vibrant Summer.", "Confirm the concentration and bottle size against the box before ordering."], source: "", unverified: true },
+        "rabanne phantom eau de toilette": { facts: ["The supplied photo shows the robot-shaped Phantom bottle.", "Confirm the exact Phantom edition, concentration and bottle size against the box before ordering."], source: "https://www.rabanne.com/us/en/fragrance/p/phantom--000000000065137005", unverified: true },
+        "ralph lauren polo red eau de toilette": { facts: ["The supplied bottle is labelled Polo Red by Ralph Lauren.", "Confirm the exact edition and bottle size against the box before ordering."], source: "https://www.ralphlaurenfragrances.com/en-us/brands/polo-red", unverified: true },
+        "guess amore portofino eau de toilette": { facts: ["The supplied bottle label reads Guess Amore Portofino.", "Confirm the concentration and bottle size against the box before ordering."], source: "", unverified: true },
+        "amo ferragamo eau de parfum": { facts: ["The supplied bottle is labelled Amo Ferragamo Eau de Parfum.", "Confirm the bottle size and packaging before ordering."], source: "https://www.ferragamo.com/shop/us/en/sfumature/amo-ferragamo-eau-de-parfum", unverified: true },
+        "benetton united dreams be yourself eau de toilette": { facts: ["The supplied bottle is labelled United Dreams Be Yourself by Benetton.", "Confirm the exact version and bottle size against the box before ordering."], source: "", unverified: true },
+        "police to be skull eau de toilette": { facts: ["The supplied photo shows the blue skull-shaped Police To Be bottle.", "Police's To Be range includes several editions; confirm this exact variant and bottle size from the box."], source: "https://www.superdrug.com/fragrance/fragrance-for-him/mens-aftershave/police-to-be-40ml-eau-de-toilette/p/319156", unverified: true },
+        "police black skull fragrance": { facts: ["The supplied photo shows a black skull-shaped Police fragrance bottle.", "The exact Police edition, concentration and bottle size are not clear in the photo; confirm from the box."], source: "", unverified: true },
+        "red floral eau de parfum": { facts: ["The supplied photo shows a red faceted fragrance bottle with a dark floral label.", "Brand, exact product name and bottle size are not legible; check the box before ordering."], source: "", unverified: true },
+        "diesel fuel for life pour homme eau de toilette": { facts: ["The supplied bottle is labelled Diesel Fuel for Life Pour Homme; 125 mL is visible on the bottle.", "Confirm the bottle and packaging details before ordering."], source: "", unverified: true },
+        "diesel plus plus eau de toilette": { facts: ["The supplied bottle is labelled Diesel Plus Plus.", "The exact edition and bottle size are not clear in the photo; confirm from the box."], source: "", unverified: true },
+        "noir eau de toilette": { facts: ["The supplied bottle label reads Noir; the maker and full product name are not visible.", "Confirm the brand, concentration and bottle size from the box before ordering."], source: "", unverified: true },
+        "guess 1981 men eau de toilette": { facts: ["The supplied bottle is labelled Guess 1981 Men.", "Confirm the concentration and bottle size against the box before ordering."], source: "", unverified: true },
+        "bellavita elite man eau de parfum": { facts: ["The supplied bottle is labelled BellaVita Elite Man Eau de Parfum.", "Confirm the bottle size and packaging before ordering."], source: "", unverified: true },
+        "bellavita grace woman eau de parfum": { facts: ["The supplied bottle is labelled BellaVita Grace Woman Eau de Parfum.", "Confirm the bottle size and packaging before ordering."], source: "", unverified: true },
+        "bellavita ceo woman eau de parfum": { facts: ["The supplied bottle is labelled BellaVita CEO Woman Eau de Parfum.", "Confirm the bottle size and packaging before ordering."], source: "", unverified: true }
+      });
 
       const normalize = value => value.toLocaleLowerCase().replace(/\s+/g, " ").trim();
       const recommendationSection = document.getElementById("product-recommendations");
@@ -159,6 +203,7 @@
       const ignoredTerms = new Set(["the", "and", "for", "with", "from", "your", "men", "women", "face", "wash", "shampoo", "cream", "serum", "lotion", "moisturizer", "moisturising", "sunscreen", "perfume", "parfum", "eau", "edp", "baby", "skin", "hair", "care", "plus", "total", "repair"]);
       const tokenize = value => new Set(normalize(value).replace(/[^a-z0-9]+/g, " ").split(" ").filter(token => token.length > 2 && !ignoredTerms.has(token)));
       const knownBrands = ["l'oréal paris", "johnson's", "clinic plus", "tütots", "park avenue", "bajaj", "mylo", "himalaya", "tresemmé", "aqualogica", "biotique", "mcaffeine", "caffeine", "cerave", "wishful", "pond's", "cetaphil", "jovees", "neutrogena", "nivea", "denver", "beardo", "the man company", "ciccio", "skinn", "wild stone", "bella vita", "sonata", "fastrack", "vlcc", "oxyglow", "bombay shaving company", "veet", "globus naturals", "muuchstac", "lakmé", "neud", "joy"];
+      knownBrands.push("jean paul gaultier", "jaguar", "viktor&rolf", "davidoff", "u.s. polo assn.", "john varvatos", "armaf", "tommy", "rabanne", "ralph lauren", "guess", "ferragamo", "benetton", "police", "diesel", "adidas", "axe");
       const canonicalBrandText = value => normalize(value).replace(/\u00c3\u00a9/g, "\u00e9").replace(/\u00c3\u00bc/g, "\u00fc");
       const findBrand = value => knownBrands.find(brand => canonicalBrandText(value).includes(canonicalBrandText(brand))) || "";
       const relatedCategories = {
@@ -167,7 +212,9 @@
         "face-care": ["skin-care", "sun-care"],
         "sun-care": ["skin-care", "face-care"],
         "baby-care": ["hair-care", "skin-care"],
-        perfume: ["watches"],
+        perfume: ["watches", "apparel", "footwear"],
+        apparel: ["footwear", "watches", "perfume"],
+        footwear: ["apparel", "watches", "perfume"],
         watches: ["perfume"]
       };
       const loadRecommendations = async () => {
