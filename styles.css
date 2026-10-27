@@ -3717,6 +3717,86 @@ body.drawer-open {
   outline-offset: 3px;
 }
 
+.featured-shelf {
+  margin: 18px 0 20px;
+  padding: 18px;
+  border: 1px solid #ececee;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 6px 22px rgba(24, 24, 28, 0.045);
+}
+
+.featured-shelf[hidden] {
+  display: none;
+}
+
+.featured-shelf-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 13px;
+}
+
+.featured-shelf-heading .mini-kicker {
+  margin: 0 0 3px;
+  color: #ba1d2a;
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.13em;
+  text-transform: uppercase;
+}
+
+.featured-shelf-heading h2 {
+  margin: 0;
+  color: #202126;
+  font: 800 1.7rem/1 "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+}
+
+.featured-shelf-controls {
+  display: flex;
+  gap: 7px;
+}
+
+.shelf-scroll-button {
+  display: grid;
+  width: 36px;
+  height: 36px;
+  place-items: center;
+  border: 1px solid #e5dadd;
+  border-radius: 50%;
+  background: #fff;
+  color: #b71927;
+  font: 700 1.5rem/1 "Manrope", sans-serif;
+  cursor: pointer;
+}
+
+.shelf-scroll-button:hover,
+.shelf-scroll-button:focus-visible {
+  border-color: #e31b2b;
+  background: #fff1f2;
+}
+
+.featured-shelf-track {
+  display: grid;
+  grid-auto-columns: calc((100% - 42px) / 4);
+  grid-auto-flow: column;
+  gap: 14px;
+  overflow-x: auto;
+  padding: 2px 2px 12px;
+  overscroll-behavior-inline: contain;
+  scroll-snap-type: x mandatory;
+  scrollbar-color: rgba(183, 25, 39, 0.45) #f2f2f3;
+  scrollbar-width: thin;
+}
+
+.featured-shelf-track > .store-card {
+  min-width: 0;
+  height: 100%;
+  scroll-snap-align: start;
+}
+
 @media (prefers-reduced-motion: reduce) {
   .store-inline-promo img {
     transition: none;
@@ -3970,6 +4050,26 @@ body.drawer-open {
     display: none;
   }
 
+  .featured-shelf {
+    margin: 14px 0 16px;
+    padding: 13px;
+    border-radius: 12px;
+  }
+
+  .featured-shelf-heading h2 {
+    font-size: 1.5rem;
+  }
+
+  .shelf-scroll-button {
+    width: 32px;
+    height: 32px;
+  }
+
+  .featured-shelf-track {
+    grid-auto-columns: calc((100% - 9px) / 2);
+    gap: 9px;
+  }
+
   .store-page .wrap {
     width: min(100% - 24px, 1280px);
   }
@@ -4057,6 +4157,7 @@ body.drawer-open {
   .store-page .catalog-title {
     font-size: 1.65rem;
     line-height: 1.04;
+    text-align: left;
   }
 
   .store-assurance {
