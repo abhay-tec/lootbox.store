@@ -195,6 +195,7 @@
 <script src="reviews-config.js"></script>
 <script src="reviews.js"></script>
 <script src="auth-client.js"></script>
+<script src="product-prices.js"></script>
 <script>
   (() => {
     const storageKey = "reclaim-edit-cart";
@@ -371,16 +372,31 @@
       confirmCancelButton.textContent = "Cancelling…";
       cancelStatus.textContent = "";
       try {
-        const changed = await window.LootboxBackend.request(`store_orders?id=eq.${encodeURIComponent(orderPendingCancellation.id)}&user_id=eq.${encodeURIComponent(customer.id)}&status=eq.pending`, {
+        const cancelUrl = `store_orders?id=eq.${encodeURIComponent(orderPendingCancellation.id)}&user_id=eq.${encodeURIComponent(customer.id)}&status=eq.pending`;
+        const cancelOptions = {
           method: "PATCH",
           headers: { "Content-Type": "application/json", Prefer: "return=representation" },
           body: JSON.stringify({ status: "cancelled", cancelled_by: "customer", cancellation_reason: cancelReason.value })
-        });
+        };
+        let reasonSaved = true;
+        let changed;
+        try {
+          changed = await window.LootboxBackend.request(cancelUrl, cancelOptions);
+        } catch (error) {
+          if (!error.message?.includes("cancellation_reason")) throw error;
+          reasonSaved = false;
+          changed = await window.LootboxBackend.request(cancelUrl, {
+            ...cancelOptions,
+            body: JSON.stringify({ status: "cancelled", cancelled_by: "customer" })
+          });
+        }
         if (!changed?.length) throw new Error("This order can no longer be cancelled.");
         orders = orders.filter(order => order.id !== orderPendingCancellation.id);
         renderOrders();
         cancelDialog.close();
-        drawerMessage.textContent = "Order cancelled and removed from your order list.";
+        drawerMessage.textContent = reasonSaved
+          ? "Order cancelled and removed from your order list."
+          : "Order cancelled and removed. Run the latest supabase-orders.sql to save cancellation reasons.";
       } catch (error) {
         cancelStatus.textContent = error.message || "Could not cancel this order.";
       } finally {
@@ -607,6 +623,13 @@
     document.querySelectorAll(".store-card").forEach(card => {
       const name = card.querySelector("h3").textContent.trim();
       const productImage = card.querySelector(".store-image-wrap img").getAttribute("src");
+      const verifiedPrice = window.ReclaimProductPrices?.get(name);
+      if (verifiedPrice) {
+        const priceElement = card.querySelector(".store-price");
+        priceElement.innerHTML = window.ReclaimProductPrices.markup(verifiedPrice);
+        priceElement.setAttribute("aria-label", `Original online price ${window.ReclaimProductPrices.money(verifiedPrice.mrp)}, now ${window.ReclaimProductPrices.money(verifiedPrice.sale)}, 40 percent off, ${verifiedPrice.size}`);
+        priceElement.title = `Reference listing: ${verifiedPrice.source}`;
+      }
       const openProduct = () => {
         const params = new URLSearchParams({
           name,
