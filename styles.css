@@ -3019,6 +3019,588 @@ body.drawer-open {
   }
 }
 
+/* Storefront layout inspired by the reference, using Lootbox's own product art. */
+.store-page {
+  color: #202126;
+  background: #f7f7f6;
+}
+
+.store-page::before {
+  display: none;
+}
+
+.store-page .topbar {
+  background: rgba(255, 255, 255, 0.97);
+  border-bottom-color: #e8e8e8;
+}
+
+.store-page .topbar-inner {
+  grid-template-columns: minmax(190px, 1fr) minmax(320px, 540px) 46px;
+  gap: clamp(16px, 3vw, 42px);
+  min-height: 72px;
+}
+
+.store-brand {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  gap: 9px;
+  color: #161719;
+  font-family: "Barlow Condensed", sans-serif;
+  font-size: 1.7rem;
+  font-weight: 800;
+  letter-spacing: 0.015em;
+  line-height: 0.88;
+  text-decoration: none;
+}
+
+.store-brand svg {
+  width: 34px;
+  height: 34px;
+  fill: none;
+  stroke: var(--accent);
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2.4;
+}
+
+.store-brand span {
+  display: grid;
+  gap: 4px;
+}
+
+.store-brand small {
+  color: #77797d;
+  font: 700 0.48rem/1 "Manrope", sans-serif;
+  letter-spacing: 0.13em;
+}
+
+.store-page .header-search {
+  width: 100%;
+  max-width: 540px;
+}
+
+.store-page .search-button {
+  min-width: 84px;
+  background: #e51b2b;
+}
+
+.store-page .menu-toggle {
+  grid-column: 3;
+  grid-row: 1;
+  justify-self: end;
+  width: 42px;
+  height: 42px;
+  border-color: #e7e7e7;
+  background: #fff;
+}
+
+.store-page .account-drawer {
+  top: 120px;
+}
+
+.store-page .menu-scrim {
+  inset: 120px 0 0;
+}
+
+.store-category-nav {
+  border-bottom: 1px solid #e9e9e9;
+  background: #fff;
+}
+
+.category-nav-inner {
+  display: flex;
+  min-height: 48px;
+  align-items: stretch;
+  gap: clamp(15px, 3vw, 34px);
+  overflow-x: auto;
+  scrollbar-width: none;
+}
+
+.category-nav-inner::-webkit-scrollbar {
+  display: none;
+}
+
+.category-nav-button {
+  position: relative;
+  flex: 0 0 auto;
+  padding: 0 2px;
+  border: 0;
+  background: transparent;
+  color: #54565a;
+  font: 700 0.77rem/1 "Manrope", sans-serif;
+  cursor: pointer;
+}
+
+.category-nav-button:hover,
+.category-nav-button.is-active {
+  color: #17181b;
+}
+
+.category-nav-button.is-active::after {
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 3px;
+  border-radius: 3px 3px 0 0;
+  background: var(--accent);
+  content: "";
+}
+
+.category-nav-button:focus-visible,
+.quick-category-button:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 3px;
+}
+
+.store-page .wrap {
+  width: min(1280px, calc(100% - 48px));
+}
+
+.store-page-main {
+  padding: 0;
+}
+
+.store-page-hero {
+  padding: 18px 0 0;
+}
+
+.store-page-banner {
+  border-radius: 15px;
+  background: #171316;
+  box-shadow: 0 12px 34px rgba(21, 15, 17, 0.12);
+}
+
+.quick-category-section {
+  padding: 23px 0 8px;
+}
+
+.store-subheading,
+.store-header {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 18px;
+}
+
+.store-subheading {
+  margin-bottom: 13px;
+}
+
+.store-subheading .mini-kicker,
+.store-header .mini-kicker {
+  margin: 0 0 4px;
+  color: #ba1d2a;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
+.store-subheading h2 {
+  margin: 0;
+  color: #202126;
+  font: 800 clamp(1.55rem, 2.5vw, 2rem)/1 "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+}
+
+.store-subheading > a,
+.store-view-all {
+  color: #b71927;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.store-subheading > a:hover,
+.store-view-all:hover {
+  color: #e31b2b;
+  text-decoration: underline;
+}
+
+.quick-category-filters {
+  display: grid;
+  grid-template-columns: repeat(8, minmax(0, 1fr));
+  gap: 10px;
+  overflow: visible;
+  padding: 0;
+}
+
+.quick-category-button {
+  display: grid;
+  grid-template-columns: 44px minmax(0, 1fr) 27px;
+  flex: initial;
+  min-width: 0;
+  min-height: 66px;
+  align-items: center;
+  justify-items: start;
+  gap: 8px;
+  padding: 9px;
+  border: 1px solid #ececee;
+  border-radius: 10px;
+  background: #fff;
+  color: #27282c;
+  font-size: 0.72rem;
+  font-weight: 800;
+  text-align: left;
+  box-shadow: 0 3px 12px rgba(24, 24, 28, 0.035);
+  transition: border-color 160ms ease, box-shadow 160ms ease, transform 160ms ease;
+}
+
+.quick-category-button:hover,
+.quick-category-button.is-active {
+  border-color: rgba(227, 27, 43, 0.48);
+  background: #fff;
+  color: #202126;
+  box-shadow: 0 7px 18px rgba(24, 24, 28, 0.08);
+  transform: translateY(-2px);
+}
+
+.quick-category-button .category-image {
+  width: 42px;
+  height: 42px;
+  border: 0;
+  border-radius: 8px;
+  background: #f4f4f4;
+}
+
+.quick-category-button .category-image img {
+  object-fit: contain;
+  transform: none;
+}
+
+.quick-category-arrow {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  place-items: center;
+  border-radius: 50%;
+  background: #fff1f2;
+  color: #c61c2b;
+  font-size: 0.9rem;
+}
+
+.store-assurance {
+  padding: 15px 0 24px;
+}
+
+.assurance-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid #ececee;
+  border-radius: 12px;
+  background: #fff;
+}
+
+.assurance-item {
+  display: flex;
+  min-height: 72px;
+  align-items: center;
+  gap: 12px;
+  padding: 12px clamp(12px, 2vw, 24px);
+}
+
+.assurance-item + .assurance-item {
+  border-left: 1px solid #ededee;
+}
+
+.assurance-icon {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  place-items: center;
+  border: 1px solid #edc7ca;
+  border-radius: 50%;
+  color: #b71c2a;
+  font-size: 1.2rem;
+  font-weight: 800;
+}
+
+.assurance-item > span:last-child {
+  display: grid;
+  gap: 4px;
+}
+
+.assurance-item strong {
+  color: #242529;
+  font-size: 0.77rem;
+}
+
+.assurance-item small {
+  color: #77797d;
+  font-size: 0.66rem;
+  line-height: 1.4;
+}
+
+.store-section {
+  padding: 0 0 46px;
+}
+
+.store-page .store-shell {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: #202126;
+  box-shadow: none;
+}
+
+.store-page .store-header {
+  padding: 0 0 15px;
+}
+
+.store-page .catalog-title {
+  color: #202126;
+  font: 800 clamp(1.8rem, 3vw, 2.4rem)/1 "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+}
+
+.store-results-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 13px;
+}
+
+.store-results-bar .store-counter,
+.store-results-bar .results-count {
+  margin: 0;
+  color: #75767a;
+  font-size: 0.72rem;
+  font-weight: 600;
+}
+
+.store-grid {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  grid-auto-rows: auto;
+  gap: 14px;
+}
+
+.store-page .store-card {
+  min-width: 0;
+  border: 1px solid #e9e9eb;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 4px 16px rgba(27, 27, 32, 0.045);
+}
+
+.store-page .store-card:hover {
+  border-color: rgba(227, 27, 43, 0.35);
+  box-shadow: 0 12px 26px rgba(27, 27, 32, 0.11);
+  transform: translateY(-4px);
+}
+
+.store-page .store-image-wrap {
+  aspect-ratio: 1 / 0.88;
+  background: #f7f7f7;
+}
+
+.store-page .store-image-wrap img {
+  padding: 9px;
+  object-fit: contain;
+  object-position: center;
+  transform: none;
+  filter: none;
+}
+
+.store-page .store-image-wrap img[src*="/perfumes/"] {
+  object-position: center;
+}
+
+.store-page .store-card-body {
+  padding: 12px;
+}
+
+.store-page .store-card-body h3 {
+  height: 2.5em;
+  margin-bottom: 8px;
+  color: #25262a;
+  font: 700 1.04rem/1.2 "Barlow Condensed", sans-serif;
+  -webkit-line-clamp: 2;
+}
+
+.store-page .store-price {
+  padding-top: 7px;
+  color: #6e7074;
+  font-size: 0.77rem;
+}
+
+.store-page .store-review-summary {
+  color: #717277;
+}
+
+.store-page .store-card-actions {
+  gap: 6px;
+  margin-top: 12px;
+}
+
+.store-page .add-to-cart,
+.store-page .buy-now {
+  min-height: 36px;
+  padding: 5px 7px;
+  border-radius: 5px;
+  font-size: 0.68rem;
+}
+
+.store-page .add-to-cart {
+  border-color: #bd1b29;
+  color: #a71623;
+}
+
+.store-page .add-to-cart:hover,
+.store-page .buy-now {
+  background: #e31b2b;
+  color: #fff;
+}
+
+.store-page .buy-now:hover {
+  background: #b71522;
+}
+
+@media (max-width: 1050px) {
+  .quick-category-filters {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+
+  .store-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 720px) {
+  .store-page .wrap {
+    width: min(100% - 24px, 1280px);
+  }
+
+  .store-page .topbar-inner {
+    grid-template-columns: minmax(0, 1fr) 42px;
+    gap: 10px 12px;
+    padding: 10px 0;
+  }
+
+  .store-page .store-brand {
+    grid-column: 1;
+    grid-row: 1;
+    font-size: 1.45rem;
+  }
+
+  .store-page .menu-toggle {
+    grid-column: 2;
+    grid-row: 1;
+  }
+
+  .store-page .header-search {
+    grid-column: 1 / -1;
+    grid-row: 2;
+    max-width: none;
+  }
+
+  .store-page .account-drawer {
+    top: 0;
+  }
+
+  .store-page .menu-scrim {
+    inset: 0;
+  }
+
+  .store-page .category-nav-inner {
+    min-height: 42px;
+    gap: 22px;
+  }
+
+  .store-page .store-page-banner {
+    border-radius: 10px;
+  }
+
+  .quick-category-filters {
+    grid-template-columns: repeat(4, minmax(138px, 1fr));
+    overflow-x: auto;
+    padding: 2px 1px 10px;
+    scrollbar-width: thin;
+  }
+
+  .assurance-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .assurance-item {
+    min-height: 62px;
+  }
+
+  .assurance-item + .assurance-item {
+    border-top: 1px solid #ededee;
+    border-left: 0;
+  }
+
+  .store-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .store-page .wrap {
+    width: calc(100% - 20px);
+  }
+
+  .store-page-hero {
+    padding-top: 10px;
+  }
+
+  .quick-category-section {
+    padding-top: 17px;
+  }
+
+  .store-subheading h2 {
+    font-size: 1.45rem;
+  }
+
+  .store-page .store-header {
+    align-items: end;
+  }
+
+  .store-page .catalog-title {
+    font-size: 1.8rem;
+  }
+
+  .store-results-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .store-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+
+  .store-page .store-image-wrap {
+    aspect-ratio: 1 / 0.92;
+  }
+
+  .store-page .store-card-body {
+    padding: 9px;
+  }
+
+  .store-page .store-card-body h3 {
+    height: 2.55em;
+    font-size: 0.94rem;
+  }
+
+  .store-page .store-card-actions {
+    gap: 4px;
+  }
+
+  .store-page .add-to-cart,
+  .store-page .buy-now {
+    min-height: 34px;
+    padding: 4px 3px;
+    font-size: 0.6rem;
+  }
+}
+
 .setting-option {
   display: flex;
   align-items: center;
