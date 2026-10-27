@@ -3667,6 +3667,43 @@ body.drawer-open {
   padding: 0;
 }
 
+.store-inline-promo {
+  grid-column: 1 / -1;
+  display: block;
+  overflow: hidden;
+  border: 1px solid rgba(19, 43, 63, 0.1);
+  border-radius: 14px;
+  background: #eaf5fc;
+  box-shadow: 0 8px 26px rgba(20, 35, 50, 0.1);
+}
+
+.store-inline-promo[hidden] {
+  display: none;
+}
+
+.store-inline-promo img {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1984 / 768;
+  object-fit: cover;
+  transition: transform 280ms ease;
+}
+
+.store-inline-promo:hover img {
+  transform: scale(1.012);
+}
+
+.store-inline-promo:focus-visible {
+  outline: 3px solid var(--accent);
+  outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .store-inline-promo img {
+    transition: none;
+  }
+}
+
 .quick-category-button {
   display: grid;
   grid-template-columns: 44px minmax(0, 1fr) 27px;

@@ -180,6 +180,7 @@
         <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-pv5dq4pv5dq4pv5d.png" alt="Ciccio for Women Luxe Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>Ciccio for Women Luxe Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-vooejrvooejrvooe.png" alt="SKINN Body Mist Apple Jasmine" loading="lazy"></div><div class="store-card-body"><h3>SKINN Body Mist Apple Jasmine</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-xhgyomxhgyomxhgy.png" alt="Wild Stone Code Terra EDP" loading="lazy"></div><div class="store-card-body"><h3>Wild Stone Code Terra EDP</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <a class="store-inline-promo" href="#collection" aria-label="Browse the fragrance collection"><img src="assets/store/banners/premium-perfumes-mountains.png" alt="Premium perfumes — tap to browse the fragrance collection" loading="lazy"></a>
         <article class="store-card" data-category="perfume"><div class="store-image-wrap"><img src="assets/store/perfumes/gemini-generated-image-y83cn6y83cn6y83c.png" alt="Bella Vita White Oud Eau de Parfum" loading="lazy"></div><div class="store-card-body"><h3>Bella Vita White Oud Eau de Parfum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="skin-care"><div class="store-image-wrap"><img src="assets/store/cosmetics/nivea-soft-spa-glow.jpg" alt="NIVEA Soft Spa Glow Moisturizer" loading="lazy"></div><div class="store-card-body"><h3>NIVEA Soft Spa Glow Moisturizer</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="watches"><div class="store-image-wrap"><img src="assets/store/watches/sonata-black-dial-yellow-accents.jpg" alt="Sonata Black Dial Analog Watch with Yellow Accents" loading="lazy"></div><div class="store-card-body"><h3>Sonata Black Dial Analog Watch with Yellow Accents</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
@@ -715,6 +716,7 @@
     const searchInput = document.getElementById("product-query");
     const resultsCount = document.getElementById("results-count");
     const noResults = document.getElementById("no-results");
+    const perfumePromo = document.querySelector(".store-inline-promo");
     let activeCategory = "all";
     let searchTerm = "";
     const filterProducts = () => {
@@ -728,7 +730,13 @@
       });
       resultsCount.textContent = `Showing ${visible} of ${cards.length} products`;
       noResults.hidden = visible !== 0;
+      perfumePromo.hidden = Boolean(searchTerm) || (activeCategory !== "all" && activeCategory !== "perfume");
     };
+    perfumePromo.addEventListener("click", event => {
+      event.preventDefault();
+      document.querySelector('.category-button[data-filter="perfume"]').click();
+      document.getElementById("collection").scrollIntoView({ behavior: "smooth", block: "start" });
+    });
     searchForm.addEventListener("submit", event => {
       event.preventDefault();
       searchTerm = searchInput.value.trim().toLowerCase();
