@@ -3019,6 +3019,492 @@ body.drawer-open {
   }
 }
 
+/* Product pages: image-led split layout with catalog-matched recommendations. */
+.product-detail-page {
+  color: #222327;
+  background: #f4f4f3;
+}
+
+.product-detail-page::before {
+  display: none;
+}
+
+.product-detail-wrap {
+  width: min(1200px, calc(100% - 40px));
+  padding: 24px 0 56px;
+}
+
+.product-detail-back {
+  min-height: 38px;
+  margin-bottom: 14px;
+  color: #333438;
+  font-size: 0.88rem;
+}
+
+.product-detail-back:hover {
+  color: #c51b29;
+}
+
+.product-detail-card {
+  grid-template-columns: minmax(0, 1.03fr) minmax(0, 0.97fr);
+  min-height: 530px;
+  border: 1px solid #e5e5e5;
+  border-radius: 12px;
+  background: #242428;
+  box-shadow: 0 18px 45px rgba(20, 20, 24, 0.14);
+}
+
+.product-detail-image {
+  min-height: 530px;
+  padding: clamp(20px, 4vw, 54px);
+  background: #fff;
+}
+
+.product-detail-image img {
+  max-height: 510px;
+  object-fit: contain;
+}
+
+.product-detail-copy {
+  justify-content: center;
+  padding: clamp(26px, 4vw, 52px);
+  background: linear-gradient(150deg, #2b2b30, #202024);
+}
+
+.product-detail-brand {
+  display: grid;
+  gap: 4px;
+  margin: 0 0 26px;
+  color: #fff;
+  font: 800 1.06rem/1 "Barlow Condensed", sans-serif;
+  letter-spacing: 0.06em;
+}
+
+.product-detail-brand span {
+  color: rgba(255, 255, 255, 0.5);
+  font: 700 0.52rem/1 "Manrope", sans-serif;
+  letter-spacing: 0.16em;
+}
+
+.product-detail-category {
+  margin-bottom: 8px;
+  color: #ff6671;
+  font-size: 0.68rem;
+}
+
+.product-detail-copy h1 {
+  max-width: 19ch;
+  margin-bottom: 14px;
+  font-size: clamp(2.2rem, 4vw, 3.3rem);
+}
+
+.product-detail-price {
+  margin-bottom: 18px;
+  font-size: 1.25rem;
+}
+
+.product-detail-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 21px;
+  width: 100%;
+  margin-bottom: 16px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+.product-detail-tabs a {
+  position: relative;
+  padding: 0 0 11px;
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.07em;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.product-detail-tabs a:first-child,
+.product-detail-tabs a:hover {
+  color: #fff;
+}
+
+.product-detail-tabs a:first-child::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: #ed1b2e;
+  content: "";
+}
+
+.product-detail-note {
+  max-width: 46ch;
+  margin-bottom: 22px;
+  color: rgba(255, 255, 255, 0.72);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.product-detail-actions {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  width: 100%;
+  gap: 9px;
+}
+
+.product-detail-actions button,
+.product-detail-actions a {
+  min-height: 46px;
+  border-radius: 7px;
+  font-size: 0.86rem;
+}
+
+.product-detail-actions .detail-cart {
+  border-color: rgba(255, 255, 255, 0.62);
+  background: transparent;
+  color: #fff;
+}
+
+.product-detail-actions .detail-cart:hover {
+  border-color: #fff;
+  background: rgba(255, 255, 255, 0.1);
+}
+
+.product-detail-actions a {
+  background: #e31b2b;
+}
+
+.product-detail-actions a:hover {
+  background: #bd1422;
+}
+
+.product-detail-status {
+  color: #ff737d;
+}
+
+.product-recommendations {
+  margin-top: 28px;
+  padding: 24px;
+  border: 1px solid #e8e8e8;
+  border-radius: 12px;
+  background: #fff;
+  box-shadow: 0 8px 24px rgba(20, 20, 24, 0.055);
+}
+
+.product-recommendations[hidden] {
+  display: none;
+}
+
+.recommendations-heading-row {
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 18px;
+}
+
+.product-recommendations-kicker {
+  margin: 0 0 4px;
+  color: #c31c2a;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.recommendations-heading-row h2 {
+  margin: 0;
+  color: #202126;
+  font: 800 clamp(1.65rem, 3vw, 2.2rem)/1 "Barlow Condensed", sans-serif;
+  text-transform: uppercase;
+}
+
+.recommendations-heading-row > a {
+  color: #b71927;
+  font-size: 0.78rem;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.recommendations-heading-row > a:hover {
+  text-decoration: underline;
+}
+
+.recommendation-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 13px;
+}
+
+.recommendation-card {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid #e9e9eb;
+  border-radius: 9px;
+  background: #fff;
+  transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.recommendation-card:hover {
+  box-shadow: 0 10px 24px rgba(22, 22, 28, 0.11);
+  transform: translateY(-3px);
+}
+
+.recommendation-image {
+  display: grid;
+  aspect-ratio: 1 / 0.84;
+  place-items: center;
+  overflow: hidden;
+  background: #f6f6f6;
+}
+
+.recommendation-image img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  padding: 10px;
+  object-fit: contain;
+}
+
+.recommendation-card-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  padding: 11px;
+}
+
+.recommendation-category {
+  margin: 0 0 5px;
+  color: #bd1b29;
+  font-size: 0.61rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.recommendation-title {
+  display: -webkit-box;
+  min-height: 2.45em;
+  overflow: hidden;
+  color: #25262a;
+  font: 700 1rem/1.22 "Barlow Condensed", sans-serif;
+  text-decoration: none;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+}
+
+.recommendation-title:hover {
+  color: #ba1826;
+}
+
+.recommendation-price {
+  margin: auto 0 8px;
+  padding-top: 10px;
+  color: #6f7075;
+  font-size: 0.73rem;
+}
+
+.recommendation-actions {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.recommendation-actions button,
+.recommendation-actions a {
+  display: grid;
+  min-width: 0;
+  min-height: 34px;
+  place-items: center;
+  padding: 4px;
+  border: 1px solid #c51a28;
+  border-radius: 5px;
+  background: transparent;
+  color: #ae1724;
+  font: 800 0.64rem/1.2 "Manrope", sans-serif;
+  text-align: center;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.recommendation-actions a {
+  background: #e31b2b;
+  color: #fff;
+}
+
+.recommendation-actions button:hover {
+  background: #fff0f1;
+}
+
+.recommendation-actions a:hover {
+  background: #bd1422;
+}
+
+.recommendation-status {
+  min-height: 1em;
+  margin: 12px 0 0;
+  color: #74757a;
+  font-size: 0.75rem;
+}
+
+.product-feedback {
+  margin-top: 26px;
+}
+
+.product-feedback h2 {
+  color: #222327;
+}
+
+.review-score-card,
+.product-comments {
+  border-color: #e7e7e8;
+  border-radius: 10px;
+  background: #fff;
+  box-shadow: 0 5px 18px rgba(20, 20, 24, 0.04);
+}
+
+.review-eyebrow {
+  color: #bd1b29;
+}
+
+.review-score {
+  color: #222327;
+}
+
+.review-score span,
+.review-count,
+.comments-empty,
+.comment-count,
+.review-form-status {
+  color: #72747a;
+}
+
+.market-review-link {
+  color: #b71927;
+}
+
+.product-comment {
+  border-color: #e9e9eb;
+  background: #f8f8f8;
+}
+
+.product-comment-heading strong,
+.comment-label,
+.rating-fieldset legend {
+  color: #27282c;
+}
+
+.product-comment p {
+  color: #4f5055;
+}
+
+.product-comment time {
+  color: #85868a;
+}
+
+.review-form {
+  border-top-color: #e8e8e8;
+}
+
+.rating-picker label {
+  color: #dedee0;
+}
+
+.rating-picker input:focus-visible + label {
+  outline-color: #c51a28;
+}
+
+.review-form textarea {
+  border-color: #d8d8da;
+  background: #fff;
+  color: #232429;
+}
+
+.review-form textarea:focus-visible {
+  outline-color: #c51a28;
+}
+
+@media (max-width: 760px) {
+  .product-detail-wrap {
+    width: min(100% - 24px, 620px);
+    padding-top: 14px;
+  }
+
+  .product-detail-card {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .product-detail-image {
+    min-height: 0;
+    aspect-ratio: 1 / 0.85;
+    padding: 14px;
+  }
+
+  .product-detail-copy {
+    padding: 24px;
+  }
+
+  .product-detail-brand {
+    margin-bottom: 18px;
+  }
+
+  .recommendation-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 9px;
+  }
+}
+
+@media (max-width: 420px) {
+  .product-detail-wrap {
+    width: calc(100% - 18px);
+  }
+
+  .product-detail-copy {
+    padding: 18px;
+  }
+
+  .product-detail-tabs {
+    gap: 14px;
+  }
+
+  .product-detail-tabs a {
+    font-size: 0.57rem;
+  }
+
+  .product-detail-actions {
+    gap: 7px;
+  }
+
+  .product-detail-actions button,
+  .product-detail-actions a {
+    min-height: 42px;
+    padding: 0 9px;
+    font-size: 0.76rem;
+  }
+
+  .product-recommendations {
+    padding: 14px;
+  }
+
+  .recommendations-heading-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 9px;
+  }
+
+  .recommendation-card-body {
+    padding: 8px;
+  }
+
+  .recommendation-actions button,
+  .recommendation-actions a {
+    font-size: 0.57rem;
+  }
+}
+
 /* Storefront layout inspired by the reference, using Lootbox's own product art. */
 .store-page {
   color: #202126;
@@ -3096,59 +3582,13 @@ body.drawer-open {
 }
 
 .store-page .account-drawer {
-  top: 120px;
+  top: 72px;
 }
 
 .store-page .menu-scrim {
-  inset: 120px 0 0;
+  inset: 72px 0 0;
 }
 
-.store-category-nav {
-  border-bottom: 1px solid #e9e9e9;
-  background: #fff;
-}
-
-.category-nav-inner {
-  display: flex;
-  min-height: 48px;
-  align-items: stretch;
-  gap: clamp(15px, 3vw, 34px);
-  overflow-x: auto;
-  scrollbar-width: none;
-}
-
-.category-nav-inner::-webkit-scrollbar {
-  display: none;
-}
-
-.category-nav-button {
-  position: relative;
-  flex: 0 0 auto;
-  padding: 0 2px;
-  border: 0;
-  background: transparent;
-  color: #54565a;
-  font: 700 0.77rem/1 "Manrope", sans-serif;
-  cursor: pointer;
-}
-
-.category-nav-button:hover,
-.category-nav-button.is-active {
-  color: #17181b;
-}
-
-.category-nav-button.is-active::after {
-  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  height: 3px;
-  border-radius: 3px 3px 0 0;
-  background: var(--accent);
-  content: "";
-}
-
-.category-nav-button:focus-visible,
 .quick-category-button:focus-visible {
   outline: 2px solid var(--accent);
   outline-offset: 3px;
@@ -3503,11 +3943,6 @@ body.drawer-open {
 
   .store-page .menu-scrim {
     inset: 0;
-  }
-
-  .store-page .category-nav-inner {
-    min-height: 42px;
-    gap: 22px;
   }
 
   .store-page .store-page-banner {

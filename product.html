@@ -16,16 +16,22 @@
     <article class="product-detail-card" id="product-detail" hidden>
       <div class="product-detail-image"><img id="detail-image" alt=""></div>
       <div class="product-detail-copy">
+        <p class="product-detail-brand">LOOTBOX <span>THE RECLAIM EDIT</span></p>
         <p class="product-detail-category" id="detail-category"></p>
         <h1 id="detail-name"></h1>
         <p class="product-detail-price">Ask for price</p>
-        <p class="product-detail-note">Ask us to confirm stock and price before ordering.</p>
+        <nav class="product-detail-tabs" aria-label="Product information">
+          <a href="#detail-description">Description</a>
+          <a href="#product-specs">Details</a>
+          <a href="#product-feedback">Reviews &amp; comments</a>
+        </nav>
+        <p class="product-detail-note" id="detail-description">Ask us to confirm stock and price before ordering.</p>
         <div class="product-detail-actions">
           <button class="detail-cart" id="detail-add-cart" type="button">Add to Cart</button>
           <a id="detail-buy-now" href="#" target="_blank" rel="noreferrer">Buy Now</a>
         </div>
         <p class="product-detail-status" id="detail-status" role="status" aria-live="polite"></p>
-        <details class="product-specs">
+        <details class="product-specs" id="product-specs">
           <summary id="product-specs-heading">Product details <span>View specs, ingredients &amp; source</span></summary>
           <ul id="detail-facts"></ul>
           <p class="product-specs-unverified" id="detail-unverified" hidden>We couldn’t verify details for this exact product variant online. Please confirm the size and label information on the item before ordering.</p>
@@ -35,6 +41,11 @@
       </div>
     </article>
     <p id="product-missing" hidden>Product not found. <a href="store.html">Return to the shop</a>.</p>
+    <section class="product-recommendations" id="product-recommendations" aria-labelledby="recommendations-heading" hidden>
+      <div class="recommendations-heading-row"><div><p class="product-recommendations-kicker">Picked for this product</p><h2 id="recommendations-heading">You may also like</h2></div><a href="store.html#collection">View all finds <span aria-hidden="true">&rarr;</span></a></div>
+      <div class="recommendation-grid" id="recommendation-grid"></div>
+      <p class="recommendation-status" id="recommendation-status" role="status" aria-live="polite"></p>
+    </section>
     <div class="product-feedback" id="product-feedback" hidden>
       <div class="review-score-grid">
         <section class="review-score-card" aria-labelledby="market-reviews-heading">
@@ -142,6 +153,107 @@
       };
 
       const normalize = value => value.toLocaleLowerCase().replace(/\s+/g, " ").trim();
+      const recommendationSection = document.getElementById("product-recommendations");
+      const recommendationGrid = document.getElementById("recommendation-grid");
+      const recommendationStatus = document.getElementById("recommendation-status");
+      const ignoredTerms = new Set(["the", "and", "for", "with", "from", "your", "men", "women", "face", "wash", "shampoo", "cream", "serum", "lotion", "moisturizer", "moisturising", "sunscreen", "perfume", "parfum", "eau", "edp", "baby", "skin", "hair", "care", "plus", "total", "repair"]);
+      const tokenize = value => new Set(normalize(value).replace(/[^a-z0-9]+/g, " ").split(" ").filter(token => token.length > 2 && !ignoredTerms.has(token)));
+      const knownBrands = ["l'oréal paris", "johnson's", "clinic plus", "tütots", "park avenue", "bajaj", "mylo", "himalaya", "tresemmé", "aqualogica", "biotique", "mcaffeine", "caffeine", "cerave", "wishful", "pond's", "cetaphil", "jovees", "neutrogena", "nivea", "denver", "beardo", "the man company", "ciccio", "skinn", "wild stone", "bella vita", "sonata", "fastrack", "vlcc", "oxyglow", "bombay shaving company", "veet", "globus naturals", "muuchstac", "lakmé", "neud", "joy"];
+      const canonicalBrandText = value => normalize(value).replace(/\u00c3\u00a9/g, "\u00e9").replace(/\u00c3\u00bc/g, "\u00fc");
+      const findBrand = value => knownBrands.find(brand => canonicalBrandText(value).includes(canonicalBrandText(brand))) || "";
+      const relatedCategories = {
+        "hair-care": ["skin-care", "face-care"],
+        "skin-care": ["face-care", "sun-care"],
+        "face-care": ["skin-care", "sun-care"],
+        "sun-care": ["skin-care", "face-care"],
+        "baby-care": ["hair-care", "skin-care"],
+        perfume: ["watches"],
+        watches: ["perfume"]
+      };
+      const loadRecommendations = async () => {
+        try {
+          const response = await fetch("store.html", { cache: "no-store" });
+          if (!response.ok) throw new Error("Product catalog is unavailable.");
+          const catalogDocument = new DOMParser().parseFromString(await response.text(), "text/html");
+          const candidates = [...catalogDocument.querySelectorAll(".store-card")].map(card => ({
+            name: card.querySelector("h3")?.textContent.trim() || "",
+            image: card.querySelector("img")?.getAttribute("src") || "",
+            category: card.dataset.category || ""
+          })).filter(product => product.name && product.image.startsWith("assets/store/") && normalize(product.name) !== normalize(name));
+
+          const currentTokens = tokenize(name);
+          const currentBrand = findBrand(name);
+          const complementary = relatedCategories[category] || [];
+          const ranked = candidates.map(product => {
+            const sharedTerms = [...tokenize(product.name)].filter(token => currentTokens.has(token)).length;
+            let score = sharedTerms * 1.5;
+            if (product.category === category) score += 5;
+            if (currentBrand && findBrand(product.name) === currentBrand) score += 7;
+            if (complementary.includes(product.category)) score += 1;
+            return { ...product, score };
+          }).sort((first, second) => second.score - first.score || first.name.localeCompare(second.name));
+
+          recommendationGrid.replaceChildren();
+          ranked.slice(0, 4).forEach(product => {
+            const card = document.createElement("article");
+            card.className = "recommendation-card";
+            const params = new URLSearchParams({ name: product.name, image: product.image, category: product.category });
+            const productUrl = `product.html?${params.toString()}`;
+            const imageLink = document.createElement("a");
+            imageLink.className = "recommendation-image";
+            imageLink.href = productUrl;
+            imageLink.setAttribute("aria-label", `View ${product.name}`);
+            const imageElement = document.createElement("img");
+            imageElement.src = product.image;
+            imageElement.alt = product.name;
+            imageElement.loading = "lazy";
+            imageLink.append(imageElement);
+
+            const body = document.createElement("div");
+            body.className = "recommendation-card-body";
+            const categoryLabel = document.createElement("p");
+            categoryLabel.className = "recommendation-category";
+            categoryLabel.textContent = categoryNames[product.category] || "Current find";
+            const titleLink = document.createElement("a");
+            titleLink.className = "recommendation-title";
+            titleLink.href = productUrl;
+            titleLink.textContent = product.name;
+            const price = document.createElement("p");
+            price.className = "recommendation-price";
+            price.textContent = "Ask for price";
+            const actions = document.createElement("div");
+            actions.className = "recommendation-actions";
+            const addButton = document.createElement("button");
+            addButton.type = "button";
+            addButton.className = "recommendation-add";
+            addButton.textContent = "Add to Cart";
+            addButton.addEventListener("click", () => {
+              const storageKey = "reclaim-edit-cart";
+              let cart = {};
+              try { cart = JSON.parse(localStorage.getItem(storageKey) || "{}"); } catch {}
+              cart[product.name] = cart[product.name] || { quantity: 0, image: product.image };
+              cart[product.name].quantity += 1;
+              try { localStorage.setItem(storageKey, JSON.stringify(cart)); } catch {}
+              recommendationStatus.textContent = `${product.name} added to your cart.`;
+              addButton.textContent = "Added";
+              window.setTimeout(() => { if (addButton.isConnected) addButton.textContent = "Add to Cart"; }, 1200);
+            });
+            const buyLink = document.createElement("a");
+            buyLink.className = "recommendation-buy";
+            buyLink.href = `store.html?checkout=1&name=${encodeURIComponent(product.name)}&image=${encodeURIComponent(product.image)}`;
+            buyLink.textContent = "Buy Now";
+            actions.append(addButton, buyLink);
+            body.append(categoryLabel, titleLink, price, actions);
+            card.append(imageLink, body);
+            recommendationGrid.append(card);
+          });
+          recommendationStatus.textContent = ranked.length ? "Recommended from the same category, brand and similar product names." : "No related finds are available right now.";
+          recommendationSection.hidden = false;
+        } catch (error) {
+          recommendationStatus.textContent = "Related finds could not be loaded right now.";
+          recommendationSection.hidden = false;
+        }
+      };
 
       if (!name || !image.startsWith("assets/store/")) {
         document.getElementById("product-missing").hidden = false;
@@ -174,9 +286,13 @@
       productImage.alt = name;
       detail.hidden = false;
       feedback.hidden = false;
+      loadRecommendations();
 
       const buyNow = document.getElementById("detail-buy-now");
       buyNow.href = `store.html?checkout=1&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}`;
+      document.querySelector('.product-detail-tabs a[href="#product-specs"]').addEventListener("click", () => {
+        document.getElementById("product-specs").open = true;
+      });
       document.getElementById("detail-add-cart").addEventListener("click", () => {
         const storageKey = "reclaim-edit-cart";
         let cart = {};
