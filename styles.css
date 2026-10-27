@@ -3255,17 +3255,20 @@ body.drawer-open {
 
 .recommendation-image {
   display: grid;
-  aspect-ratio: 1 / 0.84;
+  aspect-ratio: 1 / 1;
   place-items: center;
   overflow: hidden;
+  padding: 10px;
   background: #f6f6f6;
 }
 
 .recommendation-image img {
   display: block;
-  width: 100%;
-  height: 100%;
-  padding: 10px;
+  width: auto;
+  height: auto;
+  max-width: 100%;
+  max-height: 100%;
+  padding: 0;
   object-fit: contain;
 }
 
@@ -3469,9 +3472,11 @@ body.drawer-open {
   }
 
   .recommendation-image img {
-    width: 100%;
-    height: 100%;
-    padding: 10px;
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    padding: 0;
     object-fit: contain;
   }
 }
