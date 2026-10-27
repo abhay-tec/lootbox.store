@@ -810,15 +810,15 @@
     let activeCategory = "all";
     let searchTerm = "";
     const searchCategoryTerms = {
-      "hair-care": "hair shampoo conditioner",
-      "skin-care": "skin moisturizer lotion",
-      "baby-care": "baby kids",
-      "sun-care": "sun sunscreen",
-      perfume: "perfume fragrance cologne",
-      watches: "watch timepiece",
-      "face-care": "face cleanser wash",
-      apparel: "apparel clothes clothing",
-      footwear: "footwear shoe sneaker sandals"
+      "hair-care": "hair haircare",
+      "skin-care": "skin skincare",
+      "baby-care": "baby babycare kids children",
+      "sun-care": "sun sunscreen sunblock protection spf",
+      perfume: "perfume fragrance cologne scent parfum edp edt",
+      watches: "watch timepiece wristwatch",
+      "face-care": "face facial facecare grooming",
+      apparel: "apparel clothes clothing outfit",
+      footwear: "footwear shoe sneaker sandals slide trainer"
     };
     const searchAliases = {
       shirt: ["shirt", "tshirt", "tee"],
@@ -829,7 +829,14 @@
       sneaker: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
       perfume: ["perfume", "perfumes", "fragrance", "fragrances", "cologne"],
       fragrance: ["fragrance", "fragrances", "perfume", "perfumes", "cologne"],
-      shampoo: ["shampoo", "shampoos"]
+      shampoo: ["shampoo", "shampoos"],
+      facewash: ["facewash", "wash", "cleanser"],
+      cleanser: ["cleanser", "facewash", "wash"],
+      gel: ["gel", "jel"],
+      jel: ["gel", "jel"],
+      sunscreen: ["sunscreen", "sunblock", "spf"],
+      sunblock: ["sunblock", "sunscreen", "spf"],
+      deodorant: ["deodorant", "body", "spray"]
     };
     const searchStopWords = new Set(["a", "an", "the", "of", "for", "please", "show", "find", "finds", "product", "products", "only", "care"]);
     const genderSearchWords = new Set(["man", "men", "woman", "women", "male", "female", "unisex"]);
@@ -838,6 +845,15 @@
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
       .replace(/[’']/g, "")
       .replace(/\bt[\s-]*shirts?\b/g, " tshirt ")
+      .replace(/\bface[\s-]*washes\b/g, " facewash ")
+      .replace(/\bface[\s-]*wash\b/g, " facewash ")
+      .replace(/\bface[\s-]*gel\b/g, " face gel ")
+      .replace(/\bface[\s-]*cream\b/g, " face cream ")
+      .replace(/\bskin[\s-]*care\b/g, " skincare ")
+      .replace(/\bhair[\s-]*care\b/g, " haircare ")
+      .replace(/\bbaby[\s-]*care\b/g, " babycare ")
+      .replace(/\bface[\s-]*care\b/g, " facecare ")
+      .replace(/\bjel\b/g, " gel ")
       .replace(/\btees\b/g, " tee ")
       .replace(/\bwatches\b/g, " watch ")
       .replace(/\bshoes\b/g, " shoe ")
@@ -857,8 +873,51 @@
       if (!terms.length) return false;
       const name = card.querySelector("h3")?.textContent || "";
       const imageAlt = card.querySelector("img")?.alt || "";
-      const categoryTerms = searchCategoryTerms[card.dataset.category] || "";
-      const cardTerms = new Set(normalizeSearchText(`${name} ${imageAlt} ${categoryTerms}`).split(/\s+/).filter(Boolean).map(singularizeSearchToken));
+      const category = card.dataset.category || "";
+      const categoryTerms = searchCategoryTerms[category] || "";
+      const normalizedName = normalizeSearchText(name);
+      const productKeywords = [];
+
+      if (category === "perfume") productKeywords.push("perfume fragrance cologne scent");
+      if (category === "watches") productKeywords.push("watch watches timepiece wristwatch");
+      if (category === "footwear") productKeywords.push("footwear shoe shoes sneaker sneakers trainer sandals slides");
+      if (category === "apparel") {
+        productKeywords.push("clothes clothing apparel");
+        if (/\btshirt\b|\btee\b/.test(normalizedName)) productKeywords.push("tshirt t shirt tee top");
+        else if (/\bshirt\b/.test(normalizedName)) productKeywords.push("shirt top");
+        if (/\bsweatshirt\b/.test(normalizedName)) productKeywords.push("sweatshirt sweater jumper");
+      }
+      if (category === "hair-care") {
+        if (/\bshampoo\b/.test(normalizedName)) productKeywords.push("shampoo hair wash");
+        if (/\bserum\b/.test(normalizedName)) productKeywords.push("hair serum serum");
+        if (/\banti hairfall\b|\banti-hairfall\b/.test(normalizedName)) productKeywords.push("hair fall hairfall anti hair loss");
+      }
+      if (category === "baby-care") {
+        productKeywords.push("baby care babycare infant child kids");
+        if (/\blotion\b/.test(normalizedName)) productKeywords.push("baby lotion body lotion moisturizer");
+        if (/\bcream\b/.test(normalizedName)) productKeywords.push("baby cream moisturizer");
+        if (/\bshampoo\b/.test(normalizedName)) productKeywords.push("baby shampoo");
+      }
+      if (category === "sun-care") productKeywords.push("sun care sunscreen sunblock sun protection spf uv");
+      if (category === "skin-care") {
+        if (/\bmoisturizer\b|\bmoisturiser\b/.test(normalizedName)) productKeywords.push("moisturizer moisturiser face moisturizer face cream");
+        if (/\bcream\b/.test(normalizedName)) productKeywords.push("face cream moisturizer moisturiser");
+        if (/\bserum\b/.test(normalizedName)) productKeywords.push("face serum serum");
+        if (/\btoner\b/.test(normalizedName)) productKeywords.push("face toner toner");
+        if (/\bscrub\b/.test(normalizedName)) productKeywords.push("face scrub exfoliator exfoliating");
+        if (/\bgel\b/.test(normalizedName) || /ponds hyaluronic moisturizer/.test(normalizedName)) productKeywords.push("face gel gel moisturizer");
+        if (/\bhoney balm\b/.test(normalizedName)) productKeywords.push("face balm moisturizer");
+      }
+      if (category === "face-care") {
+        if (/\bfacewash\b|\bcleanser\b/.test(normalizedName)) productKeywords.push("facewash face wash facial cleanser cleanser");
+        if (/\bgel\b/.test(normalizedName)) productKeywords.push("face gel facial gel gel moisturizer");
+        if (/\bshaving cream\b/.test(normalizedName)) productKeywords.push("shaving cream shave grooming");
+        if (/\bhair removal\b/.test(normalizedName)) productKeywords.push("hair removal depilatory cream");
+        if (/\bscrub\b/.test(normalizedName)) productKeywords.push("face scrub exfoliator");
+      }
+      if (category === "perfume" && /\bbody spray\b|\bmist\b/.test(normalizedName)) productKeywords.push("body spray deodorant deo mist");
+
+      const cardTerms = new Set(normalizeSearchText(`${name} ${imageAlt} ${categoryTerms} ${productKeywords.join(" ")}`).split(/\s+/).filter(Boolean).map(singularizeSearchToken));
       return terms.every(term => {
         const aliases = searchAliases[term] || [term];
         return aliases.some(alias => [...cardTerms].some(cardTerm => cardTerm === alias || (alias.length >= 3 && cardTerm.startsWith(alias))));
