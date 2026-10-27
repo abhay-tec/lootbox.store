@@ -24,7 +24,7 @@
       <label class="visually-hidden" for="product-query">Search products or brands</label>
       <div class="search-field">
         <input id="product-query" type="search" autocomplete="off" aria-label="Search products or brands">
-        <span class="search-suggestion" id="search-suggestion" aria-hidden="true">Search products or brands</span>
+        <span class="search-suggestion" id="search-suggestion" aria-hidden="true">Try shampoo, men's watch, t-shirt...</span>
       </div>
       <button class="search-button" type="submit">Search</button>
     </form>
@@ -809,11 +809,67 @@
     });
     let activeCategory = "all";
     let searchTerm = "";
+    const searchCategoryTerms = {
+      "hair-care": "hair shampoo conditioner",
+      "skin-care": "skin moisturizer lotion",
+      "baby-care": "baby kids",
+      "sun-care": "sun sunscreen",
+      perfume: "perfume fragrance cologne",
+      watches: "watch timepiece",
+      "face-care": "face cleanser wash",
+      apparel: "apparel clothes clothing",
+      footwear: "footwear shoe sneaker sandals"
+    };
+    const searchAliases = {
+      shirt: ["shirt", "tshirt", "tee"],
+      tshirt: ["tshirt", "shirt", "tee"],
+      tee: ["tee", "tshirt"],
+      watch: ["watch", "watches"],
+      shoe: ["shoe", "shoes", "sneaker", "sneakers", "footwear"],
+      sneaker: ["sneaker", "sneakers", "shoe", "shoes", "footwear"],
+      perfume: ["perfume", "perfumes", "fragrance", "fragrances", "cologne"],
+      fragrance: ["fragrance", "fragrances", "perfume", "perfumes", "cologne"],
+      shampoo: ["shampoo", "shampoos"]
+    };
+    const searchStopWords = new Set(["a", "an", "the", "of", "for", "please", "show", "find", "finds", "product", "products", "only", "care"]);
+    const genderSearchWords = new Set(["man", "men", "woman", "women", "male", "female", "unisex"]);
+    const singularizeSearchToken = term => term.length > 4 && term.endsWith("s") && !term.endsWith("ss") ? term.slice(0, -1) : term;
+    const normalizeSearchText = value => value.toLocaleLowerCase()
+      .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+      .replace(/[’']/g, "")
+      .replace(/\bt[\s-]*shirts?\b/g, " tshirt ")
+      .replace(/\btees\b/g, " tee ")
+      .replace(/\bwatches\b/g, " watch ")
+      .replace(/\bshoes\b/g, " shoe ")
+      .replace(/\bsneakers\b/g, " sneaker ")
+      .replace(/\bshampoos\b/g, " shampoo ")
+      .replace(/\bperfumes\b/g, " perfume ")
+      .replace(/\bfragrances\b/g, " fragrance ")
+      .replace(/\bmens\b/g, " men ")
+      .replace(/\bwomens\b/g, " women ")
+      .replace(/[^a-z0-9]+/g, " ").trim();
+    const getSearchTerms = value => {
+      const terms = normalizeSearchText(value).split(/\s+/).filter(Boolean).map(singularizeSearchToken);
+      const usefulTerms = terms.filter(term => !searchStopWords.has(term) && !genderSearchWords.has(term));
+      return usefulTerms.length ? usefulTerms : terms.filter(term => !searchStopWords.has(term));
+    };
+    const cardMatchesSearch = (card, terms) => {
+      if (!terms.length) return false;
+      const name = card.querySelector("h3")?.textContent || "";
+      const imageAlt = card.querySelector("img")?.alt || "";
+      const categoryTerms = searchCategoryTerms[card.dataset.category] || "";
+      const cardTerms = new Set(normalizeSearchText(`${name} ${imageAlt} ${categoryTerms}`).split(/\s+/).filter(Boolean).map(singularizeSearchToken));
+      return terms.every(term => {
+        const aliases = searchAliases[term] || [term];
+        return aliases.some(alias => [...cardTerms].some(cardTerm => cardTerm === alias || (alias.length >= 3 && cardTerm.startsWith(alias))));
+      });
+    };
     const filterProducts = () => {
       let visible = 0;
+      const terms = getSearchTerms(searchTerm);
       cards.forEach(card => {
         const categoryMatches = activeCategory === "all" || card.dataset.category === activeCategory;
-        const textMatches = card.textContent.toLowerCase().includes(searchTerm);
+        const textMatches = !searchTerm || cardMatchesSearch(card, terms);
         const show = categoryMatches && textMatches;
         card.hidden = !show;
         if (show) visible += 1;
