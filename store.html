@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body class="store-page">
+  <a class="store-skip-link" href="#collection">Skip to products</a>
   <header class="topbar"><div class="wrap topbar-inner">
     <a class="store-brand" href="store.html" aria-label="Lootbox home">
       <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 13.5 16 4l12 9.5-12 14.5L4 13.5Z"/><path d="m4 13.5 12 4.2 12-4.2M16 17.7V28"/></svg>
@@ -142,7 +143,7 @@
     <section class="store-section" id="collection"><div class="wrap store-shell">
       <div class="store-header"><div><p class="mini-kicker">The latest edit</p><h1 class="catalog-title">Trending products</h1></div><a class="store-view-all" href="#collection">View all <span aria-hidden="true">→</span></a></div>
       <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
-      <div class="store-results-bar"><p class="store-counter">96 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p></div>
+      <div class="store-results-bar"><p class="store-counter">96 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select></label></div>
       <a class="store-inline-promo" href="#collection" aria-label="Browse the fragrance collection"><img src="assets/store/banners/premium-perfumes-mountains.png" alt="Premium perfumes — tap to browse the fragrance collection" loading="lazy"></a>
       <section class="featured-shelf" aria-labelledby="featured-shelf-title">
         <div class="featured-shelf-heading"><div><p class="mini-kicker">A few finds worth a closer look</p><h2 id="featured-shelf-title">Best picks</h2></div><div class="featured-shelf-controls"><button type="button" class="shelf-scroll-button" data-scroll="-1" aria-label="Show previous picks">‹</button><button type="button" class="shelf-scroll-button" data-scroll="1" aria-label="Show more picks">›</button></div></div>
@@ -249,6 +250,14 @@
       <p class="no-results" id="no-results" hidden>No products match your search.</p>
     </div></section>
   </main>
+  <nav class="mobile-store-dock" aria-label="Quick shop navigation">
+    <button type="button" data-dock-action="top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 14 7-7 7 7M12 7v13"/></svg><span>Top</span></button>
+    <button type="button" data-dock-action="categories" aria-label="Browse categories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v6H4zM14 5h6v6h-6zM4 14h7v6H4zM14 14h6v6h-6z"/></svg><span>Categories</span></button>
+    <button type="button" data-dock-action="search" aria-label="Search products"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.8" cy="10.8" r="6.3"/><path d="m16 16 4 4"/></svg><span>Search</span></button>
+    <button type="button" data-dock-action="cart" aria-label="Open cart"> <span class="dock-icon-wrap"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.5 5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg><span class="mobile-dock-cart-count" id="mobile-dock-cart-count">0</span></span><span>Cart</span></button>
+    <button type="button" data-dock-action="account" aria-label="Open your account"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Account</span></button>
+  </nav>
+  <button class="desktop-scroll-top" id="desktop-scroll-top" type="button" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 14 7-7 7 7M12 7v13"/></svg></button>
 <script src="reviews-config.js"></script>
 <script src="reviews.js"></script>
 <script src="auth-client.js"></script>
@@ -290,6 +299,7 @@
     const items = document.getElementById("cart-items");
     const status = document.getElementById("cart-status");
     const checkout = document.getElementById("cart-checkout");
+    const mobileDockCartCount = document.getElementById("mobile-dock-cart-count");
     const drawer = document.getElementById("account-drawer");
     const drawerMenu = document.getElementById("drawer-menu");
     const drawerMessage = document.getElementById("drawer-message");
@@ -315,6 +325,7 @@
       const total = count();
       document.getElementById("cart-count").textContent = total;
       document.getElementById("cart-total").textContent = `(${total})`;
+      mobileDockCartCount.textContent = total;
       items.replaceChildren();
       Object.entries(cart).forEach(([name, item]) => {
         const row = document.createElement("li");
@@ -630,6 +641,21 @@
       drawerMessage.textContent = "You are signed out.";
     });
     menuToggle.addEventListener("click", () => drawer.classList.contains("is-open") ? closeDrawer() : openDrawer("menu"));
+    document.querySelector(".mobile-store-dock").addEventListener("click", event => {
+      const action = event.target.closest("[data-dock-action]")?.dataset.dockAction;
+      if (!action) return;
+      const behavior = window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth";
+      if (action === "top") window.scrollTo({ top: 0, behavior });
+      if (action === "categories") document.querySelector(".quick-category-section").scrollIntoView({ behavior, block: "start" });
+      if (action === "search") {
+        document.getElementById("product-query").focus();
+        document.body.classList.add("store-search-focused");
+      }
+      if (action === "cart") openDrawer("cart");
+      if (action === "account") openDrawer("profile");
+    });
+    document.getElementById("product-query").addEventListener("focus", () => document.body.classList.add("store-search-focused"));
+    document.getElementById("product-query").addEventListener("blur", () => document.body.classList.remove("store-search-focused"));
     document.getElementById("drawer-close").addEventListener("click", closeDrawer);
     menuScrim.addEventListener("click", closeDrawer);
     document.addEventListener("keydown", event => { if (event.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer(); });
@@ -716,6 +742,14 @@
       });
     });
     const cards = [...document.querySelectorAll(".store-card")];
+    const storeGrid = document.querySelector(".store-grid");
+    const sortSelect = document.getElementById("sort-products");
+    sortSelect.addEventListener("change", () => {
+      const sortedCards = [...cards];
+      if (sortSelect.value === "name-asc") sortedCards.sort((a, b) => a.querySelector("h3").textContent.localeCompare(b.querySelector("h3").textContent, undefined, { sensitivity: "base", numeric: true }));
+      if (sortSelect.value === "name-desc") sortedCards.sort((a, b) => b.querySelector("h3").textContent.localeCompare(a.querySelector("h3").textContent, undefined, { sensitivity: "base", numeric: true }));
+      storeGrid.append(...sortedCards);
+    });
     const searchForm = document.getElementById("product-search");
     const searchInput = document.getElementById("product-query");
     const resultsCount = document.getElementById("results-count");
@@ -881,6 +915,11 @@
     });
     filterProducts();
     render();
+    const desktopScrollTop = document.getElementById("desktop-scroll-top");
+    const updateScrollTop = () => { desktopScrollTop.hidden = window.scrollY < 500; };
+    window.addEventListener("scroll", updateScrollTop, { passive: true });
+    desktopScrollTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
+    updateScrollTop();
   })();
 </script>
 </body>

@@ -3539,6 +3539,24 @@ body.drawer-open {
   border-bottom-color: #e8e8e8;
 }
 
+.store-skip-link {
+  position: fixed;
+  z-index: 1200;
+  top: 10px;
+  left: 10px;
+  transform: translateY(-160%);
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #202126;
+  color: #fff;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.store-skip-link:focus {
+  transform: translateY(0);
+}
+
 .store-page .topbar-inner {
   grid-template-columns: minmax(190px, 1fr) minmax(320px, 540px) 46px;
   gap: clamp(16px, 3vw, 42px);
@@ -3912,6 +3930,7 @@ body.drawer-open {
 
 .store-section {
   padding: 0 0 46px;
+  scroll-margin-top: 84px;
 }
 
 .store-page .store-shell {
@@ -3946,6 +3965,65 @@ body.drawer-open {
   color: #75767a;
   font-size: 0.72rem;
   font-weight: 600;
+}
+
+.sort-control {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: #62646a;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+
+.sort-control select {
+  min-height: 36px;
+  padding: 0 30px 0 10px;
+  border: 1px solid #dedee1;
+  border-radius: 8px;
+  background: #fff;
+  color: #292a2f;
+  font: 700 0.74rem "Manrope", sans-serif;
+}
+
+.sort-control select:focus-visible {
+  outline: 2px solid #e31b2b;
+  outline-offset: 2px;
+}
+
+.mobile-store-dock {
+  display: none;
+}
+
+.desktop-scroll-top {
+  position: fixed;
+  z-index: 26;
+  right: 24px;
+  bottom: 24px;
+  display: grid;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #e5dadd;
+  border-radius: 50%;
+  background: #fff;
+  color: #b71927;
+  box-shadow: 0 8px 26px rgba(20, 20, 24, 0.15);
+  cursor: pointer;
+}
+
+.desktop-scroll-top[hidden] {
+  display: none;
+}
+
+.desktop-scroll-top svg {
+  width: 21px;
+  height: 21px;
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
 }
 
 .store-grid {
@@ -4046,6 +4124,104 @@ body.drawer-open {
 }
 
 @media (max-width: 720px) {
+  .store-page {
+    padding-bottom: calc(70px + env(safe-area-inset-bottom));
+  }
+
+  .quick-category-section {
+    scroll-margin-top: 84px;
+  }
+
+  .mobile-store-dock {
+    position: fixed;
+    z-index: 26;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    display: grid;
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    padding: 7px 7px calc(7px + env(safe-area-inset-bottom));
+    border-top: 1px solid rgba(28, 28, 32, 0.1);
+    background: rgba(255, 255, 255, 0.96);
+    box-shadow: 0 -5px 22px rgba(24, 24, 28, 0.08);
+    backdrop-filter: blur(16px);
+    transition: transform 180ms ease;
+  }
+
+  .mobile-store-dock button {
+    display: grid;
+    min-width: 0;
+    min-height: 48px;
+    justify-items: center;
+    align-content: center;
+    gap: 3px;
+    padding: 3px 1px;
+    border: 0;
+    border-radius: 9px;
+    background: transparent;
+    color: #5d5e63;
+    font: 700 0.61rem/1.1 "Manrope", sans-serif;
+    cursor: pointer;
+  }
+
+  .mobile-store-dock button:hover,
+  .mobile-store-dock button:focus-visible {
+    background: #fff1f2;
+    color: #b71927;
+    outline: none;
+  }
+
+  .mobile-store-dock svg {
+    width: 20px;
+    height: 20px;
+    fill: none;
+    stroke: currentColor;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    stroke-width: 1.8;
+  }
+
+  .dock-icon-wrap {
+    position: relative;
+    display: grid;
+  }
+
+  .mobile-dock-cart-count {
+    position: absolute;
+    top: -6px;
+    right: -9px;
+    display: grid;
+    min-width: 15px;
+    height: 15px;
+    place-items: center;
+    padding: 0 3px;
+    border-radius: 99px;
+    background: #e31b2b;
+    color: #fff;
+    font-size: 0.55rem;
+    line-height: 1;
+  }
+
+  .drawer-open .mobile-store-dock,
+  .store-search-focused .mobile-store-dock {
+    transform: translateY(120%);
+    pointer-events: none;
+  }
+
+  .desktop-scroll-top {
+    display: none;
+  }
+
+  .sort-control {
+    align-self: flex-start;
+  }
+
+  .store-results-bar {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 6px;
+  }
+
   .store-assurance {
     display: none;
   }
