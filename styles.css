@@ -4138,13 +4138,21 @@ body.drawer-open {
   .store-subheading,
   .store-page .store-header {
     align-items: end;
-    justify-content: space-between;
+    justify-content: flex-start;
     gap: 10px;
   }
 
   .store-subheading > div,
   .store-page .store-header > div {
+    flex: 1 1 auto;
     min-width: 0;
+    margin-right: auto;
+    text-align: left;
+  }
+
+  .store-page .store-header .mini-kicker,
+  .store-page .store-header .catalog-title {
+    text-align: left;
   }
 
   .store-subheading > a,
@@ -4202,7 +4210,14 @@ body.drawer-open {
 
   .store-page .store-header {
     align-items: end;
+    justify-content: flex-start;
     gap: 10px;
+  }
+
+  .store-page .store-header > div {
+    flex: 1 1 auto;
+    margin-right: auto;
+    text-align: left;
   }
 
   .store-page .catalog-title {
