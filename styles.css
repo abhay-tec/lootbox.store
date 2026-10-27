@@ -3439,8 +3439,16 @@ body.drawer-open {
 
   .product-detail-image {
     min-height: 0;
-    aspect-ratio: 1 / 0.85;
-    padding: 14px;
+    aspect-ratio: 1 / 1.08;
+    padding: 16px;
+  }
+
+  .product-detail-image img {
+    width: auto;
+    height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    object-fit: contain;
   }
 
   .product-detail-copy {
@@ -3454,6 +3462,17 @@ body.drawer-open {
   .recommendation-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 9px;
+  }
+
+  .recommendation-image {
+    aspect-ratio: 1 / 1;
+  }
+
+  .recommendation-image img {
+    width: 100%;
+    height: 100%;
+    padding: 10px;
+    object-fit: contain;
   }
 }
 
@@ -3947,6 +3966,10 @@ body.drawer-open {
 }
 
 @media (max-width: 720px) {
+  .store-assurance {
+    display: none;
+  }
+
   .store-page .wrap {
     width: min(100% - 24px, 1280px);
   }
