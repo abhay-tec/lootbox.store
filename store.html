@@ -730,7 +730,7 @@
       });
       resultsCount.textContent = `Showing ${visible} of ${cards.length} products`;
       noResults.hidden = visible !== 0;
-      perfumePromo.hidden = Boolean(searchTerm) || (activeCategory !== "all" && activeCategory !== "perfume");
+      perfumePromo.hidden = Boolean(searchTerm) || activeCategory !== "all";
     };
     perfumePromo.addEventListener("click", event => {
       event.preventDefault();
