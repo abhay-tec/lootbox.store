@@ -111,6 +111,11 @@
     <button id="order-toast-close" type="button" aria-label="Dismiss notification">×</button>
   </div>
   <main class="store-page-main">
+    <aside class="buying-note" aria-label="Important shopping information">
+      <span class="buying-note-mark" aria-hidden="true">i</span>
+      <div class="buying-note-copy"><span class="buying-note-brand">Lootbox Store</span><strong>Must read product details before you buy</strong><p>Confirm stock, condition, and price before ordering.</p></div>
+      <div class="buying-note-social"><span>Lootbox Store IG</span><a href="https://www.instagram.com/lootbox.storee/" target="_blank" rel="noopener noreferrer">Visit @lootbox.storee</a></div>
+    </aside>
     <section class="store-page-hero"><div class="wrap"><div class="image-stage store-page-banner" id="store-banner-carousel" role="region" aria-label="Featured product banners" aria-roledescription="carousel">
       <div class="banner-track">
       <div class="banner-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2" aria-hidden="false"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div>
@@ -143,7 +148,7 @@
     <section class="store-section" id="collection"><div class="wrap store-shell">
       <div class="store-header"><div><p class="mini-kicker">The latest edit</p><h1 class="catalog-title">Trending products</h1></div><a class="store-view-all" href="#collection">View all <span aria-hidden="true">→</span></a></div>
       <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
-      <div class="store-results-bar"><p class="store-counter">96 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select></label></div>
+      <div class="store-results-bar"><p class="store-counter">99 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select></label></div>
       <a class="store-inline-promo" href="#collection" aria-label="Browse the fragrance collection"><img src="assets/store/banners/premium-perfumes-mountains.png" alt="Premium perfumes — tap to browse the fragrance collection" loading="lazy"></a>
       <section class="featured-shelf" aria-labelledby="featured-shelf-title">
         <div class="featured-shelf-heading"><div><p class="mini-kicker">A few finds worth a closer look</p><h2 id="featured-shelf-title">Best picks</h2></div><div class="featured-shelf-controls"><button type="button" class="shelf-scroll-button" data-scroll="-1" aria-label="Show previous picks">‹</button><button type="button" class="shelf-scroll-button" data-scroll="1" aria-label="Show more picks">›</button></div></div>
@@ -253,10 +258,6 @@
       <p class="no-results" id="no-results" hidden>No products match your search.</p>
     </div></section>
   </main>
-  <footer class="lootbox-contact-footer">
-    <div><strong>Lootbox Store</strong><p>Must read product details before you buy. Confirm stock, condition, and price before ordering.</p></div>
-    <div class="lootbox-footer-social"><span>Lootbox Store IG</span><a href="https://www.instagram.com/lootbox.storee/" target="_blank" rel="noopener noreferrer">Visit @lootbox.storee</a></div>
-  </footer>
   <nav class="mobile-store-dock" aria-label="Quick shop navigation">
     <button type="button" data-dock-action="top" aria-label="Back to top"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 14 7-7 7 7M12 7v13"/></svg><span>Top</span></button>
     <button type="button" data-dock-action="categories" aria-label="Browse categories"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h7v6H4zM14 5h6v6h-6zM4 14h7v6H4zM14 14h6v6h-6z"/></svg><span>Categories</span></button>
