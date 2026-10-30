@@ -14,7 +14,17 @@
   <main class="product-detail-wrap">
     <a class="product-detail-back" href="store.html">← Back to shop</a>
     <article class="product-detail-card" id="product-detail" hidden>
-      <div class="product-detail-image"><img id="detail-image" alt=""></div>
+      <div class="product-detail-image">
+        <div class="product-gallery" id="product-gallery">
+          <div class="product-gallery-viewport"><img id="detail-image" alt=""></div>
+          <div class="product-gallery-controls" id="product-gallery-controls" hidden>
+            <button type="button" class="product-gallery-arrow" id="gallery-previous" aria-label="Previous product photo">‹</button>
+            <div class="product-gallery-dots" id="gallery-dots" role="group" aria-label="Choose product photo"></div>
+            <button type="button" class="product-gallery-arrow" id="gallery-next" aria-label="Next product photo">›</button>
+          </div>
+          <p class="product-gallery-caption" id="gallery-caption" aria-live="polite"></p>
+        </div>
+      </div>
       <div class="product-detail-copy">
         <p class="product-detail-brand">LOOTBOX <span>THE RECLAIM EDIT</span></p>
         <p class="product-detail-category" id="detail-category"></p>
@@ -104,6 +114,9 @@
       };
 
       const productDetails = {
+        "beardo beard & hair growth oil, 50 ml": { facts: ["Beardo Beard & Hair Growth Oil, 50 mL, as printed on the supplied bottle.", "Check the package directions and ingredients before use."], source: "", unverified: true },
+        "mylo baby body wash & shampoo, 100 ml": { facts: ["Mylo Baby Body Wash & Shampoo, 100 mL, as shown on the supplied bottle.", "Check the package for full directions and ingredients."], source: "", unverified: true },
+        "nivea cocoa nourish body lotion, 600 ml": { facts: ["NIVEA Cocoa Nourish Body Lotion, 600 mL, as printed on the supplied package.", "Check the package for full directions and ingredients."], source: "", unverified: true },
         "l'oréal paris total repair 5 repairing serum": { facts: ["Hair serum for five visible signs of damaged hair.", "Apply a small amount through lengths and ends on damp or dry hair; do not rinse."], source: "https://www.lorealparis.co.in/total-repair-5/serum-40-ml" },
         "johnson's baby shampoo": { facts: ["500 mL bottle, as shown on this product listing.", "The exact formula and ingredient list can vary by market; check the bottle label."], source: "https://blinkit.com/prn/johnsons-baby-shampoo/prid/4752" },
         "clinic plus strong & long shampoo": { facts: ["Shampoo formulated with milk protein and multivitamins.", "The cited listing describes it for all hair types."], source: "https://www.1mg.com/otc/clinic-plus-strong-long-shampoo-otc986371" },
@@ -331,6 +344,94 @@
       const productImage = document.getElementById("detail-image");
       productImage.src = image;
       productImage.alt = name;
+      const galleryPhotos = {
+        "himalaya purifying neem face wash": [["himalaya-neem-face-wash-front.jpg", "Front label"], ["himalaya-neem-face-wash-back.jpg", "Back label"]],
+        "neutrogena ultra sheer sunscreen": [["neutrogena-ultra-sheer-sunscreen-front.jpg", "Product label"]],
+        "sunsilk flowy silk & smooth shampoo": [["sunsilk-flowy-silk-shampoo-front.jpg", "Front label"], ["sunsilk-flowy-silk-shampoo-back.jpg", "Back label"]],
+        "neud skin brightening turmeric face wash": [["neud-turmeric-face-wash-front.jpg", "Product label"]],
+        "cetaphil moisturizing cream": [["cetaphil-moisturising-cream-front.jpg", "Product label"]],
+        "park avenue beer shampoo": [["park-avenue-beer-shampoo-front.jpg", "Front label"], ["park-avenue-beer-shampoo-back.jpg", "Back label"]],
+        "johnson's baby shampoo": [["johnsons-baby-shampoo-front.jpg", "Product label"]],
+        "beardo beard & hair growth oil, 50 ml": [["beardo-growth-oil-front.jpg", "Front label"], ["beardo-growth-oil-back.jpg", "Back label"]],
+        "nivea cocoa nourish body lotion, 600 ml": [["nivea-cocoa-nourish-body-lotion-back.jpg", "Back label"]],
+        "biotique papaya face wash": [["biotique-papaya-face-wash-front.jpg", "Product label"]],
+        "lakmé blush & glow strawberry face wash": [["lakme-strawberry-face-wash-front.jpg", "Front label"], ["lakme-strawberry-face-wash-back.jpg", "Back label"], ["lakme-strawberry-face-wash-back-alt.jpg", "Alternate back photo"]],
+        "vitamin c face serum": [["elibliss-vitamin-c-serum-front.jpg", "Front label"], ["elibliss-vitamin-c-serum-back.jpg", "Back label"]],
+        "mylo baby body wash & shampoo, 100 ml": [["mylo-baby-body-wash-front.jpg", "Front label"], ["mylo-baby-body-wash-back.jpg", "Back label"]],
+        "himalaya baby lotion": [["himalaya-baby-lotion-back.jpg", "Back label"]],
+        "l'oréal paris dream lengths restoring shampoo": [["loreal-dream-lengths-shampoo-front.jpg", "Product label"]],
+        "biotique fruit brightening face wash": [["biotique-fruit-face-wash-front.jpg", "Front label"], ["biotique-fruit-face-wash-back.jpg", "Back label"]],
+        "veet pure hair removal cream": [["veet-pure-hair-removal-cream-front.jpg", "Front label"], ["veet-pure-hair-removal-cream-back.jpg", "Back label"]],
+        "cerave hydrating cream": [["cerave-moisturising-cream-front.jpg", "Front label"], ["cerave-moisturising-cream-back.jpg", "Back label"]],
+        "park avenue good morning lather shaving cream": [["park-avenue-good-morning-shaving-cream-front.jpg", "Front label"], ["park-avenue-good-morning-shaving-cream-back.jpg", "Back label"]],
+        "dewy cucumber pore tightening toner": [["biotique-cucumber-toner-front.jpg", "Front label"], ["biotique-cucumber-toner-back.jpg", "Back label"]],
+        "wishful honey balm": [["wishful-honey-balm-front.jpg", "Front label"], ["wishful-honey-balm-back.jpg", "Back label"]],
+        "pond's hyaluronic moisturizer": [["ponds-hyaluronic-gel-back.jpg", "Back label"]],
+        "nivea soft moisturizer": [["nivea-soft-moisturizer-front.jpg", "Product label"]],
+        "biotique sandalwood sunscreen": [["biotique-sandalwood-sunscreen-front.jpg", "Front label"], ["biotique-sandalwood-sunscreen-back.jpg", "Back label"]],
+        "l'oréal paris hyaluron moisture shampoo": [["loreal-hyaluron-moisture-shampoo-front.jpg", "Product label"]],
+        "nivea soft spa glow moisturizer": [["nivea-soft-spa-glow-front.jpg", "Front label"], ["nivea-soft-spa-glow-back.jpg", "Back label"]],
+        "tresemmé keratin smooth shampoo": [["tresemme-keratin-smooth-shampoo-front.jpg", "Product label"]],
+        "jovees herbal sunscreen": [["jovees-sunscreen-front.jpg", "Front label"], ["jovees-sunscreen-back.jpg", "Back label"]],
+        "muuchstac ocean face wash, 100 ml": [["muuchstac-ocean-face-wash-front.jpg", "Front label"], ["muuchstac-ocean-face-wash-alternate.jpg", "Alternate view"], ["muuchstac-ocean-face-wash-back.jpg", "Back label"]],
+        "aqualogica sunscreen by the sea": [["aqualogica-sunscreen-front.jpg", "Front label"], ["aqualogica-sunscreen-back.jpg", "Back label"]],
+        "biotique ocean kelp anti-dandruff shampoo": [["biotique-ocean-kelp-shampoo-front.jpg", "Front label"], ["biotique-ocean-kelp-shampoo-back.jpg", "Back label"]],
+        "johnson's baby cream": [["johnsons-baby-cream-front.jpg", "Product label"]],
+        "caffeine coffee face scrub": [["caffeine-coffee-face-scrub-front.jpg", "Front label"], ["caffeine-coffee-face-scrub-back.jpg", "Back label"]],
+        "clinic plus strong & long shampoo": [["clinic-plus-shampoo-front.jpg", "Front label"], ["clinic-plus-shampoo-back.jpg", "Back label"]],
+        "l'oréal paris total repair 5 repairing serum": [["loreal-total-repair-serum-front.jpg", "Front label"], ["loreal-total-repair-serum-back.jpg", "Back label"]],
+        "woodoo hello, clear skin face wash": [["woodoo-clear-skin-face-wash-front.jpg", "Front label"], ["woodoo-clear-skin-face-wash-back.jpg", "Back label"]],
+        "joy skin fruits brightening face wash": [["joy-skin-fruits-face-wash-front.jpg", "Product label"]]
+      };
+      const originalLabel = image.toLowerCase().endsWith("-front.jpg") ? "Front label" : image.toLowerCase().endsWith("-back.jpg") ? "Back label" : "Store photo";
+      const gallery = [
+        { src: image, label: originalLabel },
+        ...(galleryPhotos[normalize(name)] || [])
+          .map(([src, label]) => ({ src: `assets/store/gallery/${src}`, label }))
+          .filter(photo => photo.src !== image)
+      ];
+      const galleryControls = document.getElementById("product-gallery-controls");
+      const galleryDots = document.getElementById("gallery-dots");
+      const galleryCaption = document.getElementById("gallery-caption");
+      let activePhoto = 0;
+      const showGalleryPhoto = index => {
+        activePhoto = (index + gallery.length) % gallery.length;
+        productImage.src = gallery[activePhoto].src;
+        productImage.alt = `${name} — ${gallery[activePhoto].label}`;
+        galleryCaption.textContent = gallery.length > 1 ? `${gallery[activePhoto].label} · ${activePhoto + 1} of ${gallery.length}` : gallery[activePhoto].label;
+        galleryDots.querySelectorAll("button").forEach((dot, dotIndex) => {
+          dot.classList.toggle("is-active", dotIndex === activePhoto);
+          dot.setAttribute("aria-pressed", String(dotIndex === activePhoto));
+        });
+      };
+      if (gallery.length > 1) {
+        gallery.forEach((photo, index) => {
+          const dot = document.createElement("button");
+          dot.type = "button";
+          dot.className = "product-gallery-dot";
+          dot.setAttribute("aria-label", `${photo.label}, photo ${index + 1}`);
+          dot.addEventListener("click", () => showGalleryPhoto(index));
+          galleryDots.append(dot);
+        });
+        galleryControls.hidden = false;
+        document.getElementById("gallery-previous").addEventListener("click", () => showGalleryPhoto(activePhoto - 1));
+        document.getElementById("gallery-next").addEventListener("click", () => showGalleryPhoto(activePhoto + 1));
+        const galleryViewport = document.querySelector(".product-gallery-viewport");
+        galleryViewport.tabIndex = 0;
+        galleryViewport.setAttribute("role", "group");
+        galleryViewport.setAttribute("aria-label", "Product photos. Use left and right arrow keys to change photo.");
+        galleryViewport.addEventListener("keydown", event => {
+          if (event.key === "ArrowLeft") showGalleryPhoto(activePhoto - 1);
+          if (event.key === "ArrowRight") showGalleryPhoto(activePhoto + 1);
+        });
+        let touchStartX = 0;
+        galleryViewport.addEventListener("touchstart", event => { touchStartX = event.changedTouches[0].clientX; }, { passive: true });
+        galleryViewport.addEventListener("touchend", event => {
+          const deltaX = event.changedTouches[0].clientX - touchStartX;
+          if (Math.abs(deltaX) > 45) showGalleryPhoto(activePhoto + (deltaX < 0 ? 1 : -1));
+        }, { passive: true });
+      }
+      showGalleryPhoto(0);
       detail.hidden = false;
       feedback.hidden = false;
       loadRecommendations();
