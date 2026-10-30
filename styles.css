@@ -4855,6 +4855,33 @@ body.drawer-open {
   object-position: center;
 }
 
+@media (min-width: 761px) {
+  .product-detail-image {
+    min-height: 0;
+    overflow: visible;
+  }
+
+  .product-gallery {
+    height: auto;
+    min-height: 0;
+    grid-template-rows: auto auto auto;
+  }
+
+  .product-gallery-viewport {
+    height: auto;
+    min-height: min(58vh, 620px);
+    overflow: visible;
+  }
+
+  .product-gallery-viewport img#detail-image {
+    width: auto !important;
+    height: auto !important;
+    max-width: 100% !important;
+    max-height: min(58vh, 620px) !important;
+    object-fit: contain !important;
+  }
+}
+
 @media (max-width: 760px) {
   .product-detail-image {
     height: auto !important;
