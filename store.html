@@ -7,6 +7,17 @@
   <title>Shop Finds | The Reclaim Edit</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <script>
+    const accountViews = ["menu", "profile", "cart", "orders", "settings"];
+    const accountQueryView = new URLSearchParams(location.search).get("account");
+    const pendingAccountView = sessionStorage.getItem("lootbox-account-return-view");
+    const accountView = accountViews.includes(accountQueryView) ? accountQueryView : pendingAccountView;
+    if (accountViews.includes(accountView)) {
+      document.documentElement.classList.add("account-page-mode");
+      const accountTitles = { menu: "My Account", profile: "Profile & Delivery", cart: "Your Cart", orders: "Your Orders", settings: "Settings" };
+      document.title = `${accountTitles[accountView]} | Lootbox`;
+    }
+  </script>
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
@@ -111,11 +122,6 @@
     <button id="order-toast-close" type="button" aria-label="Dismiss notification">×</button>
   </div>
   <main class="store-page-main">
-    <aside class="buying-note" aria-label="Important shopping information">
-      <span class="buying-note-mark" aria-hidden="true">i</span>
-      <div class="buying-note-copy"><span class="buying-note-brand">Lootbox Store</span><strong>Must read product details before you buy</strong><p>Confirm stock, condition, and price before ordering.</p></div>
-      <div class="buying-note-social"><span>Lootbox Store IG</span><a href="https://www.instagram.com/lootbox.storee/" target="_blank" rel="noopener noreferrer">Visit @lootbox.storee</a></div>
-    </aside>
     <section class="store-page-hero"><div class="wrap"><div class="image-stage store-page-banner" id="store-banner-carousel" role="region" aria-label="Featured product banners" aria-roledescription="carousel">
       <div class="banner-track">
       <div class="banner-slide is-active" role="group" aria-roledescription="slide" aria-label="1 of 2" aria-hidden="false"><img src="assets/lootbox-marketplace-banner-wide.png" alt="Lootbox marketplace: same brands, lower prices"></div>
@@ -322,6 +328,15 @@
     const confirmCancelButton = document.getElementById("confirm-cancel-button");
     const toast = document.getElementById("order-toast");
     const toastMessage = document.getElementById("order-toast-message");
+    const accountPageMode = document.documentElement.classList.contains("account-page-mode");
+    const requestedAccountView = new URLSearchParams(window.location.search).get("account");
+    const validAccountViews = ["menu", "profile", "cart", "orders", "settings"];
+    const setAccountRoute = (view, replace = false) => {
+      if (!accountPageMode || !validAccountViews.includes(view)) return;
+      const nextUrl = new URL(window.location.href);
+      nextUrl.searchParams.set("account", view);
+      window.history[replace ? "replaceState" : "pushState"]({}, "", nextUrl);
+    };
     let orderPendingCancellation = null;
     let toastTimer = 0;
     const showOrderToast = message => {
@@ -370,6 +385,8 @@
       drawerMessage.textContent = "";
     };
     const openDrawer = view => {
+      const activeView = view || "menu";
+      setAccountRoute(activeView, true);
       drawer.classList.add("is-open");
       drawer.setAttribute("aria-hidden", "false");
       drawer.inert = false;
@@ -377,9 +394,13 @@
       menuToggle.setAttribute("aria-label", "Close account menu");
       menuScrim.hidden = false;
       document.body.classList.add("drawer-open");
-      showDrawerView(view || "menu");
+      showDrawerView(activeView);
     };
     const closeDrawer = () => {
+      if (accountPageMode) {
+        window.location.assign("store.html");
+        return;
+      }
       drawer.classList.remove("is-open");
       drawer.setAttribute("aria-hidden", "true");
       drawer.inert = true;
@@ -607,9 +628,11 @@
     googleSignInButton.addEventListener("click", async () => {
       googleSignInButton.disabled = true;
       customerAuthStatus.textContent = "Opening Google sign-in…";
+      if (accountPageMode) sessionStorage.setItem("lootbox-account-return-view", requestedAccountView || "profile");
       try {
         await window.LootboxBackend.signInWithGoogle();
       } catch (error) {
+        if (accountPageMode) sessionStorage.removeItem("lootbox-account-return-view");
         googleSignInButton.disabled = false;
         customerAuthStatus.textContent = error.message || "Could not start Google sign-in.";
       }
@@ -648,6 +671,7 @@
       customerEmailForm.hidden = false;
       showDrawerView("menu");
       drawerMessage.textContent = "You are signed out.";
+      setAccountRoute("menu", true);
     });
     menuToggle.addEventListener("click", () => drawer.classList.contains("is-open") ? closeDrawer() : openDrawer("menu"));
     document.querySelector(".mobile-store-dock").addEventListener("click", event => {
@@ -670,16 +694,15 @@
     document.addEventListener("keydown", event => { if (event.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer(); });
     drawerMenu.querySelectorAll("[data-view]").forEach(button => {
       button.addEventListener("click", () => {
-        if (button.dataset.view === "orders" && !customer) {
-          showDrawerView("profile");
-          customerAuthStatus.textContent = "Sign in with your Gmail to view your orders.";
-          return;
-        }
-        if (button.dataset.view === "orders") refreshCustomerOrders().catch(error => { drawerMessage.textContent = error.message; });
-        showDrawerView(button.dataset.view);
+        const nextUrl = new URL("store.html", window.location.href);
+        nextUrl.searchParams.set("account", button.dataset.view);
+        window.location.assign(nextUrl);
       });
     });
-    drawer.querySelectorAll("[data-back-menu]").forEach(button => button.addEventListener("click", () => showDrawerView("menu")));
+    drawer.querySelectorAll("[data-back-menu]").forEach(button => button.addEventListener("click", () => {
+      setAccountRoute("menu", true);
+      showDrawerView("menu");
+    }));
     checkout.addEventListener("click", event => {
       event.preventDefault();
       beginOrderRequest(Object.entries(cart).map(([name, item]) => ({ name, quantity: item.quantity })), true);
@@ -698,6 +721,19 @@
       window.history.replaceState({}, "", cleanUrl);
     }
     loadCustomerProfile().then(() => {
+      if (accountPageMode) {
+        const restoredView = new URLSearchParams(window.location.search).get("account") || requestedAccountView;
+        const initialView = validAccountViews.includes(restoredView) ? restoredView : "menu";
+        if (initialView === "orders" && !customer) {
+          openDrawer("profile");
+          setAccountRoute("orders", true);
+          customerAuthStatus.textContent = "Sign in with Google to view your order requests.";
+        } else {
+          openDrawer(initialView);
+          if (initialView === "orders" && customer) refreshCustomerOrders().catch(error => { drawerMessage.textContent = error.message; });
+        }
+        return;
+      }
       if (checkoutProduct) beginOrderRequest(checkoutProduct);
       else if (pendingOrderItems && customer && profile) {
         beginOrderRequest(pendingOrderItems.items, pendingOrderItems.clearCartAfterOrder);

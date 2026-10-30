@@ -58,6 +58,11 @@
     const oauthError = callbackUrl.searchParams.get("error_description") || callbackUrl.searchParams.get("error");
     if (oauthError) {
       localStorage.removeItem(verifierKey);
+      const savedAccountView = sessionStorage.getItem("lootbox-account-return-view");
+      if (["menu", "profile", "cart", "orders", "settings"].includes(savedAccountView)) {
+        callbackUrl.searchParams.set("account", savedAccountView);
+      }
+      sessionStorage.removeItem("lootbox-account-return-view");
       callbackUrl.searchParams.delete("error");
       callbackUrl.searchParams.delete("error_description");
       window.history.replaceState({}, "", callbackUrl);
@@ -71,6 +76,11 @@
     const result = await authRequest("token?grant_type=pkce", { auth_code: code, code_verifier: verifier });
     localStorage.removeItem(verifierKey);
     saveSession(result);
+    const savedAccountView = sessionStorage.getItem("lootbox-account-return-view");
+    if (["menu", "profile", "cart", "orders", "settings"].includes(savedAccountView)) {
+      callbackUrl.searchParams.set("account", savedAccountView);
+    }
+    sessionStorage.removeItem("lootbox-account-return-view");
     callbackUrl.searchParams.delete("code");
     window.history.replaceState({}, "", callbackUrl);
     return session;
