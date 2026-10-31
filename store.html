@@ -799,6 +799,7 @@
       const name = card.querySelector("h3").textContent.trim();
       const productImage = card.querySelector(".store-image-wrap img").getAttribute("src");
       const openProduct = () => {
+        try { sessionStorage.setItem("lootbox-store-return-scroll", String(window.scrollY)); } catch {}
         const params = new URLSearchParams({
           name,
           image: productImage,
@@ -867,6 +868,7 @@
       const name = featuredCard.querySelector("h3").textContent.trim();
       const productImage = featuredCard.querySelector(".store-image-wrap img").getAttribute("src");
       const openProduct = () => {
+        try { sessionStorage.setItem("lootbox-store-return-scroll", String(window.scrollY)); } catch {}
         const params = new URLSearchParams({ name, image: productImage, category: featuredCard.dataset.category });
         window.location.href = `product.html?${params.toString()}`;
       };
@@ -1128,6 +1130,18 @@
     window.addEventListener("scroll", updateScrollTop, { passive: true });
     desktopScrollTop.addEventListener("click", () => window.scrollTo({ top: 0, behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth" }));
     updateScrollTop();
+    // Restore the listing position if the browser had to reload the shop page
+    // while returning from a product detail page.
+    try {
+      const savedStoreScroll = sessionStorage.getItem("lootbox-store-return-scroll");
+      if (savedStoreScroll !== null) {
+        sessionStorage.removeItem("lootbox-store-return-scroll");
+        const scrollY = Number(savedStoreScroll);
+        if (Number.isFinite(scrollY)) {
+          requestAnimationFrame(() => requestAnimationFrame(() => window.scrollTo(0, scrollY)));
+        }
+      }
+    } catch {}
   })();
 </script>
 </body>

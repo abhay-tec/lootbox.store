@@ -12,7 +12,7 @@
 </head>
 <body class="product-detail-page">
   <main class="product-detail-wrap">
-    <a class="product-detail-back" href="store.html">← Back to shop</a>
+    <a class="product-detail-back" href="store.html" id="product-detail-back">← Back to shop</a>
     <article class="product-detail-card" id="product-detail" hidden>
       <div class="product-detail-image">
         <div class="product-gallery" id="product-gallery">
@@ -95,6 +95,16 @@
   <script src="reviews.js"></script>
   <script src="help-bot.js" defer></script>
   <script>
+    const backToShop = document.getElementById("product-detail-back");
+    backToShop.addEventListener("click", event => {
+      try {
+        const previousPage = new URL(document.referrer);
+        if (previousPage.origin === location.origin && previousPage.pathname.endsWith("/store.html") && history.length > 1) {
+          event.preventDefault();
+          history.back();
+        }
+      } catch {}
+    });
     (() => {
       const params = new URLSearchParams(window.location.search);
       const name = params.get("name") || "";
