@@ -51,6 +51,7 @@
       <button type="button" data-view="cart"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span><span><strong>Cart</strong><small>Review products you've added</small></span><span class="drawer-count" id="cart-count">0</span></button>
       <button type="button" data-view="orders"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14.5 3.8V8H19M8.5 12h7M8.5 16h7"/></svg></span><span><strong>Orders</strong><small>View your order requests</small></span><span class="drawer-chevron">›</span></button>
       <button type="button" data-view="settings"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.3 13.5 1.1.9-1.5 2.6-1.4-.5a7.5 7.5 0 0 1-1.6.9l-.3 1.5h-3l-.3-1.5a7.5 7.5 0 0 1-1.6-.9l-1.4.5-1.5-2.6 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.5-2.6 1.4.5a7.5 7.5 0 0 1 1.6-.9l.3-1.5h3l.3 1.5a7.5 7.5 0 0 1 1.6.9l1.4-.5 1.5 2.6-1.1.9a7 7 0 0 1 0 1.8Z" transform="translate(-1 -1) scale(1.08)"/></svg></span><span><strong>Settings</strong><small>Manage your preferences</small></span><span class="drawer-chevron">›</span></button>
+      <a class="drawer-link" href="seller.html"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9 20v-6h6v6M8 10h.01M16 10h.01"/></svg></span><span><strong>Seller account</strong><small>Private order dashboard</small></span><span class="drawer-chevron" aria-hidden="true">›</span></a>
       <button class="drawer-logout" id="logout-button" type="button"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H9"/></svg></span><span><strong>Log out</strong><small>Clear your saved profile here</small></span></button>
     </nav>
     <p class="drawer-message" id="drawer-message" role="status" aria-live="polite"></p>
@@ -93,7 +94,6 @@
       <label class="setting-option"><span><strong>Animated search suggestions</strong><small>Cycle through product names in the search bar.</small></span><input id="setting-suggestions" type="checkbox" checked></label>
       <button class="settings-save" id="settings-save" type="button">Save settings</button>
       <p class="settings-status" id="settings-status" role="status" aria-live="polite"></p>
-      <a class="seller-access-link" href="seller.html">Seller account <span aria-hidden="true">→</span></a>
     </section>
   </aside>
   <dialog class="order-cancel-dialog" id="order-cancel-dialog" aria-labelledby="cancel-dialog-title">

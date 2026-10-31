@@ -2745,8 +2745,25 @@ body.drawer-open {
   transition: background 160ms ease, border-color 160ms ease;
 }
 
+.drawer-menu .drawer-link {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) auto;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 66px;
+  padding: 9px 10px;
+  border: 1px solid transparent;
+  border-radius: 10px;
+  color: #fff;
+  text-decoration: none;
+  transition: background 160ms ease, border-color 160ms ease;
+}
+
 .drawer-menu button:hover,
-.drawer-menu button:focus-visible {
+.drawer-menu button:focus-visible,
+.drawer-menu .drawer-link:hover,
+.drawer-menu .drawer-link:focus-visible {
   border-color: rgba(255, 255, 255, 0.12);
   background: rgba(255, 255, 255, 0.07);
 }
@@ -2774,6 +2791,11 @@ body.drawer-open {
 }
 
 .drawer-menu button > span:nth-child(2) {
+  display: grid;
+  gap: 3px;
+}
+
+.drawer-menu .drawer-link > span:nth-child(2) {
   display: grid;
   gap: 3px;
 }
