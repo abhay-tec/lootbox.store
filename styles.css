@@ -4809,6 +4809,58 @@ html.account-page-mode .order-cancel-button {
   font-size: 0.77rem;
 }
 
+.store-page .store-price.has-sale-price,
+.product-detail-price.has-sale-price,
+.recommendation-price.has-sale-price {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 5px;
+}
+
+.sale-price-current {
+  color: #c51f31;
+  font-size: 1.15em;
+  font-weight: 800;
+}
+
+.sale-price-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 6px;
+  color: #74757a;
+  font-size: 0.82em;
+  font-weight: 500;
+}
+
+.sale-price-meta s {
+  color: #818187;
+}
+
+.sale-price-discount {
+  color: #20724a;
+  font-size: 0.9em;
+  font-weight: 800;
+}
+
+.sale-price-size {
+  color: #77787c;
+}
+
+.product-detail-price.has-sale-price .sale-price-current {
+  color: #fff;
+  font-size: 1.35em;
+}
+
+.product-detail-price.has-sale-price .sale-price-meta {
+  color: rgba(255, 255, 255, 0.72);
+}
+
+.recommendation-price.has-sale-price .sale-price-current {
+  color: #25262a;
+}
+
 .store-page .store-review-summary {
   color: #717277;
 }

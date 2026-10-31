@@ -283,6 +283,7 @@
   <button class="desktop-scroll-top" id="desktop-scroll-top" type="button" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 14 7-7 7 7M12 7v13"/></svg></button>
 <script src="reviews-config.js"></script>
 <script src="reviews.js"></script>
+<script src="product-prices.js"></script>
 <script src="auth-client.js"></script>
 <script src="help-bot.js" defer></script>
 <script>
@@ -1344,6 +1345,9 @@
     });
     filterProducts();
     render();
+    document.querySelectorAll(".store-card").forEach(card => {
+      window.LootboxProductPrices?.apply(card.querySelector(".store-price"), card.querySelector("h3")?.textContent || "");
+    });
     const desktopScrollTop = document.getElementById("desktop-scroll-top");
     const updateScrollTop = () => { desktopScrollTop.hidden = window.scrollY < 500; };
     window.addEventListener("scroll", updateScrollTop, { passive: true });

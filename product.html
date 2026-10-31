@@ -94,6 +94,7 @@
   </main>
   <script src="reviews-config.js"></script>
   <script src="reviews.js"></script>
+  <script src="product-prices.js"></script>
   <script src="help-bot.js" defer></script>
   <script>
     const backToShop = document.getElementById("product-detail-back");
@@ -294,6 +295,7 @@
             const price = document.createElement("p");
             price.className = "recommendation-price";
             price.textContent = "Ask for price";
+            window.LootboxProductPrices?.apply(price, product.name);
             const actions = document.createElement("div");
             actions.className = "recommendation-actions";
             const addButton = document.createElement("button");
@@ -335,6 +337,7 @@
 
       document.title = `${name} | The Reclaim Edit`;
       document.getElementById("detail-name").textContent = name;
+      window.LootboxProductPrices?.apply(document.querySelector(".product-detail-price"), name);
       document.getElementById("detail-category").textContent = categoryNames[category] || "Current find";
       const savedProduct = { name, image, category };
       try {
