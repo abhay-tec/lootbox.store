@@ -8,13 +8,13 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script>
-    const accountViews = ["menu", "profile", "cart", "orders", "settings"];
+    const accountViews = ["menu", "profile", "cart", "orders", "settings", "wishlist", "recent", "alerts"];
     const accountQueryView = new URLSearchParams(location.search).get("account");
     const pendingAccountView = sessionStorage.getItem("lootbox-account-return-view");
     const accountView = accountViews.includes(accountQueryView) ? accountQueryView : pendingAccountView;
     if (accountViews.includes(accountView)) {
       document.documentElement.classList.add("account-page-mode");
-      const accountTitles = { menu: "My Account", profile: "Profile & Delivery", cart: "Your Cart", orders: "Your Orders", settings: "Settings" };
+      const accountTitles = { menu: "My Account", profile: "Profile & Delivery", cart: "Your Cart", orders: "Your Orders", settings: "Settings", wishlist: "Wishlist", recent: "Recently Viewed", alerts: "Stock Alerts" };
       document.title = `${accountTitles[accountView]} | Lootbox`;
     }
   </script>
@@ -50,6 +50,9 @@
       <button type="button" data-view="profile"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.25"/><path d="M5.5 19a6.5 6.5 0 0 1 13 0"/></svg></span><span><strong>Profile</strong><small>Your name and delivery details</small></span><span class="drawer-chevron">›</span></button>
       <button type="button" data-view="cart"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3.5 5h2l2.1 10.1a2 2 0 0 0 2 1.6h7.8a2 2 0 0 0 1.9-1.4L21 9H7"/><circle cx="10" cy="20" r="1"/><circle cx="18" cy="20" r="1"/></svg></span><span><strong>Cart</strong><small>Review products you've added</small></span><span class="drawer-count" id="cart-count">0</span></button>
       <button type="button" data-view="orders"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 3.5h9l4 4V20a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1V4.5a1 1 0 0 1 1-1Z"/><path d="M14.5 3.8V8H19M8.5 12h7M8.5 16h7"/></svg></span><span><strong>Orders</strong><small>View your order requests</small></span><span class="drawer-chevron">›</span></button>
+      <button type="button" data-view="wishlist"><span class="drawer-icon" aria-hidden="true">♡</span><span><strong>Wishlist</strong><small>Products you saved</small></span><span class="drawer-count" id="wishlist-count">0</span></button>
+      <button type="button" data-view="recent"><span class="drawer-icon" aria-hidden="true">◷</span><span><strong>Recently viewed</strong><small>Pick up where you left off</small></span><span class="drawer-chevron">›</span></button>
+      <button type="button" data-view="alerts"><span class="drawer-icon" aria-hidden="true">♧</span><span><strong>Stock alerts</strong><small>Availability requests</small></span><span class="drawer-chevron">›</span></button>
       <button type="button" data-view="settings"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.3 13.5 1.1.9-1.5 2.6-1.4-.5a7.5 7.5 0 0 1-1.6.9l-.3 1.5h-3l-.3-1.5a7.5 7.5 0 0 1-1.6-.9l-1.4.5-1.5-2.6 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.5-2.6 1.4.5a7.5 7.5 0 0 1 1.6-.9l.3-1.5h3l.3 1.5a7.5 7.5 0 0 1 1.6.9l1.4-.5 1.5 2.6-1.1.9a7 7 0 0 1 0 1.8Z" transform="translate(-1 -1) scale(1.08)"/></svg></span><span><strong>Settings</strong><small>Manage your preferences</small></span><span class="drawer-chevron">›</span></button>
       <a class="drawer-link" href="seller.html"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9 20v-6h6v6M8 10h.01M16 10h.01"/></svg></span><span><strong>Seller account</strong><small>Private order dashboard</small></span><span class="drawer-chevron" aria-hidden="true">›</span></a>
       <button class="drawer-logout" id="logout-button" type="button"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H9"/></svg></span><span><strong>Log out</strong><small>Clear your saved profile here</small></span></button>
@@ -85,9 +88,13 @@
       <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
       <h3>Your orders</h3>
       <p class="drawer-help">Your order requests are saved to your account. The store will contact you to confirm availability and price.</p>
+      <div class="order-filters"><label>Search orders<input id="order-search" type="search" placeholder="Product or order ID"></label><label>Show<select id="order-status-filter"><option value="all">All statuses</option><option value="pending">Pending</option><option value="contacted">Contacted</option><option value="confirmed">Confirmed</option><option value="fulfilled">Fulfilled</option><option value="cancelled">Cancelled</option></select></label></div>
       <ul class="order-list" id="order-list"></ul>
       <p class="orders-empty" id="orders-empty">You haven't started an order yet.</p>
     </section>
+    <section class="drawer-view" id="wishlist-view" hidden><button class="drawer-back" type="button" data-back-menu>‹ Menu</button><h3>Your wishlist</h3><p class="drawer-help">Saved products stay on this browser so you can come back to them.</p><ul class="saved-product-list" id="wishlist-list"></ul><p class="orders-empty" id="wishlist-empty">You haven't saved any products yet.</p></section>
+    <section class="drawer-view" id="recent-view" hidden><button class="drawer-back" type="button" data-back-menu>‹ Menu</button><h3>Recently viewed</h3><ul class="saved-product-list" id="recent-list"></ul><p class="orders-empty" id="recent-empty">Products you open will show up here.</p></section>
+    <section class="drawer-view" id="alerts-view" hidden><button class="drawer-back" type="button" data-back-menu>‹ Menu</button><h3>Stock alerts</h3><p class="drawer-help">We'll keep your availability requests here. The seller will contact you when they can confirm stock.</p><ul class="saved-product-list" id="stock-alert-list"></ul><p class="orders-empty" id="stock-alert-empty">No stock alerts yet.</p><p class="settings-status" id="stock-alert-status" role="status" aria-live="polite"></p></section>
     <section class="drawer-view" id="settings-view" hidden>
       <button class="drawer-back" type="button" data-back-menu>‹ Menu</button>
       <h3>Settings</h3>
@@ -154,7 +161,8 @@
     <section class="store-section" id="collection"><div class="wrap store-shell">
       <div class="store-header"><div><p class="mini-kicker">The latest edit</p><h1 class="catalog-title">Trending products</h1></div><a class="store-view-all" href="#collection">View all <span aria-hidden="true">→</span></a></div>
       <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
-      <div class="store-results-bar"><p class="store-counter">100 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select></label></div>
+      <div class="store-results-bar"><p class="store-counter">100 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option><option value="rating-desc">Top rated</option></select></label></div>
+      <div class="catalog-filters" aria-label="More product filters"><label>Brand<select id="brand-filter"><option value="all">All brands</option></select></label><label>Market rating<select id="rating-filter"><option value="0">Any rating</option><option value="3">3★ and up</option><option value="4">4★ and up</option><option value="4.5">4.5★ and up</option></select></label><button id="clear-filters" type="button">Clear filters</button></div>
       <a class="store-inline-promo" href="#collection" aria-label="Browse the fragrance collection"><img src="assets/store/banners/premium-perfumes-mountains.png" alt="Premium perfumes — tap to browse the fragrance collection" loading="lazy"></a>
       <section class="featured-shelf" aria-labelledby="featured-shelf-title">
         <div class="featured-shelf-heading"><div><p class="mini-kicker">A few finds worth a closer look</p><h2 id="featured-shelf-title">Best picks</h2></div><div class="featured-shelf-controls"><button type="button" class="shelf-scroll-button" data-scroll="-1" aria-label="Show previous picks">‹</button><button type="button" class="shelf-scroll-button" data-scroll="1" aria-label="Show more picks">›</button></div></div>
@@ -281,6 +289,14 @@
   (() => {
     const storageKey = "reclaim-edit-cart";
     const settingsStorageKey = "reclaim-edit-settings";
+    const wishlistStorageKey = "reclaim-edit-wishlist";
+    const recentStorageKey = "reclaim-edit-recently-viewed";
+    const stockAlertStorageKey = "reclaim-edit-stock-alerts";
+    const readList = key => { try { const value = JSON.parse(localStorage.getItem(key) || "[]"); return Array.isArray(value) ? value : []; } catch { return []; } };
+    let wishlist = readList(wishlistStorageKey);
+    let recentlyViewed = readList(recentStorageKey);
+    let stockAlerts = readList(stockAlertStorageKey);
+    const persistList = (key, value) => { try { localStorage.setItem(key, JSON.stringify(value)); } catch {} };
     let cart = {};
     let profile = null;
     let orders = [];
@@ -332,8 +348,8 @@
     const toastMessage = document.getElementById("order-toast-message");
     let accountPageMode = document.documentElement.classList.contains("account-page-mode");
     let requestedAccountView = new URLSearchParams(window.location.search).get("account");
-    const validAccountViews = ["menu", "profile", "cart", "orders", "settings"];
-    const accountPageTitles = { menu: "My Account", profile: "Profile & Delivery", cart: "Your Cart", orders: "Your Orders", settings: "Settings" };
+    const validAccountViews = ["menu", "profile", "cart", "orders", "settings", "wishlist", "recent", "alerts"];
+    const accountPageTitles = { menu: "My Account", profile: "Profile & Delivery", cart: "Your Cart", orders: "Your Orders", settings: "Settings", wishlist: "Wishlist", recent: "Recently Viewed", alerts: "Stock Alerts" };
     const setAccountRoute = (view, replace = false) => {
       if (!accountPageMode || !validAccountViews.includes(view)) return;
       requestedAccountView = view;
@@ -354,18 +370,40 @@
       document.getElementById("cart-count").textContent = total;
       document.getElementById("cart-total").textContent = `(${total})`;
       mobileDockCartCount.textContent = total;
+      const wishlistCount = document.getElementById("wishlist-count");
+      if (wishlistCount) wishlistCount.textContent = wishlist.length;
       items.replaceChildren();
       Object.entries(cart).forEach(([name, item]) => {
         const row = document.createElement("li");
-        const label = document.createElement("span");
-        label.textContent = `${name} x ${item.quantity}`;
+        const main = document.createElement("span");
+        main.className = "cart-line-main";
+        const label = document.createElement("strong");
+        label.textContent = name;
+        const price = document.createElement("small");
+        price.textContent = "Price confirmed when you place the request";
+        main.append(label, price);
+        const quantity = document.createElement("span");
+        quantity.className = "cart-quantity";
+        const decrement = document.createElement("button");
+        decrement.type = "button";
+        decrement.textContent = "−";
+        decrement.setAttribute("aria-label", `Remove one ${name}`);
+        decrement.addEventListener("click", () => { cart[name].quantity -= 1; if (cart[name].quantity <= 0) delete cart[name]; save(); render(); });
+        const amount = document.createElement("output");
+        amount.textContent = item.quantity;
+        const increment = document.createElement("button");
+        increment.type = "button";
+        increment.textContent = "+";
+        increment.setAttribute("aria-label", `Add one ${name}`);
+        increment.addEventListener("click", () => { cart[name].quantity += 1; save(); render(); });
+        quantity.append(decrement, amount, increment);
         const remove = document.createElement("button");
         remove.type = "button";
         remove.className = "cart-remove";
         remove.textContent = "Remove";
         remove.setAttribute("aria-label", `Remove ${name} from cart`);
         remove.addEventListener("click", () => { delete cart[name]; save(); render(); });
-        row.append(label, remove);
+        row.append(main, quantity, remove);
         items.append(row);
       });
       if (!total) {
@@ -382,7 +420,10 @@
     const ordersList = document.getElementById("order-list");
     const ordersEmpty = document.getElementById("orders-empty");
     const settingSuggestions = document.getElementById("setting-suggestions");
-    const drawerViews = [panel, document.getElementById("profile-view"), document.getElementById("orders-view"), document.getElementById("settings-view")];
+    const wishlistView = document.getElementById("wishlist-view");
+    const recentView = document.getElementById("recent-view");
+    const alertsView = document.getElementById("alerts-view");
+    const drawerViews = [panel, document.getElementById("profile-view"), document.getElementById("orders-view"), document.getElementById("settings-view"), wishlistView, recentView, alertsView];
     const showDrawerView = view => {
       drawerMenu.hidden = view !== "menu";
       drawerViews.forEach(section => { section.hidden = section.id !== (view === "cart" ? "cart-panel" : `${view}-view`); });
@@ -401,6 +442,73 @@
       menuScrim.hidden = false;
       document.body.classList.add("drawer-open");
       showDrawerView(activeView);
+    };
+    const openSavedProduct = item => {
+      try { sessionStorage.setItem("lootbox-store-return-scroll", String(window.scrollY)); } catch {}
+      const query = new URLSearchParams({ name: item.name, image: item.image || productImageFor(item.name), category: item.category || "" });
+      window.location.href = `product.html?${query.toString()}`;
+    };
+    const renderSavedList = (listId, emptyId, products, mode) => {
+      const list = document.getElementById(listId);
+      const empty = document.getElementById(emptyId);
+      list.replaceChildren();
+      empty.hidden = products.length > 0;
+      products.forEach(product => {
+        const row = document.createElement("li");
+        row.className = "saved-product-row";
+        if (product.image) {
+          const image = document.createElement("img");
+          image.src = product.image;
+          image.alt = product.name;
+          image.loading = "lazy";
+          row.append(image);
+        }
+        const copy = document.createElement("span");
+        const name = document.createElement("strong");
+        name.textContent = product.name;
+        const meta = document.createElement("small");
+        meta.textContent = product.category ? product.category.replaceAll("-", " ") : "Ask for price";
+        copy.append(name, meta);
+        const actions = document.createElement("span");
+        const view = document.createElement("button");
+        view.type = "button";
+        view.textContent = "View";
+        view.addEventListener("click", () => openSavedProduct(product));
+        actions.append(view);
+        if (mode === "wishlist") {
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.textContent = "Remove";
+          remove.addEventListener("click", () => {
+            wishlist = wishlist.filter(saved => saved.name !== product.name);
+            persistList(wishlistStorageKey, wishlist);
+            document.querySelectorAll(`.wishlist-toggle[data-product-name="${CSS.escape(product.name)}"]`).forEach(button => { button.setAttribute("aria-pressed", "false"); button.textContent = "♡"; });
+            renderSavedList("wishlist-list", "wishlist-empty", wishlist, "wishlist");
+            render();
+          });
+          actions.append(remove);
+        }
+        row.append(copy, actions);
+        list.append(row);
+      });
+    };
+    const renderSavedViews = () => {
+      renderSavedList("wishlist-list", "wishlist-empty", wishlist, "wishlist");
+      renderSavedList("recent-list", "recent-empty", recentlyViewed, "recent");
+      renderSavedList("stock-alert-list", "stock-alert-empty", stockAlerts, "alerts");
+    };
+    const submitStockAlert = async item => {
+      if (!customer) throw new Error("Sign in with Google first to save a stock alert.");
+      const existing = await window.LootboxBackend.request(`stock_alert_requests?select=id&user_id=eq.${encodeURIComponent(customer.id)}&product_name=eq.${encodeURIComponent(item.name)}&status=eq.waiting&limit=1`);
+      if (!existing.length) await window.LootboxBackend.request("stock_alert_requests", {
+        method: "POST", headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+        body: JSON.stringify({ user_id: customer.id, customer_email: customer.email, product_name: item.name, product_image: item.image || productImageFor(item.name) })
+      });
+      stockAlerts = [{ name: item.name, image: item.image || productImageFor(item.name), category: item.category || "Availability requested" }, ...stockAlerts.filter(saved => saved.name !== item.name)];
+      persistList(stockAlertStorageKey, stockAlerts);
+      renderSavedViews();
+      document.getElementById("stock-alert-status").textContent = "Alert request saved. The seller can contact you when stock is confirmed.";
+      try { localStorage.removeItem("reclaim-edit-pending-stock-alert"); } catch {}
     };
     const closeDrawer = () => {
       if (accountPageMode) {
@@ -422,8 +530,16 @@
     };
     const renderOrders = () => {
       ordersList.replaceChildren();
-      const visibleOrders = orders.filter(order => !(order.status === "cancelled" && order.cancelled_by === "customer"));
+      const search = (document.getElementById("order-search")?.value || "").trim().toLocaleLowerCase();
+      const statusFilter = document.getElementById("order-status-filter")?.value || "all";
+      const visibleOrders = orders.filter(order => {
+        if (order.status === "cancelled" && order.cancelled_by === "customer") return false;
+        if (statusFilter !== "all" && order.status !== statusFilter) return false;
+        const searchable = `${order.id} ${(order.items || []).map(item => item.name).join(" ")}`.toLocaleLowerCase();
+        return !search || searchable.includes(search);
+      });
       ordersEmpty.hidden = visibleOrders.length > 0;
+      if (!visibleOrders.length) ordersEmpty.textContent = orders.length ? "No orders match these filters." : "You haven't started an order yet.";
       visibleOrders.forEach(order => {
         const row = document.createElement("li");
         row.className = "customer-order-card";
@@ -470,9 +586,27 @@
           });
           row.append(cancel);
         }
+        const reorder = document.createElement("button");
+        reorder.className = "order-reorder-button";
+        reorder.type = "button";
+        reorder.textContent = "Add items to cart";
+        reorder.addEventListener("click", () => {
+          (order.items || []).forEach(product => {
+            if (!product.name) return;
+            cart[product.name] = cart[product.name] || { quantity: 0, image: product.image || productImageFor(product.name) };
+            cart[product.name].quantity += Math.max(1, Number(product.quantity) || 1);
+          });
+          save();
+          render();
+          openDrawer("cart");
+          drawerMessage.textContent = "Order items added to your cart.";
+        });
+        row.append(reorder);
         ordersList.append(row);
       });
     };
+    document.getElementById("order-search").addEventListener("input", renderOrders);
+    document.getElementById("order-status-filter").addEventListener("change", renderOrders);
     cancelForm.addEventListener("submit", async event => {
       event.preventDefault();
       if (!orderPendingCancellation || !cancelReason.value) return;
@@ -561,6 +695,20 @@
           const field = profileForm.elements.namedItem(key);
           if (field) field.value = value;
         });
+      }
+      try {
+        const savedAlerts = await window.LootboxBackend.request(`stock_alert_requests?select=product_name,product_image,status&user_id=eq.${encodeURIComponent(customer.id)}&status=eq.waiting&order=created_at.desc`);
+        stockAlerts = savedAlerts.map(alert => ({ name: alert.product_name, image: alert.product_image, category: "Availability requested" }));
+        persistList(stockAlertStorageKey, stockAlerts);
+        renderSavedViews();
+      } catch (error) {
+        if (error.message?.includes("stock_alert_requests")) document.getElementById("stock-alert-status").textContent = "Run the latest supabase-orders.sql to enable shared stock alerts.";
+      }
+      try {
+        const pendingAlert = JSON.parse(localStorage.getItem("reclaim-edit-pending-stock-alert") || "null");
+        if (pendingAlert?.name) await submitStockAlert(pendingAlert);
+      } catch (error) {
+        document.getElementById("stock-alert-status").textContent = error.message || "Could not save this stock alert yet.";
       }
       let remoteCart = {};
       try {
@@ -715,17 +863,27 @@
       }
       requestedAccountView = view;
       openDrawer(view);
-      if (view === "orders" && !customer) {
+      if ((view === "orders" || view === "alerts") && !customer) {
         showDrawerView("profile");
         document.title = `${accountPageTitles.profile} | Lootbox`;
-        customerAuthStatus.textContent = "Sign in with Google to view your order requests.";
-        setAccountRoute("orders", true);
+        customerAuthStatus.textContent = view === "orders" ? "Sign in with Google to view your order requests." : "Sign in with Google to save stock alerts to your account.";
+        setAccountRoute(view, true);
       } else if (view === "orders") {
         refreshCustomerOrders().catch(error => { drawerMessage.textContent = error.message; });
+      } else if (view === "wishlist" || view === "recent" || view === "alerts") {
+        renderSavedViews();
       }
     };
     drawerMenu.querySelectorAll("[data-view]").forEach(button => {
-      button.addEventListener("click", () => openAccountView(button.dataset.view));
+      button.addEventListener("click", () => {
+        const view = button.dataset.view;
+        if (view === "wishlist" || view === "recent" || view === "alerts") renderSavedViews();
+        openAccountView(view);
+        if (view === "alerts" && !customer) {
+          showDrawerView("profile");
+          customerAuthStatus.textContent = "Sign in with Google to save stock alerts to your account.";
+        }
+      });
     });
     drawer.querySelectorAll("[data-back-menu]").forEach(button => button.addEventListener("click", () => {
       setAccountRoute("menu", true);
@@ -745,11 +903,11 @@
         document.documentElement.classList.add("account-page-mode");
         requestedAccountView = view;
         openDrawer(view);
-        if (view === "orders" && !customer) {
+        if ((view === "orders" || view === "alerts") && !customer) {
           showDrawerView("profile");
           document.title = `${accountPageTitles.profile} | Lootbox`;
-          customerAuthStatus.textContent = "Sign in with Google to view your order requests.";
-          setAccountRoute("orders", true);
+          customerAuthStatus.textContent = view === "orders" ? "Sign in with Google to view your order requests." : "Sign in with Google to save stock alerts to your account.";
+          setAccountRoute(view, true);
         } else if (view === "orders") {
           refreshCustomerOrders().catch(() => {});
         }
@@ -772,13 +930,14 @@
       if (accountPageMode) {
         const restoredView = new URLSearchParams(window.location.search).get("account") || requestedAccountView;
         const initialView = validAccountViews.includes(restoredView) ? restoredView : "menu";
-        if (initialView === "orders" && !customer) {
+        if ((initialView === "orders" || initialView === "alerts") && !customer) {
           openDrawer("profile");
-          setAccountRoute("orders", true);
-          customerAuthStatus.textContent = "Sign in with Google to view your order requests.";
+          setAccountRoute(initialView, true);
+          customerAuthStatus.textContent = initialView === "orders" ? "Sign in with Google to view your order requests." : "Sign in with Google to save stock alerts to your account.";
         } else {
           openDrawer(initialView);
           if (initialView === "orders" && customer) refreshCustomerOrders().catch(error => { drawerMessage.textContent = error.message; });
+          if (initialView === "wishlist" || initialView === "recent" || initialView === "alerts") renderSavedViews();
         }
         return;
       }
@@ -838,10 +997,58 @@
     const cards = [...document.querySelectorAll(".store-card")];
     const storeGrid = document.querySelector(".store-grid");
     const sortSelect = document.getElementById("sort-products");
+    const brandFilter = document.getElementById("brand-filter");
+    const ratingFilter = document.getElementById("rating-filter");
+    let activeBrand = "all";
+    let minimumMarketRating = 0;
+    const brandNameFor = name => {
+      const clean = name.trim();
+      const known = [/^l'or[eé]al paris/i, /^johnson's/i, /^jean paul gaultier/i, /^u\.s\. polo assn\./i, /^the man company/i, /^park avenue/i, /^m[cC]affeine/i, /^bella ?vita/i, /^ralph lauren/i, /^john varvatos/i, /^victor\s*&\s*rolf/i];
+      const match = known.find(pattern => pattern.test(clean));
+      if (match) return clean.match(match)[0];
+      return clean.split(/\s+/)[0].replace(/[,&]+$/, "");
+    };
+    [...new Set(cards.map(card => brandNameFor(card.querySelector("h3").textContent.trim())))].sort((a, b) => a.localeCompare(b)).forEach(brand => {
+      const option = document.createElement("option"); option.value = brand.toLocaleLowerCase(); option.textContent = brand; brandFilter.append(option);
+    });
+    const marketRatingFor = card => {
+      const text = card.querySelector(".store-review-summary a")?.textContent || "";
+      const match = text.match(/Market\s+(\d+(?:\.\d+)?)/i);
+      return match ? Number(match[1]) : 0;
+    };
+    const bindWishlistButton = card => {
+      const name = card.querySelector("h3")?.textContent.trim();
+      const image = card.querySelector(".store-image-wrap img")?.getAttribute("src") || "";
+      if (!name) return;
+      let button = card.querySelector(".wishlist-toggle");
+      if (!button) {
+        button = document.createElement("button");
+        button.type = "button";
+        button.className = "wishlist-toggle";
+        card.querySelector(".store-image-wrap")?.append(button);
+      }
+      if (button.dataset.wishlistBound === "true") return;
+      button.dataset.wishlistBound = "true";
+      button.dataset.productName = name;
+      button.setAttribute("aria-label", `Save ${name} to wishlist`);
+      const syncButton = () => { const saved = wishlist.some(item => item.name === name); button.setAttribute("aria-pressed", String(saved)); button.textContent = saved ? "♥" : "♡"; button.setAttribute("aria-label", `${saved ? "Remove" : "Save"} ${name} ${saved ? "from" : "to"} wishlist`); };
+      syncButton();
+      button.addEventListener("click", event => {
+        event.stopPropagation();
+        if (wishlist.some(item => item.name === name)) wishlist = wishlist.filter(item => item.name !== name);
+        else wishlist = [{ name, image, category: card.dataset.category }, ...wishlist].slice(0, 100);
+        persistList(wishlistStorageKey, wishlist);
+        syncButton(); render(); renderSavedList("wishlist-list", "wishlist-empty", wishlist, "wishlist");
+        status.textContent = wishlist.some(item => item.name === name) ? `${name} saved to wishlist.` : `${name} removed from wishlist.`;
+      });
+    };
+    cards.forEach(bindWishlistButton);
     sortSelect.addEventListener("change", () => {
       const sortedCards = [...cards];
+      if (sortSelect.value === "featured") sortedCards.sort((a, b) => cards.indexOf(a) - cards.indexOf(b));
       if (sortSelect.value === "name-asc") sortedCards.sort((a, b) => a.querySelector("h3").textContent.localeCompare(b.querySelector("h3").textContent, undefined, { sensitivity: "base", numeric: true }));
       if (sortSelect.value === "name-desc") sortedCards.sort((a, b) => b.querySelector("h3").textContent.localeCompare(a.querySelector("h3").textContent, undefined, { sensitivity: "base", numeric: true }));
+      if (sortSelect.value === "rating-desc") sortedCards.sort((a, b) => marketRatingFor(b) - marketRatingFor(a));
       storeGrid.append(...sortedCards);
     });
     const searchForm = document.getElementById("product-search");
@@ -865,6 +1072,8 @@
       const sourceCard = cards.find(card => card.querySelector("h3")?.textContent.trim().toLowerCase() === featuredName.toLowerCase());
       if (!sourceCard) return;
       const featuredCard = sourceCard.cloneNode(true);
+      featuredCard.querySelector(".wishlist-toggle")?.removeAttribute("data-wishlist-bound");
+      bindWishlistButton(featuredCard);
       const name = featuredCard.querySelector("h3").textContent.trim();
       const productImage = featuredCard.querySelector(".store-image-wrap img").getAttribute("src");
       const openProduct = () => {
@@ -1024,15 +1233,25 @@
       cards.forEach(card => {
         const categoryMatches = activeCategory === "all" || card.dataset.category === activeCategory;
         const textMatches = !searchTerm || cardMatchesSearch(card, terms);
-        const show = categoryMatches && textMatches;
+        const brandMatches = activeBrand === "all" || brandNameFor(card.querySelector("h3").textContent.trim()).toLocaleLowerCase() === activeBrand;
+        const ratingMatches = !minimumMarketRating || marketRatingFor(card) >= minimumMarketRating;
+        const show = categoryMatches && textMatches && brandMatches && ratingMatches;
         card.hidden = !show;
         if (show) visible += 1;
       });
       resultsCount.textContent = `Showing ${visible} of ${cards.length} products`;
       noResults.hidden = visible !== 0;
-      perfumePromo.hidden = Boolean(searchTerm) || activeCategory !== "all";
-      featuredShelf.hidden = Boolean(searchTerm) || activeCategory !== "all";
+      perfumePromo.hidden = Boolean(searchTerm || activeBrand !== "all" || minimumMarketRating) || activeCategory !== "all";
+      featuredShelf.hidden = Boolean(searchTerm || activeBrand !== "all" || minimumMarketRating) || activeCategory !== "all";
     };
+    brandFilter.addEventListener("change", () => { activeBrand = brandFilter.value; filterProducts(); });
+    ratingFilter.addEventListener("change", () => { minimumMarketRating = Number(ratingFilter.value) || 0; filterProducts(); });
+    document.getElementById("clear-filters").addEventListener("click", () => {
+      activeCategory = "all"; activeBrand = "all"; minimumMarketRating = 0; searchTerm = "";
+      searchInput.value = ""; brandFilter.value = "all"; ratingFilter.value = "0";
+      document.querySelectorAll(".category-button").forEach(button => { const active = button.dataset.filter === "all"; button.classList.toggle("is-active", active); button.setAttribute("aria-pressed", String(active)); });
+      filterProducts();
+    });
     perfumePromo.addEventListener("click", event => {
       event.preventDefault();
       document.querySelector('.category-button[data-filter="perfume"]').click();

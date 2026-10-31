@@ -40,6 +40,7 @@
           <button class="detail-cart" id="detail-add-cart" type="button">Add to Cart</button>
           <a id="detail-buy-now" href="#" target="_blank" rel="noreferrer">Buy Now</a>
         </div>
+        <div class="product-extra-actions"><button type="button" id="detail-wishlist" aria-pressed="false">♡ Save to wishlist</button><button type="button" id="detail-stock-alert">Notify me when available</button></div>
         <p class="product-detail-status" id="detail-status" role="status" aria-live="polite"></p>
         <details class="product-specs" id="product-specs">
           <summary id="product-specs-heading">Product details <span>View specs, ingredients &amp; source</span></summary>
@@ -335,6 +336,29 @@
       document.title = `${name} | The Reclaim Edit`;
       document.getElementById("detail-name").textContent = name;
       document.getElementById("detail-category").textContent = categoryNames[category] || "Current find";
+      const savedProduct = { name, image, category };
+      try {
+        const recent = JSON.parse(localStorage.getItem("reclaim-edit-recently-viewed") || "[]");
+        localStorage.setItem("reclaim-edit-recently-viewed", JSON.stringify([savedProduct, ...recent.filter(item => item.name !== name)].slice(0, 12)));
+      } catch {}
+      const wishlistButton = document.getElementById("detail-wishlist");
+      const readWishlist = () => { try { const value = JSON.parse(localStorage.getItem("reclaim-edit-wishlist") || "[]"); return Array.isArray(value) ? value : []; } catch { return []; } };
+      const updateWishlistButton = () => {
+        const saved = readWishlist().some(item => item.name === name);
+        wishlistButton.setAttribute("aria-pressed", String(saved));
+        wishlistButton.textContent = saved ? "♥ Saved to wishlist" : "♡ Save to wishlist";
+      };
+      updateWishlistButton();
+      wishlistButton.addEventListener("click", () => {
+        let wishlist = readWishlist();
+        wishlist = wishlist.some(item => item.name === name) ? wishlist.filter(item => item.name !== name) : [savedProduct, ...wishlist].slice(0, 100);
+        try { localStorage.setItem("reclaim-edit-wishlist", JSON.stringify(wishlist)); } catch {}
+        updateWishlistButton();
+      });
+      document.getElementById("detail-stock-alert").addEventListener("click", () => {
+        try { localStorage.setItem("reclaim-edit-pending-stock-alert", JSON.stringify(savedProduct)); } catch {}
+        window.location.href = "store.html?account=alerts";
+      });
       const details = productDetails[normalize(name)];
       const facts = details?.facts || [];
       const factList = document.getElementById("detail-facts");

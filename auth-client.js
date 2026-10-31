@@ -59,7 +59,7 @@
     if (oauthError) {
       localStorage.removeItem(verifierKey);
       const savedAccountView = sessionStorage.getItem("lootbox-account-return-view");
-      if (["menu", "profile", "cart", "orders", "settings"].includes(savedAccountView)) {
+      if (["menu", "profile", "cart", "orders", "settings", "wishlist", "recent", "alerts"].includes(savedAccountView)) {
         callbackUrl.searchParams.set("account", savedAccountView);
       }
       sessionStorage.removeItem("lootbox-account-return-view");
@@ -77,7 +77,7 @@
     localStorage.removeItem(verifierKey);
     saveSession(result);
     const savedAccountView = sessionStorage.getItem("lootbox-account-return-view");
-    if (["menu", "profile", "cart", "orders", "settings"].includes(savedAccountView)) {
+    if (["menu", "profile", "cart", "orders", "settings", "wishlist", "recent", "alerts"].includes(savedAccountView)) {
       callbackUrl.searchParams.set("account", savedAccountView);
     }
     sessionStorage.removeItem("lootbox-account-return-view");

@@ -17,6 +17,16 @@ create table if not exists public.customer_carts (
   updated_at timestamptz not null default now()
 );
 
+create table if not exists public.stock_alert_requests (
+  id uuid primary key default gen_random_uuid(),
+  user_id uuid not null references auth.users(id) on delete cascade,
+  customer_email text not null,
+  product_name text not null check (char_length(product_name) between 1 and 200),
+  product_image text not null default '',
+  status text not null default 'waiting' check (status in ('waiting', 'contacted')),
+  created_at timestamptz not null default now()
+);
+
 create table if not exists public.seller_allowlist (
   email text primary key check (email = lower(email))
 );
@@ -48,9 +58,12 @@ alter table public.store_orders add constraint store_orders_cancellation_reason_
 
 create index if not exists store_orders_created_at_idx on public.store_orders (created_at desc);
 create index if not exists store_orders_user_id_idx on public.store_orders (user_id, created_at desc);
+create index if not exists stock_alert_requests_created_at_idx on public.stock_alert_requests (created_at desc);
+create index if not exists stock_alert_requests_user_id_idx on public.stock_alert_requests (user_id, created_at desc);
 
 alter table public.customer_profiles enable row level security;
 alter table public.customer_carts enable row level security;
+alter table public.stock_alert_requests enable row level security;
 alter table public.seller_allowlist enable row level security;
 alter table public.store_orders enable row level security;
 
@@ -70,6 +83,28 @@ $$;
 
 revoke all on function public.is_seller() from public;
 grant execute on function public.is_seller() to authenticated;
+
+drop policy if exists "Customers read their own stock alerts" on public.stock_alert_requests;
+create policy "Customers read their own stock alerts" on public.stock_alert_requests
+  for select to authenticated using (
+    user_id = auth.uid()
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
+  );
+drop policy if exists "Google customers create stock alerts" on public.stock_alert_requests;
+create policy "Google customers create stock alerts" on public.stock_alert_requests
+  for insert to authenticated with check (
+    user_id = auth.uid()
+    and lower(customer_email) = lower(auth.jwt() ->> 'email')
+    and auth.jwt() -> 'app_metadata' -> 'providers' @> '["google"]'::jsonb
+  );
+drop policy if exists "Sellers read all stock alerts" on public.stock_alert_requests;
+create policy "Sellers read all stock alerts" on public.stock_alert_requests
+  for select to authenticated using (public.is_seller());
+drop policy if exists "Sellers update stock alerts" on public.stock_alert_requests;
+create policy "Sellers update stock alerts" on public.stock_alert_requests
+  for update to authenticated using (public.is_seller()) with check (public.is_seller());
+grant select, insert on public.stock_alert_requests to authenticated;
+grant update (status) on public.stock_alert_requests to authenticated;
 
 drop policy if exists "Customers read their own profile" on public.customer_profiles;
 create policy "Customers read their own profile" on public.customer_profiles

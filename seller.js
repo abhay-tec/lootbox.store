@@ -6,6 +6,10 @@
   const empty = document.getElementById("seller-orders-empty");
   const logoutButton = document.getElementById("seller-logout");
   const refreshButton = document.getElementById("seller-refresh");
+  const stockAlertSection = document.getElementById("seller-stock-alerts");
+  const stockAlertList = document.getElementById("seller-stock-alert-list");
+  const stockAlertEmpty = document.getElementById("seller-stock-alerts-empty");
+  const stockAlertStatus = document.getElementById("seller-stock-alert-status");
   const backend = window.LootboxBackend;
   let productImages = new Map();
   let productImagesLoaded = false;
@@ -104,12 +108,75 @@
     });
   };
 
+  const renderStockAlerts = rows => {
+    stockAlertList.replaceChildren();
+    stockAlertEmpty.hidden = rows.length > 0;
+    rows.forEach(alert => {
+      const row = document.createElement("li");
+      row.className = "seller-order-card";
+      const heading = document.createElement("div");
+      heading.className = "seller-order-title";
+      const name = document.createElement("strong");
+      name.textContent = alert.product_name;
+      const date = document.createElement("time");
+      date.dateTime = alert.created_at;
+      date.textContent = new Intl.DateTimeFormat("en-IN", { dateStyle: "medium", timeStyle: "short" }).format(new Date(alert.created_at));
+      heading.append(name, date);
+      if (alert.product_image?.startsWith("assets/")) {
+        const image = document.createElement("img");
+        image.className = "seller-product-image";
+        image.src = alert.product_image;
+        image.alt = alert.product_name;
+        row.append(image);
+      }
+      const email = document.createElement("p");
+      email.className = "seller-customer-details";
+      email.textContent = alert.customer_email;
+      const actions = document.createElement("div");
+      actions.className = "seller-order-actions";
+      const contact = document.createElement("a");
+      contact.className = "seller-alert-contact";
+      contact.href = `mailto:${encodeURIComponent(alert.customer_email)}?subject=${encodeURIComponent(`Lootbox stock update: ${alert.product_name}`)}&body=${encodeURIComponent(`Hello, you asked about ${alert.product_name}. We have an availability update for you.`)}`;
+      contact.textContent = "Email customer";
+      const done = document.createElement("button");
+      done.type = "button";
+      done.className = "seller-alert-done";
+      done.textContent = "Mark contacted";
+      done.addEventListener("click", async () => {
+        done.disabled = true;
+        try {
+          await backend.request(`stock_alert_requests?id=eq.${encodeURIComponent(alert.id)}`, {
+            method: "PATCH", headers: { "Content-Type": "application/json", Prefer: "return=minimal" },
+            body: JSON.stringify({ status: "contacted" })
+          });
+          await loadStockAlerts();
+        } catch (error) { stockAlertStatus.textContent = error.message || "Could not update this stock alert."; done.disabled = false; }
+      });
+      actions.append(contact, done);
+      row.append(heading, email, actions);
+      stockAlertList.append(row);
+    });
+  };
+
+  const loadStockAlerts = async () => {
+    try {
+      const rows = await backend.request("stock_alert_requests?select=id,user_id,customer_email,product_name,product_image,status,created_at&status=eq.waiting&order=created_at.desc");
+      renderStockAlerts(rows);
+      stockAlertSection.hidden = false;
+      stockAlertStatus.textContent = `${rows.length} open ${rows.length === 1 ? "request" : "requests"}. Email the customer when you have an availability update.`;
+    } catch (error) {
+      stockAlertSection.hidden = false;
+      stockAlertStatus.textContent = error.message?.includes("stock_alert_requests") ? "Run supabase-orders.sql to enable shared stock alerts." : (error.message || "Could not load stock alerts.");
+    }
+  };
+
   const loadOrders = async () => {
     status.textContent = "Loading order requests…";
     try {
       await loadProductImages();
       const rows = await backend.request("store_orders?select=*&status=neq.cancelled&order=created_at.desc");
       renderOrders(rows);
+      await loadStockAlerts();
       status.textContent = `${rows.length} order ${rows.length === 1 ? "request" : "requests"} loaded.`;
       dashboard.hidden = false;
       loginForm.hidden = true;
