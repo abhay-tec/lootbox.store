@@ -154,7 +154,7 @@
     <section class="store-section" id="collection"><div class="wrap store-shell">
       <div class="store-header"><div><p class="mini-kicker">The latest edit</p><h1 class="catalog-title">Trending products</h1></div><a class="store-view-all" href="#collection">View all <span aria-hidden="true">→</span></a></div>
       <p class="cart-status" id="cart-status" role="status" aria-live="polite"></p>
-      <div class="store-results-bar"><p class="store-counter">99 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select></label></div>
+      <div class="store-results-bar"><p class="store-counter">100 products · current prices and availability confirmed on request</p><p class="results-count" id="results-count" aria-live="polite">Showing all products</p><label class="sort-control" for="sort-products"><span>Sort</span><select id="sort-products"><option value="featured">Featured</option><option value="name-asc">Name: A to Z</option><option value="name-desc">Name: Z to A</option></select></label></div>
       <a class="store-inline-promo" href="#collection" aria-label="Browse the fragrance collection"><img src="assets/store/banners/premium-perfumes-mountains.png" alt="Premium perfumes — tap to browse the fragrance collection" loading="lazy"></a>
       <section class="featured-shelf" aria-labelledby="featured-shelf-title">
         <div class="featured-shelf-heading"><div><p class="mini-kicker">A few finds worth a closer look</p><h2 id="featured-shelf-title">Best picks</h2></div><div class="featured-shelf-controls"><button type="button" class="shelf-scroll-button" data-scroll="-1" aria-label="Show previous picks">‹</button><button type="button" class="shelf-scroll-button" data-scroll="1" aria-label="Show more picks">›</button></div></div>
@@ -162,6 +162,7 @@
       </section>
       <div class="store-grid">
         <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/loreal-total-repair-5-serum-2k.jpg" alt="L&#39;Or&eacute;al Paris Total Repair 5 Repairing Serum" loading="lazy"></div><div class="store-card-body"><h3>L&#39;Or&eacute;al Paris Total Repair 5 Repairing Serum</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
+        <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/loreal-total-repair-5-shampoo.jpg" alt="L&#39;Or&eacute;al Paris Total Repair 5 Repairing Shampoo" loading="lazy"></div><div class="store-card-body"><h3>L&#39;Or&eacute;al Paris Total Repair 5 Repairing Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/johnsons-baby-shampoo-500ml-2k.jpg" alt="Johnson&#39;s Baby Shampoo, 500 mL" loading="lazy"></div><div class="store-card-body"><h3>Johnson&#39;s Baby Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="hair-care"><div class="store-image-wrap"><img src="assets/store/products/clinic-plus-strong-long-shampoo-2k.jpg" alt="Clinic Plus Strong and Long Shampoo" loading="lazy"></div><div class="store-card-body"><h3>Clinic Plus Strong &amp; Long Shampoo</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
         <article class="store-card" data-category="baby-care"><div class="store-image-wrap"><img src="assets/store/products/tutots-bliss-plus-baby-body-lotion-2k.jpg" alt="T&uuml;tots Bliss Plus Baby Body Lotion" loading="lazy"></div><div class="store-card-body"><h3>T&uuml;tots Bliss+ Baby Body Lotion</h3><strong class="store-price">Ask for price</strong><div class="store-card-actions"><button class="add-to-cart" type="button">Add to Cart</button><a class="buy-now" href="https://wa.me/" target="_blank" rel="noreferrer">Buy Now</a></div></div></article>
@@ -319,6 +320,7 @@
     const drawerMenu = document.getElementById("drawer-menu");
     const drawerMessage = document.getElementById("drawer-message");
     const menuToggle = document.getElementById("menu-toggle");
+    const drawerCloseButton = document.getElementById("drawer-close");
     const menuScrim = document.getElementById("menu-scrim");
     const cancelDialog = document.getElementById("order-cancel-dialog");
     const cancelForm = document.getElementById("order-cancel-form");
@@ -328,11 +330,13 @@
     const confirmCancelButton = document.getElementById("confirm-cancel-button");
     const toast = document.getElementById("order-toast");
     const toastMessage = document.getElementById("order-toast-message");
-    const accountPageMode = document.documentElement.classList.contains("account-page-mode");
-    const requestedAccountView = new URLSearchParams(window.location.search).get("account");
+    let accountPageMode = document.documentElement.classList.contains("account-page-mode");
+    let requestedAccountView = new URLSearchParams(window.location.search).get("account");
     const validAccountViews = ["menu", "profile", "cart", "orders", "settings"];
+    const accountPageTitles = { menu: "My Account", profile: "Profile & Delivery", cart: "Your Cart", orders: "Your Orders", settings: "Settings" };
     const setAccountRoute = (view, replace = false) => {
       if (!accountPageMode || !validAccountViews.includes(view)) return;
+      requestedAccountView = view;
       const nextUrl = new URL(window.location.href);
       nextUrl.searchParams.set("account", view);
       window.history[replace ? "replaceState" : "pushState"]({}, "", nextUrl);
@@ -387,25 +391,32 @@
     const openDrawer = view => {
       const activeView = view || "menu";
       setAccountRoute(activeView, true);
+      if (accountPageMode) document.title = `${accountPageTitles[activeView] || accountPageTitles.menu} | Lootbox`;
       drawer.classList.add("is-open");
       drawer.setAttribute("aria-hidden", "false");
       drawer.inert = false;
       menuToggle.setAttribute("aria-expanded", "true");
       menuToggle.setAttribute("aria-label", "Close account menu");
+      drawerCloseButton.setAttribute("aria-label", accountPageMode ? "Back to shop" : "Close account menu");
       menuScrim.hidden = false;
       document.body.classList.add("drawer-open");
       showDrawerView(activeView);
     };
     const closeDrawer = () => {
       if (accountPageMode) {
-        window.location.assign("store.html");
-        return;
+        accountPageMode = false;
+        document.documentElement.classList.remove("account-page-mode");
+        const shopUrl = new URL(window.location.href);
+        shopUrl.searchParams.delete("account");
+        window.history.replaceState({}, "", shopUrl);
+        document.title = "Shop Finds | The Reclaim Edit";
       }
       drawer.classList.remove("is-open");
       drawer.setAttribute("aria-hidden", "true");
       drawer.inert = true;
       menuToggle.setAttribute("aria-expanded", "false");
       menuToggle.setAttribute("aria-label", "Open account menu");
+      drawerCloseButton.setAttribute("aria-label", "Close account menu");
       menuScrim.hidden = true;
       document.body.classList.remove("drawer-open");
     };
@@ -689,18 +700,36 @@
     });
     document.getElementById("product-query").addEventListener("focus", () => document.body.classList.add("store-search-focused"));
     document.getElementById("product-query").addEventListener("blur", () => document.body.classList.remove("store-search-focused"));
-    document.getElementById("drawer-close").addEventListener("click", closeDrawer);
+    drawerCloseButton.addEventListener("click", closeDrawer);
     menuScrim.addEventListener("click", closeDrawer);
     document.addEventListener("keydown", event => { if (event.key === "Escape" && drawer.classList.contains("is-open")) closeDrawer(); });
+    const openAccountView = view => {
+      if (!accountPageMode) {
+        accountPageMode = true;
+        document.documentElement.classList.add("account-page-mode");
+        const nextUrl = new URL(window.location.href);
+        nextUrl.searchParams.set("account", view);
+        window.history.pushState({}, "", nextUrl);
+      } else {
+        setAccountRoute(view);
+      }
+      requestedAccountView = view;
+      openDrawer(view);
+      if (view === "orders" && !customer) {
+        showDrawerView("profile");
+        document.title = `${accountPageTitles.profile} | Lootbox`;
+        customerAuthStatus.textContent = "Sign in with Google to view your order requests.";
+        setAccountRoute("orders", true);
+      } else if (view === "orders") {
+        refreshCustomerOrders().catch(error => { drawerMessage.textContent = error.message; });
+      }
+    };
     drawerMenu.querySelectorAll("[data-view]").forEach(button => {
-      button.addEventListener("click", () => {
-        const nextUrl = new URL("store.html", window.location.href);
-        nextUrl.searchParams.set("account", button.dataset.view);
-        window.location.assign(nextUrl);
-      });
+      button.addEventListener("click", () => openAccountView(button.dataset.view));
     });
     drawer.querySelectorAll("[data-back-menu]").forEach(button => button.addEventListener("click", () => {
       setAccountRoute("menu", true);
+      if (accountPageMode) document.title = `${accountPageTitles.menu} | Lootbox`;
       showDrawerView("menu");
     }));
     checkout.addEventListener("click", event => {
@@ -709,6 +738,25 @@
     });
     renderOrders();
     document.getElementById("cart-clear").addEventListener("click", () => { cart = {}; save(); render(); status.textContent = "Cart cleared."; });
+    window.addEventListener("popstate", () => {
+      const view = new URLSearchParams(window.location.search).get("account");
+      if (validAccountViews.includes(view)) {
+        accountPageMode = true;
+        document.documentElement.classList.add("account-page-mode");
+        requestedAccountView = view;
+        openDrawer(view);
+        if (view === "orders" && !customer) {
+          showDrawerView("profile");
+          document.title = `${accountPageTitles.profile} | Lootbox`;
+          customerAuthStatus.textContent = "Sign in with Google to view your order requests.";
+          setAccountRoute("orders", true);
+        } else if (view === "orders") {
+          refreshCustomerOrders().catch(() => {});
+        }
+      } else if (accountPageMode) {
+        closeDrawer();
+      }
+    });
     const checkoutParams = new URLSearchParams(window.location.search);
     const checkoutProduct = checkoutParams.get("checkout") === "1" && checkoutParams.get("name")
       ? [{ name: checkoutParams.get("name"), quantity: 1, image: checkoutParams.get("image") || "" }]

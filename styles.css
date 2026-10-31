@@ -3952,7 +3952,12 @@ html.account-page-mode .account-drawer {
   color: #23242a;
   box-shadow: 0 24px 70px rgba(27, 29, 36, 0.12);
   transform: none;
-  transition: none;
+  animation: accountPageEnter 180ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+@keyframes accountPageEnter {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 html.account-page-mode .drawer-heading {
@@ -3982,11 +3987,27 @@ html.account-page-mode .drawer-close {
   color: #35363b;
   font-size: 0;
   font-weight: 800;
+  transform: none;
+  transition: background 150ms ease, border-color 150ms ease, color 150ms ease;
+}
+
+html.account-page-mode .drawer-close::before {
+  content: "←";
+  margin-right: 7px;
+  font-size: 1rem;
 }
 
 html.account-page-mode .drawer-close::after {
   content: "Back to shop";
   font-size: 0.78rem;
+}
+
+html.account-page-mode .drawer-close:hover,
+html.account-page-mode .drawer-close:focus-visible {
+  transform: none;
+  border-color: rgba(197, 26, 43, 0.35);
+  background: #fff5f6;
+  color: #a91d2c;
 }
 
 html.account-page-mode .drawer-menu {
@@ -4042,6 +4063,11 @@ html.account-page-mode .drawer-view:not([hidden]) {
   border: 1px solid #e8e9ec;
   border-radius: 16px;
   background: #fbfbfc;
+  animation: accountPageEnter 150ms ease both;
+}
+
+html.account-page-mode .drawer-menu:not([hidden]) {
+  animation: accountPageEnter 150ms ease both;
 }
 
 html.account-page-mode .drawer-view h3 {
@@ -4131,6 +4157,14 @@ html.account-page-mode .customer-order-copy .customer-order-message {
 html.account-page-mode .order-cancel-button {
   border-color: #d9dade;
   color: #46474d;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.account-page-mode .account-drawer,
+  html.account-page-mode .drawer-view:not([hidden]),
+  html.account-page-mode .drawer-menu:not([hidden]) {
+    animation: none;
+  }
 }
 
 @media (max-width: 620px) {
