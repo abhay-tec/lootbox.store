@@ -3,183 +3,88 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Browse Lootbox branded finds across personal care, fragrance, watches, apparel and footwear. Read product details and check listed prices before ordering.">
-  <meta property="og:type" content="website">
-  <meta property="og:title" content="Lootbox | Branded finds, clearly listed">
-  <meta property="og:description" content="Explore current finds, review product information and send an order request from your account.">
-  <meta property="og:image" content="assets/lootbox-marketplace-banner-wide.png">
-  <meta name="theme-color" content="#f4f5f0">
-  <title>Lootbox | Branded finds, clearly listed</title>
-  <link rel="icon" href="assets/lootbox-mark.svg" type="image/svg+xml">
+  <meta name="description" content="Shop branded hair care, skin care and baby care finds at The Reclaim Edit, your resale and liquidation store.">
+  <title>The Reclaim Edit | Branded Finds, Better Prices</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;700;800&family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
-<body class="home-page">
-  <a class="home-skip-link" href="#main-content">Skip to content</a>
-  <header class="topbar home-topbar">
+<body>
+  <header class="topbar">
     <div class="wrap topbar-inner">
-      <a class="store-brand" href="index.html" aria-label="Lootbox home">
-        <svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 13.5 16 4l12 9.5-12 14.5L4 13.5Z"/><path d="m4 13.5 12 4.2 12-4.2M16 17.7V28"/></svg>
-        <span>LOOTBOX<small>THE RECLAIM EDIT</small></span>
-      </a>
-      <nav class="home-nav" aria-label="Main navigation">
-        <a href="index.html" aria-current="page">Home</a>
-        <a href="store.html#collection">Shop finds</a>
-        <a href="#how-it-works">How it works</a>
-        <a href="#faq">FAQs</a>
+      <a class="brand" href="index.html">THE RECLAIM EDIT</a>
+      <nav class="nav" aria-label="Primary navigation">
+        <a href="index.html">Home</a><a href="store.html">Shop Finds</a><a href="#about">Our Story</a><a href="#contact">Contact</a>
       </nav>
-      <a class="nav-cta" href="store.html#collection">Explore the collection</a>
+      <a class="nav-cta" href="store.html">Shop the drop</a>
     </div>
   </header>
 
-  <main id="main-content">
-    <section class="home-hero" aria-labelledby="home-title">
-      <div class="wrap home-hero-grid">
-        <div class="home-hero-copy">
-          <p class="mini-kicker">The Reclaim Edit</p>
-          <h1 id="home-title">Branded finds.<br><span>Better prices.</span></h1>
-          <p class="home-hero-lede">Explore personal care, fragrance, watches, apparel and footwear in one changing collection.</p>
-          <p class="home-hero-body">Review each product’s photos and details, then send an order request. We confirm stock, condition and price before an order is finalized.</p>
-          <div class="home-hero-actions">
-            <a class="primary-btn" href="store.html#collection">Browse current finds</a>
-            <a class="home-text-link" href="#how-it-works">See how ordering works <span aria-hidden="true">→</span></a>
-          </div>
-          <p class="home-proof-line"><span class="home-proof-mark" aria-hidden="true">✓</span> 100 current listings · Order requests saved to your account</p>
+  <main id="home">
+    <section class="hero-panel">
+      <div class="wrap hero-grid">
+        <div class="hero-copy">
+          <p class="kicker">Good brands. Second chances. Better prices.</p>
+          <h1>BIG FINDS.<br><span>SMALL PRICES.</span></h1>
+          <p class="hero-subtext">Branded essentials, rescued from the returns and overstock cycle.</p>
+          <p class="hero-body">Welcome to The Reclaim Edit: a resale and liquidation hub for branded finds at better prices. Browse hair care, skin care and baby care, with new products added as they land.</p>
+          <div class="hero-actions"><a class="primary-btn" href="store.html">Shop the finds</a><a class="ghost-btn" href="#about">How it works</a></div>
+          <div class="hero-pills"><span>Limited liquidation drops</span><span>Product details up front</span><span>Message to check availability</span></div>
+          <div class="hero-rating"><span class="stars">★ ★ ★</span><span>Thoughtful finds, ready for a new home</span></div>
         </div>
-        <div class="hero-visual home-hero-visual" aria-label="A product from the current Lootbox collection">
-          <div class="image-stage hero-shot"><img src="assets/store/products/loreal-total-repair-5-serum-2k.jpg" alt="L'Oréal Paris Total Repair 5 Repairing Serum"></div>
-          <p class="home-visual-caption">Personal care · Current collection</p>
+        <div class="hero-visual" aria-label="Branded personal care product display">
+          <div class="image-stage hero-shot"><img src="assets/store/products/loreal-total-repair-5-serum-2k.jpg" alt="L&#39;Or&eacute;al Paris Total Repair 5 Repairing Serum"></div>
+          <div class="hero-caption">Hair care ? Skin care ? Baby care</div>
         </div>
       </div>
     </section>
 
-    <section class="home-tagline-section" aria-labelledby="home-tagline">
-      <div class="wrap home-tagline-wrap">
-        <p class="mini-kicker">A clearer way to shop</p>
-        <p class="home-tagline" id="home-tagline" aria-label="See the item. Read the details. Order with confidence.">
-          <span class="tagline-line" aria-hidden="true">See the item.</span>
-          <span class="tagline-line" aria-hidden="true">Read the details.</span>
-          <span class="tagline-line" aria-hidden="true">Order with confidence.</span>
-        </p>
-      </div>
-    </section>
-
-    <section class="home-benefits-section" aria-labelledby="benefits-title">
-      <div class="wrap">
-        <div class="home-section-heading">
-          <p class="mini-kicker">Made for careful browsing</p>
-          <h2 id="benefits-title">Know what to check before you order</h2>
-        </div>
-        <div class="home-benefits-grid">
-          <article class="home-benefit home-benefit-featured">
-            <span class="home-benefit-index">01</span>
-            <div><h3>See product photos</h3><p>Open a listing to view its available photos and read the product information before you decide.</p></div>
+    <section class="detail-panel" id="about">
+      <div class="wrap detail-shell">
+        <div class="tab-strip"><span class="tab active">The Reclaim Edit</span><span class="tab">Branded essentials</span><span class="tab">Limited drops</span></div>
+        <div class="detail-grid">
+          <article class="detail-card visual-card"><div class="image-stage detail-shot detail-shot-left"><img src="assets/store/products/johnsons-baby-shampoo-500ml-2k.jpg" alt="Johnson&#39;s Baby Shampoo, 500 mL"></div></article>
+          <article class="detail-card copy-card">
+            <p class="mini-kicker">A smarter kind of shopping</p><h2>Good products deserve another round.</h2>
+            <p>We source resale and liquidation finds, then put the details where you can see them. Every drop is different, and quantities can be limited.</p>
+            <ul class="bullet-list"><li>Original branded products at discounted prices</li><li>Returns, overstock, and liquidation finds given a fresh start</li><li>Product photos and condition notes to help you choose</li><li>Ask us to confirm current availability before ordering</li></ul>
           </article>
-          <article class="home-benefit">
-            <span class="home-benefit-index">02</span>
-            <div><h3>Check the listed price</h3><p>Some products have a listed price. For others, ask us to confirm the current price and availability.</p></div>
+          <article class="detail-card copy-card">
+            <p class="mini-kicker">This drop</p><h2>Branded finds, ready to reclaim.</h2>
+            <p>Browse a changing mix of branded hair care, skin care and baby care. Check the collection page for product names, then message us for current stock and item details.</p>
+            <div class="benefit-tags"><span>Hair care</span><span>Skin care</span><span>Baby care</span><span>Limited availability</span><span>Discounted liquidation finds</span></div>
           </article>
-          <article class="home-benefit">
-            <span class="home-benefit-index">03</span>
-            <div><h3>Keep your orders together</h3><p>Sign in with Google to save delivery details and view order requests in your account.</p></div>
+          <article class="detail-card visual-card"><div class="image-stage detail-shot detail-shot-right"><img src="assets/store/products/clinic-plus-strong-long-shampoo-2k.jpg" alt="Clinic Plus Strong and Long Shampoo"></div></article>
+          <article class="detail-card visual-card tall"><div class="image-stage detail-shot detail-shot-tall"><img src="assets/store/products/tutots-bliss-plus-baby-body-lotion-2k.jpg" alt="T&uuml;tots Bliss Plus Baby Body Lotion"></div></article>
+          <article class="detail-card copy-card product-copy">
+            <p class="mini-kicker">Featured drop</p><h2>Find your next favourite.</h2>
+            <div class="product-list"><div class="product-row"><strong>Hair care selection</strong><span>Branded body care from the current drop</span><span>Ask for today’s price and availability</span></div><div class="product-row"><strong>Skin & baby care selection</strong><span>Hair care from the current drop</span><span>Ask for today’s price and availability</span></div></div>
+            <div class="product-note">Liquidation stock changes quickly. Message us to confirm the exact item, packaging, condition, and current price before you buy.</div>
           </article>
-          <div class="home-benefit-photo-pair" aria-label="More products from the collection">
-            <img src="assets/store/products/johnsons-baby-shampoo-500ml-2k.jpg" alt="Johnson's Baby Shampoo">
-            <img src="assets/store/products/clinic-plus-strong-long-shampoo-2k.jpg" alt="Clinic Plus Strong and Long Shampoo">
-            <img src="assets/store/products/tutots-bliss-plus-baby-body-lotion-2k.jpg" alt="Tütots Bliss+ Baby Body Lotion">
-          </div>
         </div>
+        <div class="scroll-cta"><a class="ghost-btn compact" href="store.html">View all current finds</a></div>
       </div>
     </section>
 
-    <section class="home-how-section" id="how-it-works" aria-labelledby="how-title">
-      <div class="wrap home-how-grid">
-        <div class="home-how-intro">
-          <p class="mini-kicker">From browse to request</p>
-          <h2 id="how-title">Three steps to place an order request</h2>
-          <p>Product availability can change. Read the listing and wait for the store to confirm the details.</p>
-          <a class="home-text-link" href="store.html#collection">Open the product collection <span aria-hidden="true">→</span></a>
-        </div>
-        <ol class="home-steps">
-          <li><span>01</span><div><h3>Choose a find</h3><p>Search by name or browse by category.</p></div></li>
-          <li><span>02</span><div><h3>Read its details</h3><p>Check the photos, size and available product information.</p></div></li>
-          <li><span>03</span><div><h3>Send a request</h3><p>Sign in, add delivery details, then check your account for updates.</p></div></li>
-        </ol>
-      </div>
-    </section>
+    <section class="services-band"><div class="wrap service-grid">
+      <article class="service-card"><p class="mini-kicker">Curated finds</p><h3>Fresh stock, small batches</h3><p>We bring together branded overstock and return finds, with new items appearing as available.</p></article>
+      <article class="service-card"><p class="mini-kicker">Clear details</p><h3>Know what you’re buying</h3><p>Check the product photos and ask us to confirm packaging, condition, and availability.</p></article>
+      <article class="service-card"><p class="mini-kicker">Easy enquiries</p><h3>Ask before it’s gone</h3><p>Send a quick message about a product to confirm the current price and reserve options.</p></article>
+    </div></section>
 
-    <section class="home-faq-section" id="faq" aria-labelledby="faq-title">
-      <div class="wrap">
-        <div class="home-section-heading home-faq-heading">
-          <p class="mini-kicker">Before you shop</p>
-          <h2 id="faq-title">Common questions</h2>
-        </div>
-        <div class="home-faq-grid">
-          <article><h3>Why do some products say “Ask for price”?</h3><p>The current price is listed for some products. For others, contact the store to confirm price and availability.</p></article>
-          <article><h3>Does an order request charge me?</h3><p>No online payment is collected when you submit a request. The store confirms availability and price with you.</p></article>
-          <article><h3>Do I need to sign in to order?</h3><p>Yes. Continue with Google, save your delivery details, and submit the request from your account.</p></article>
-          <article><h3>Where can I see my order requests?</h3><p>Open your account and choose Orders. Updates from the store appear there.</p></article>
-          <article><h3>Can I cancel a request?</h3><p>You can cancel a pending request from Orders. If the store cancels it as out of stock, the status appears in your account.</p></article>
-          <article><h3>Can I view more product photos?</h3><p>Open a product card. When more photos are available, use the gallery controls on its detail page.</p></article>
-        </div>
-      </div>
-    </section>
+    <section class="contact-band" id="contact"><div class="wrap contact-grid">
+      <div class="contact-copy"><p class="mini-kicker light">About the shop</p><h2>Good finds shouldn’t stay in a box.</h2><p>The Reclaim Edit gives original branded liquidation and resale products a new home. Our featured products are available in limited quantities, so get in touch for the latest stock details.</p><div class="store-points"><span>Discounted branded products</span><span>Rotating resale and return finds</span><span>Availability confirmed on request</span></div></div>
+      <div class="contact-actions"><a class="primary-btn dark" href="https://wa.me/?text=Hi%20The%20Reclaim%20Edit%2C%20I%27d%20like%20to%20check%20the%20current%20product%20stock%20stock%2C%20condition%2C%20and%20price.">Ask about this drop</a><div class="contact-meta"><span>Resale &amp; liquidation finds</span><span>Product details on request</span><span>Limited quantities may apply</span></div></div>
+    </div></section>
 
-    <section class="home-final-cta" aria-labelledby="final-cta-title">
-      <div class="wrap home-final-cta-inner">
-        <div><p class="mini-kicker">Lootbox · The Reclaim Edit</p><h2 id="final-cta-title">Find your next good find.</h2><p>Read the product details, then confirm stock, condition and price before you buy.</p></div>
-        <a class="primary-btn" href="store.html#collection">Browse current finds</a>
-      </div>
-    </section>
+    <section class="footer-strip"><div class="wrap footer-grid">
+      <article class="footer-card active"><h3>Branded Finds</h3><p>Original branded products sourced through resale and liquidation.</p></article>
+      <article class="footer-card"><h3>Fresh Drops</h3><p>New stock comes and goes, so check back for the latest finds.</p></article>
+      <article class="footer-card"><h3>Personal Care</h3><p>Explore branded hair, skin and baby care finds.</p></article>
+      <article class="footer-card accent"><h3>Better Prices</h3><p>Ask us what is available and the current price before ordering.</p></article>
+    </div></section>
   </main>
-
-  <footer class="home-footer">
-    <div class="wrap home-footer-inner">
-      <div class="home-footer-brand">
-        <a class="store-brand" href="index.html" aria-label="Lootbox home"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M4 13.5 16 4l12 9.5-12 14.5L4 13.5Z"/><path d="m4 13.5 12 4.2 12-4.2M16 17.7V28"/></svg><span>LOOTBOX<small>THE RECLAIM EDIT</small></span></a>
-        <p>Must read product details before you buy. Confirm stock, condition and price before ordering.</p>
-      </div>
-      <nav class="home-footer-links" aria-label="Footer links">
-        <a href="store.html#collection">Shop finds</a>
-        <a href="privacy.html">Privacy</a>
-        <a href="order-info.html">Order information</a>
-        <a href="https://www.instagram.com/lootbox.storee/" target="_blank" rel="noopener noreferrer">Lootbox Store IG</a>
-        <a href="seller.html" rel="nofollow">Seller sign in</a>
-      </nav>
-      <p class="home-footer-note">Order requests are confirmed by the store before purchase.</p>
-    </div>
-  </footer>
-
   <script src="help-bot.js" defer></script>
-  <script>
-    (() => {
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-      const lines = [...document.querySelectorAll(".tagline-line")];
-      lines.forEach(line => {
-        const words = line.textContent.trim().split(/\s+/);
-        line.replaceChildren(...words.flatMap((word, index) => {
-          const span = document.createElement("span");
-          span.className = "tagline-word";
-          span.textContent = word;
-          span.setAttribute("aria-hidden", "true");
-          return index < words.length - 1 ? [span, document.createTextNode(" ")] : [span];
-        }));
-      });
-      if (reduceMotion || !("IntersectionObserver" in window)) {
-        document.querySelectorAll(".tagline-word").forEach(word => word.classList.add("is-visible"));
-        return;
-      }
-      const observer = new IntersectionObserver(entries => {
-        entries.forEach(entry => {
-          if (!entry.isIntersecting) return;
-          entry.target.classList.add("is-visible");
-          observer.unobserve(entry.target);
-        });
-      }, { threshold: 0.65, rootMargin: "0px 0px -12% 0px" });
-      document.querySelectorAll(".tagline-word").forEach(word => observer.observe(word));
-    })();
-  </script>
 </body>
 </html>
