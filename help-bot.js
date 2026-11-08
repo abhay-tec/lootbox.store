@@ -57,7 +57,7 @@
     if (/delivery|shipping|ship|return|refund/.test(q)) return ["Delivery timing, coverage, and return options depend on the item and are confirmed by the seller. Please check before ordering.", "Ask Lootbox Store on Instagram", instagram];
     if (/detail|ingredient|size|condition|authentic|original|before.*buy/.test(q)) return ["Please read the product’s Description and Details before buying. Photos, size, ingredients, condition, and packaging can vary by item; message us if anything needs confirmation.", "Contact Lootbox Store on Instagram", instagram];
     if (/review|rating|comment/.test(q)) return ["Open a product and choose Reviews & comments to see shopper feedback or leave a rating and comment."];
-    if (/category|find|search|shampoo|perfume|fragrance|watch|shoe|clothes|t.?shirt/.test(q)) return ["Browse Shop by Category or use the search bar. Search accepts product types and keywords as well as full product names.", "Browse all finds", "store.html#collection"];
+    if (/category|find|search|shampoo|perfume|fragrance|watch|shoe|clothes|t.?shirt/.test(q)) return ["Browse Shop by Category or use the search bar. Search accepts product types and keywords as well as full product names.", "Browse all finds", "/store#collection"];
     if (/instagram|contact|message|seller|help.*person/.test(q)) return ["For item-specific questions or help from the store, message Lootbox Store on Instagram.", "Open @lootbox.storee", instagram];
     return ["I can help with browsing, product details, prices and availability, your cart, Google sign-in, orders, and reviews. For item-specific questions, message the store directly.", "Contact Lootbox Store on Instagram", instagram];
   };

@@ -16,7 +16,7 @@
 
   const loadProductImages = async () => {
     if (productImagesLoaded) return;
-    const response = await fetch("store.html", { cache: "force-cache" });
+    const response = await fetch("/store", { cache: "force-cache" });
     if (!response.ok) return;
     const catalog = new DOMParser().parseFromString(await response.text(), "text/html");
     catalog.querySelectorAll(".store-card").forEach(card => {

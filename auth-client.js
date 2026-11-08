@@ -95,7 +95,8 @@
       const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(verifier));
       const challenge = base64Url(new Uint8Array(digest));
       localStorage.setItem(verifierKey, verifier);
-      const redirectTo = `${window.location.origin}${window.location.pathname}`;
+      const authReturnPath = /^\/store\/?$/.test(window.location.pathname) ? "/store.html" : window.location.pathname;
+      const redirectTo = `${window.location.origin}${authReturnPath}`;
       const authorizeUrl = new URL(`${apiUrl}/auth/v1/authorize`);
       authorizeUrl.search = new URLSearchParams({
         provider: "google",

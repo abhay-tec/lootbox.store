@@ -12,7 +12,7 @@
 </head>
 <body class="product-detail-page">
   <main class="product-detail-wrap">
-    <a class="product-detail-back" href="store.html" id="product-detail-back">← Back to shop</a>
+    <a class="product-detail-back" href="/store" id="product-detail-back">← Back to shop</a>
     <article class="product-detail-card" id="product-detail" hidden>
       <div class="product-detail-image">
         <div class="product-gallery" id="product-gallery">
@@ -51,9 +51,9 @@
         </details>
       </div>
     </article>
-    <p id="product-missing" hidden>Product not found. <a href="store.html">Return to the shop</a>.</p>
+    <p id="product-missing" hidden>Product not found. <a href="/store">Return to the shop</a>.</p>
     <section class="product-recommendations" id="product-recommendations" aria-labelledby="recommendations-heading" hidden>
-      <div class="recommendations-heading-row"><div><p class="product-recommendations-kicker">Picked for this product</p><h2 id="recommendations-heading">You may also like</h2></div><a href="store.html#collection">View all finds <span aria-hidden="true">&rarr;</span></a></div>
+      <div class="recommendations-heading-row"><div><p class="product-recommendations-kicker">Picked for this product</p><h2 id="recommendations-heading">You may also like</h2></div><a href="/store#collection">View all finds <span aria-hidden="true">&rarr;</span></a></div>
       <div class="recommendation-grid" id="recommendation-grid"></div>
       <p class="recommendation-status" id="recommendation-status" role="status" aria-live="polite"></p>
     </section>
@@ -101,7 +101,7 @@
     backToShop.addEventListener("click", event => {
       try {
         const previousPage = new URL(document.referrer);
-        if (previousPage.origin === location.origin && previousPage.pathname.endsWith("/store.html") && history.length > 1) {
+        if (previousPage.origin === location.origin && (previousPage.pathname.endsWith("/store") || previousPage.pathname.endsWith("/store.html")) && history.length > 1) {
           event.preventDefault();
           history.back();
         }
@@ -246,7 +246,7 @@
       };
       const loadRecommendations = async () => {
         try {
-          const response = await fetch("store.html", { cache: "no-store" });
+          const response = await fetch("/store", { cache: "no-store" });
           if (!response.ok) throw new Error("Product catalog is unavailable.");
           const catalogDocument = new DOMParser().parseFromString(await response.text(), "text/html");
           const candidates = [...catalogDocument.querySelectorAll(".store-card")].map(card => ({
@@ -315,7 +315,7 @@
             });
             const buyLink = document.createElement("a");
             buyLink.className = "recommendation-buy";
-            buyLink.href = `store.html?checkout=1&name=${encodeURIComponent(product.name)}&image=${encodeURIComponent(product.image)}`;
+            buyLink.href = `/store?checkout=1&name=${encodeURIComponent(product.name)}&image=${encodeURIComponent(product.image)}`;
             buyLink.textContent = "Buy Now";
             actions.append(addButton, buyLink);
             body.append(categoryLabel, titleLink, price, actions);
@@ -360,7 +360,7 @@
       });
       document.getElementById("detail-stock-alert").addEventListener("click", () => {
         try { localStorage.setItem("reclaim-edit-pending-stock-alert", JSON.stringify(savedProduct)); } catch {}
-        window.location.href = "store.html?account=alerts";
+        window.location.href = "/store?account=alerts";
       });
       const details = productDetails[normalize(name)];
       const facts = details?.facts || [];
@@ -479,7 +479,7 @@
       loadRecommendations();
 
       const buyNow = document.getElementById("detail-buy-now");
-      buyNow.href = `store.html?checkout=1&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}`;
+      buyNow.href = `/store?checkout=1&name=${encodeURIComponent(name)}&image=${encodeURIComponent(image)}`;
       document.querySelector('.product-detail-tabs a[href="#product-specs"]').addEventListener("click", () => {
         document.getElementById("product-specs").open = true;
       });

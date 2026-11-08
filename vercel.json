@@ -1,0 +1,17 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "redirects": [
+    {
+      "source": "/store.html",
+      "destination": "/store",
+      "permanent": true,
+      "preserveQueryParams": true
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/store",
+      "destination": "/store.html"
+    }
+  ]
+}
