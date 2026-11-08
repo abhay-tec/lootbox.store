@@ -4,8 +4,7 @@
     {
       "source": "/store.html",
       "destination": "/store",
-      "permanent": true,
-      "preserveQueryParams": true
+      "permanent": true
     }
   ],
   "rewrites": [
