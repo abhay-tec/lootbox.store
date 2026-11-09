@@ -13,6 +13,10 @@
     <div class="help-bot-panel" id="help-bot-panel" hidden>
       <header class="help-bot-header"><div><strong>Lootbox Help</strong><small>Quick answers about the store</small></div><button class="help-bot-close" type="button" aria-label="Close help chat">×</button></header>
       <div class="help-bot-messages" role="log" aria-live="polite" aria-relevant="additions text"></div>
+      <a class="help-bot-contact" href="https://www.instagram.com/lootbox.storee/" target="_blank" rel="noopener noreferrer">
+        <span class="help-bot-contact-icon" aria-hidden="true">@</span>
+        <span><strong>Need help with a product or order?</strong><small>Message Lootbox Store on Instagram for personal support.</small><b>Chat with @lootbox.storee <span aria-hidden="true">→</span></b></span>
+      </a>
       <div class="help-bot-suggestions" aria-label="Common questions">
         <button type="button">How do I order?</button><button type="button">How do I check price?</button><button type="button">Where are my orders?</button>
       </div>

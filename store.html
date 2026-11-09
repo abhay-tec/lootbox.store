@@ -3,8 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="description" content="Shop branded personal care, hair care and baby care finds at The Reclaim Edit. Check current stock and prices for each product.">
-  <title>Shop Finds | The Reclaim Edit</title>
+  <meta name="description" content="Shop top-quality discounted liquidation products and unboxed retail deals at Lootbox Store. Find tech, gaming accessories, and lifestyle essentials at unbeatable prices.">
+  <meta name="keywords" content="Lootbox Store, lootboxstore, liquidation products, unboxed retail items, discounted electronics, tech deals">
+  <meta name="robots" content="index, follow">
+  <meta name="author" content="Lootbox Store">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Lootbox Store - Liquidation &amp; Unboxed Deals">
+  <meta property="og:description" content="Get the best deals on unboxed and liquidation items at Lootbox Store.">
+  <meta property="og:url" content="https://lootboxstore-eta.vercel.app/store">
+  <link rel="canonical" href="https://lootboxstore-eta.vercel.app/store">
+  <title>Lootbox Store - Discounted Liquidation &amp; Unboxed Retail Deals</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <script>
@@ -55,7 +63,8 @@
       <button type="button" data-view="alerts"><span class="drawer-icon" aria-hidden="true">♧</span><span><strong>Stock alerts</strong><small>Availability requests</small></span><span class="drawer-chevron">›</span></button>
       <button type="button" data-view="settings"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="m19.3 13.5 1.1.9-1.5 2.6-1.4-.5a7.5 7.5 0 0 1-1.6.9l-.3 1.5h-3l-.3-1.5a7.5 7.5 0 0 1-1.6-.9l-1.4.5-1.5-2.6 1.1-.9a7 7 0 0 1 0-1.8l-1.1-.9 1.5-2.6 1.4.5a7.5 7.5 0 0 1 1.6-.9l.3-1.5h3l.3 1.5a7.5 7.5 0 0 1 1.6.9l1.4-.5 1.5 2.6-1.1.9a7 7 0 0 1 0 1.8Z" transform="translate(-1 -1) scale(1.08)"/></svg></span><span><strong>Settings</strong><small>Manage your preferences</small></span><span class="drawer-chevron">›</span></button>
       <a class="drawer-link" href="seller.html"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M4 10.5 12 4l8 6.5V20H4z"/><path d="M9 20v-6h6v6M8 10h.01M16 10h.01"/></svg></span><span><strong>Seller account</strong><small>Private order dashboard</small></span><span class="drawer-chevron" aria-hidden="true">›</span></a>
-      <button class="drawer-logout" id="logout-button" type="button"><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H9"/></svg></span><span><strong>Log out</strong><small>Clear your saved profile here</small></span></button>
+      <button class="drawer-login" id="login-button" type="button"><span class="drawer-icon" aria-hidden="true">G</span><span><strong>Log in</strong><small>Continue securely with Google</small></span><span class="drawer-chevron" aria-hidden="true">?</span></button>
+      <button class="drawer-logout" id="logout-button" type="button" hidden><span class="drawer-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M10 5H6a2 2 0 0 0-2 2v10a2 2 0 0 0 2 2h4M14 16l4-4-4-4M18 12H9"/></svg></span><span><strong>Log out</strong><small>Sign out of this device; your account details stay saved</small></span></button>
     </nav>
     <p class="drawer-message" id="drawer-message" role="status" aria-live="polite"></p>
     <section class="drawer-view" id="profile-view" hidden>
@@ -281,6 +290,13 @@
     <button type="button" data-dock-action="account" aria-label="Open your account"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="8" r="3.5"/><path d="M5 20a7 7 0 0 1 14 0"/></svg><span>Account</span></button>
   </nav>
   <button class="desktop-scroll-top" id="desktop-scroll-top" type="button" aria-label="Back to top" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 14 7-7 7 7M12 7v13"/></svg></button>
+  <footer class="store-footer">
+    <div class="wrap store-footer-inner">
+      <div><strong>LOOTBOX <span>THE RECLAIM EDIT</span></strong><p>Read product details and confirm stock, condition, and price before ordering.</p></div>
+      <div class="store-footer-contact"><strong>Need help?</strong><p>Questions about a product or order? Message our team on Instagram.</p><a href="https://www.instagram.com/lootbox.storee/" target="_blank" rel="noopener noreferrer">Talk to @lootbox.storee <span aria-hidden="true">?</span></a></div>
+      <a class="store-footer-seller" href="seller.html" rel="nofollow">Seller sign in</a>
+    </div>
+  </footer>
 <script src="reviews-config.js"></script>
 <script src="reviews.js"></script>
 <script src="product-prices.js"></script>
@@ -335,6 +351,8 @@
     const mobileDockCartCount = document.getElementById("mobile-dock-cart-count");
     const drawer = document.getElementById("account-drawer");
     const drawerMenu = document.getElementById("drawer-menu");
+    const loginButton = document.getElementById("login-button");
+    const logoutButton = document.getElementById("logout-button");
     const drawerMessage = document.getElementById("drawer-message");
     const menuToggle = document.getElementById("menu-toggle");
     const drawerCloseButton = document.getElementById("drawer-close");
@@ -418,6 +436,11 @@
     const customerEmailForm = document.getElementById("customer-email-form");
     const googleSignInButton = document.getElementById("google-sign-in");
     const customerAuthStatus = document.getElementById("customer-auth-status");
+    const setCustomerAuthControls = isSignedIn => {
+      loginButton.hidden = isSignedIn;
+      logoutButton.hidden = !isSignedIn;
+    };
+    setCustomerAuthControls(false);
     const ordersList = document.getElementById("order-list");
     const ordersEmpty = document.getElementById("orders-empty");
     const settingSuggestions = document.getElementById("setting-suggestions");
@@ -671,6 +694,7 @@
     const loadCustomerProfile = async () => {
       const authSession = await window.LootboxBackend.ready();
       customer = authSession?.user || null;
+      setCustomerAuthControls(Boolean(customer));
       if (!customer) {
         profile = null;
         customerEmailForm.hidden = false;
@@ -682,6 +706,7 @@
         await window.LootboxBackend.signOut();
         customer = null;
         profile = null;
+        setCustomerAuthControls(false);
         customerEmailForm.hidden = false;
         profileForm.hidden = true;
         customerAuthStatus.textContent = "Continue with Google to access your account.";
@@ -821,10 +846,15 @@
       try { localStorage.setItem(settingsStorageKey, JSON.stringify(suggestionsEnabled)); } catch {}
       document.getElementById("settings-status").textContent = "Settings saved.";
     });
-    document.getElementById("logout-button").addEventListener("click", async () => {
+    loginButton.addEventListener("click", () => {
+      openDrawer("profile");
+      googleSignInButton.click();
+    });
+    logoutButton.addEventListener("click", async () => {
       await window.LootboxBackend.signOut();
       customer = null;
       profile = null;
+      setCustomerAuthControls(false);
       savePendingOrder(null);
       profileForm.reset();
       profileForm.hidden = true;
