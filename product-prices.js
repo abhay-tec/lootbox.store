@@ -3,8 +3,8 @@
     .normalize("NFKD").replace(/[\u0300-\u036f]/g, "")
     .replace(/[^a-z0-9]+/g, " ").trim().replace(/\s+/g, " ");
 
-  // These MRP and offer values come from RATE LIST LB.xlsx. Keep only exact
-  // catalog matches; products with blank rates or a different variant remain unpriced.
+  // MRP, listed offer prices, and sizes come from the supplied product price lists.
+  // Keep exact catalog matches only; unlisted products remain unpriced.
   const rows = [
     ["L'Oréal Paris Total Repair 5 Repairing Serum", 229, 138, "40 mL"],
     ["L'Oréal Paris Total Repair 5 Repairing Shampoo", 1250, 650, "1 L"],
@@ -54,7 +54,34 @@
     ["Woodoo Hello, Clear Skin Face Wash", 492, 295, "100 mL"],
     ["Glow & Clean White & Bright Charcoal Face Wash", 499, 250, "100 mL"],
     ["Lakmé Blush & Glow Strawberry Face Wash", 490, 294, "150 g"],
-    ["NEUD Skin Brightening Turmeric Face Wash", 190, 114, "70 mL"]
+    ["NEUD Skin Brightening Turmeric Face Wash", 190, 114, "70 mL"],
+  // Perfume MRP, Lootbox price, and pack size from perfume pricelist.xlsx.
+    ["Jean Paul Gaultier Le Male Eau de Toilette", 7150, 4999, "75 mL"],
+    ["Jean Paul Gaultier Le Male Elixir", 11550, 8125, "125 mL"],
+    ["Jean Paul Gaultier Le Male Le Parfum", 10600, 7870, "125 mL"],
+    ["Jean Paul Gaultier Le Beau Paradise Garden", 12550, 7560, "100 mL"],
+    ["Jaguar Era Reloaded Eau de Toilette", 8900, 4500, "100 mL"],
+    ["Jaguar Classic Green Eau de Toilette", 4900, 2800, "100 mL"],
+    ["Viktor&Rolf Spicebomb Eau de Toilette", 7700, 5000, "50 mL"],
+    ["Davidoff Cool Water Eau de Toilette", 6700, 4000, "125 mL"],
+    ["U.S. Polo Assn. Polo Sport Eau de Toilette", 4350, 3200, "125 mL"],
+    ["John Varvatos XX Anniversary Eau de Toilette", 7100, 5000, "125 mL"],
+    ["Armaf Signature Night Eau de Parfum", 2850, 1995, "100 mL"],
+    ["Tommy Girl Eau de Toilette", 6900, 4000, "50 mL"],
+    ["Armaf Club de Nuit Intense Man Eau de Toilette", 6050, 4000, "105 mL"],
+    ["Tommy Vibrant Summer Eau de Toilette", 8900, 6000, "100 mL"],
+    ["Rabanne Phantom Eau de Toilette", 3500, 2800, "100 mL"],
+    ["Ralph Lauren Polo Red Eau de Toilette", 8500, 5999, "125 mL"],
+    ["Guess Amore Portofino Eau de Toilette", 6300, 4000, "100 mL"],
+    ["Amo Ferragamo Eau de Parfum", 13500, 11000, "100 mL"],
+    ["Benetton United Dreams Be Yourself Eau de Toilette", 2050, 1200, "80 mL"],
+    ["Police To Be Skull Eau de Toilette", 4900, 3500, "125 mL"],
+    ["Police Black Skull Fragrance", 4900, 3000, "125 mL"],
+    ["Red Floral Eau de Parfum", 12700, 10000, "100 mL"],
+    ["Diesel Fuel for Life Pour Homme Eau de Toilette", 8740, 5280, "125 mL"],
+    ["Diesel Plus Plus Eau de Toilette", 4600, 3600, "50 mL"],
+    ["Noir Eau de Toilette", 3400, 2200, "100 mL"],
+    ["Guess 1981 Men Eau de Toilette", 6300, 2500, "100 mL"],
   ];
   const products = new Map(rows.map(([name, mrp, price, size]) => [normalize(name), { mrp, price, size }]));
   const get = name => products.get(normalize(name)) || null;
